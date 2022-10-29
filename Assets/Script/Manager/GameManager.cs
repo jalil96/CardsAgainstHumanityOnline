@@ -18,7 +18,7 @@ public class GameManager : MonoBehaviour
     {
         if (_roundActionsQueue.Count == 0)
         {
-            RoundEnded();            
+            RoundEnded();
         }
         
         SetCurrentRoundAction(_roundActionsQueue.Dequeue());

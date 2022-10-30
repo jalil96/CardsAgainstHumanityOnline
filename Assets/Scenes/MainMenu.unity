@@ -1454,7 +1454,7 @@ MonoBehaviour:
   statusText: {fileID: 709704154}
   quitButton: {fileID: 729633418}
   statusPrefix: 'Status: '
-  Level: Level_v2
+  Level: Level
   loggingPanel: {fileID: 1769930648}
   choosePanels: {fileID: 1892763981}
   roomSettingPanel: {fileID: 1320983503}

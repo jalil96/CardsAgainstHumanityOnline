@@ -12,7 +12,7 @@ public class CharacterHand : MonoBehaviourPun
     public int SelectorIndex => _selectorIndex;
     public void MoveSelectorRight()
     {
-        _selectorIndex = Math.Min(_cards.Count, _selectorIndex+1);
+        _selectorIndex = Math.Min(_cards.Count-1, _selectorIndex+1);
         photonView.RPC(nameof(UpdateSelectorIndex), RpcTarget.Others, _selectorIndex);
     }
 

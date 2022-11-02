@@ -38,12 +38,11 @@ MonoBehaviour:
   - DestroyRpc
   - DestroySpaceship
   - Fire
-  - RespawnSpaceship
   - KickPlayer
-  - RequestConnectPlayer
+  - ReferenceCharacter
   - RequestMove
-  - RequestRemovePlayer
+  - RespawnSpaceship
   - UpdateSelectorIndex
   DisableAutoOpenWizard: 1
   ShowSettings: 0
-  DevRegionSetOnce: 0
+  DevRegionSetOnce: 1

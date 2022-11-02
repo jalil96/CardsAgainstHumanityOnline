@@ -612,8 +612,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 1}
   m_AnchorMax: {x: 0.5, y: 1}
-  m_AnchoredPosition: {x: 0, y: -221}
-  m_SizeDelta: {x: 851.232, y: 121.5649}
+  m_AnchoredPosition: {x: 0, y: -299.997}
+  m_SizeDelta: {x: 851.232, y: 279.56}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &138935271
 MonoBehaviour:
@@ -648,7 +648,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: ArkanCoop
+  m_Text: Cards Against Humanity
 --- !u!222 &138935272
 CanvasRenderer:
   m_ObjectHideFlags: 0

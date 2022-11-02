@@ -32,15 +32,6 @@ public class MasterManager : MonoBehaviourPun
     }
 
     [PunRPC]
-    public void RequestRemovePlayer(Player client)
-    {
-        if (_characterModelReferences.ContainsKey(client))
-        {
-            _characterModelReferences.Remove(client);
-        }
-    }
-
-    [PunRPC]
     public void RequestMove(Player client, bool dir)
     {
         if (_characterModelReferences.ContainsKey(client))

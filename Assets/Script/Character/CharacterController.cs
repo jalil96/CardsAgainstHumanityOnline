@@ -13,17 +13,12 @@ public class CharacterController : MonoBehaviour
         }
     }
 
-    private void Start()
-    {
-        MasterManager.Instance.RPCMaster("RequestConnectPlayer", PhotonNetwork.LocalPlayer);
-    }
-
     private void Update()
     {
         if (Input.GetKeyDown(KeyCode.RightArrow))
-            MasterManager.Instance.RPCMaster("RequestMove", PhotonNetwork.LocalPlayer, true);
+            MasterManager.Instance.RPCMaster(nameof(MasterManager.Instance.RequestMove), PhotonNetwork.LocalPlayer, true);
         
         if(Input.GetKeyDown(KeyCode.LeftArrow)) 
-            MasterManager.Instance.RPCMaster("RequestMove", PhotonNetwork.LocalPlayer, false);
+            MasterManager.Instance.RPCMaster(nameof(MasterManager.Instance.RequestMove), PhotonNetwork.LocalPlayer, false);
     }
 }

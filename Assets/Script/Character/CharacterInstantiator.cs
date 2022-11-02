@@ -14,7 +14,6 @@ public class CharacterInstantiator : MonoBehaviourPunCallbacks
     {
         if (!PhotonNetwork.IsMasterClient)
         {
-            Destroy(gameObject);
             return;
         }
 
@@ -33,7 +32,23 @@ public class CharacterInstantiator : MonoBehaviourPunCallbacks
             var characterModel = character.GetComponent<CharacterModel>();
             _characters.Add(characterModel);
             
+            photonView.RPC(nameof(ReferenceCharacter), player, characterModel.photonView.ViewID);
+            
             MasterManager.Instance.AddCharacterModelReference(characterModel, player);
+        }
+    }
+
+    [PunRPC]
+    private void ReferenceCharacter(int photonID)
+    {
+        var characters = FindObjectsOfType<CharacterModel>().ToList();
+        var character = characters.Find(ch => ch.photonView.ViewID == photonID);
+
+        if (character != null)
+        {
+            var handUI = FindObjectOfType<CharacterHandUI>();
+            
+            handUI.SetCharacterHand(character.Hand);
         }
     }
     

@@ -8,6 +8,9 @@ public class GameManager : MonoBehaviour
 
     private Queue<RoundAction> _roundActionsQueue = new Queue<RoundAction>();
     private RoundAction _currentRoundAction;
+
+    private List<CharacterModel> _characters;
+    private int _currentJudgeIndex;
     
     private void Awake()
     {
@@ -44,5 +47,18 @@ public class GameManager : MonoBehaviour
         {
             _roundActionsQueue.Enqueue(roundAction);
         }
+
+        if (_currentJudgeIndex > _characters.Count - 1) _currentJudgeIndex = 0;
+        else _currentJudgeIndex++;
+    }
+
+    public void SetCharacters(List<CharacterModel> characters)
+    {
+        _characters = characters;
+    }
+
+    public CharacterModel GetCurrentJudge()
+    {
+        return _characters[_currentJudgeIndex];
     }
 }

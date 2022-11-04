@@ -9,6 +9,8 @@ public class CharacterHand : MonoBehaviourPun
 
     [SerializeField] private int _selectorIndex;
 
+    private int _selectedCard;
+    
     public int SelectorIndex => _selectorIndex;
     public void MoveSelectorRight()
     {
@@ -28,8 +30,15 @@ public class CharacterHand : MonoBehaviourPun
         _selectorIndex = index;
     }
 
+    public void SelectCard()
+    {
+        if (_selectedCard > 0 && _selectedCard == _selectorIndex) _selectedCard = -1;
+        else _selectedCard = _selectorIndex;
+    }
+
     public CardModel GetSelectedCard()
     {
+        if (_selectedCard < 0) return null;
         return _cards[_selectorIndex];
     }
     

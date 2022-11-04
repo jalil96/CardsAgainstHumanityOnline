@@ -23,4 +23,9 @@ public class CharacterModel : MonoBehaviourPun
         else
             _hand.MoveSelectorLeft();
     }
+
+    public void SelectCard()
+    {
+        _hand.GetSelectedCard();
+    }
 }

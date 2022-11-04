@@ -39,4 +39,12 @@ public class MasterManager : MonoBehaviourPun
             _characterModelReferences[client].Move(dir);
         }
     }
+
+    public void RequestSelect(Player client)
+    {
+        if (_characterModelReferences.ContainsKey(client))
+        {
+            _characterModelReferences[client].SelectCard();
+        }
+    }
 }

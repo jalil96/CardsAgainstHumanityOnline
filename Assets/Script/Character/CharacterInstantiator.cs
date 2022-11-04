@@ -9,7 +9,8 @@ public class CharacterInstantiator : MonoBehaviourPunCallbacks
 {
     [SerializeField] private List<CharacterModel> _characters = new List<CharacterModel>();
     [SerializeField] private List<SpawnPoint> _spawnPoints;
-
+    [SerializeField] private GameManager _gameManager;
+    
     private void Start()
     {
         if (!PhotonNetwork.IsMasterClient)
@@ -36,6 +37,8 @@ public class CharacterInstantiator : MonoBehaviourPunCallbacks
             
             MasterManager.Instance.AddCharacterModelReference(characterModel, player);
         }
+
+        _gameManager.SetCharacters(_characters);
     }
 
     [PunRPC]

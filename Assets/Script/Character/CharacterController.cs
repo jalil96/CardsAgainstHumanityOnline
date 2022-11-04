@@ -20,5 +20,8 @@ public class CharacterController : MonoBehaviour
         
         if(Input.GetKeyDown(KeyCode.LeftArrow)) 
             MasterManager.Instance.RPCMaster(nameof(MasterManager.Instance.RequestMove), PhotonNetwork.LocalPlayer, false);
+        
+        if (Input.GetKeyDown(KeyCode.Return))
+            MasterManager.Instance.RPCMaster(nameof(MasterManager.Instance.RequestSelect), PhotonNetwork.LocalPlayer);
     }
 }

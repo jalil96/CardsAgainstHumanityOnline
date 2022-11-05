@@ -43,6 +43,8 @@ MonoBehaviour:
   - RequestMove
   - RespawnSpaceship
   - UpdateSelectorIndex
+  - GetMessage
+  - GetChatMessage
   DisableAutoOpenWizard: 1
   ShowSettings: 0
   DevRegionSetOnce: 1

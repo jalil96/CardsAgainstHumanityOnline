@@ -11,8 +11,8 @@ public class MainMenuManager : MonoBehaviourPunCallbacks
 {
     private const string DEFAULT_ROOM_NAME = "TestRoom";
     private const string DEFAULT_NICK_NAME = "TestUser";
-    private const int DEFAULT_MAX_PLAYERS = 4;
-    private const int MINIMUM_PLAYERS_FOR_GAME = 2;
+    private const int DEFAULT_MAX_PLAYERS = 6;
+    private const int MINIMUM_PLAYERS_FOR_GAME = 3;
 
     [Header("Main Settings")]
     [SerializeField] private Text txtNickname;

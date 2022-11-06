@@ -28,4 +28,14 @@ public class CharacterModel : MonoBehaviourPun
     {
         _hand.GetSelectedCard();
     }
+
+    public void ShowWhiteCards()
+    {
+        _hand.ShowWhiteCards();
+    }
+
+    public void HideWhiteCards()
+    {
+        _hand.HideWhiteCards();
+    }
 }

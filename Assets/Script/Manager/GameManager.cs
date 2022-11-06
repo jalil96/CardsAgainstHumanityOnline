@@ -11,7 +11,11 @@ public class GameManager : MonoBehaviour
 
     private List<CharacterModel> _characters;
     private int _currentJudgeIndex;
+
+    public int CurrentJudgeIndex => _currentJudgeIndex;
     
+    public List<CharacterModel> GetCharacters => _characters;
+
     private void Awake()
     {
         EnqueueRoundActions();
@@ -34,11 +38,12 @@ public class GameManager : MonoBehaviour
 
     private void SetCurrentRoundAction(RoundAction roundAction)
     {
-        _currentRoundAction.EndRoundAction = delegate {};
+        _currentRoundAction.OnEndRoundAction = delegate {};
         
         _currentRoundAction = roundAction;
 
-        _currentRoundAction.EndRoundAction += RoundActionEnded;
+        _currentRoundAction.OnEndRoundAction += RoundActionEnded;
+        _currentRoundAction.StartRoundAction();
     }
 
     private void EnqueueRoundActions()

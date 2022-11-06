@@ -5,8 +5,10 @@ using UnityEngine;
 
 public class CharacterHand : MonoBehaviourPun
 {
+    public Action OnShowWhiteCards = delegate { };
+    public Action OnHideWhiteCards = delegate { };
+    
     [SerializeField] private List<CardModel> _cards;
-
     [SerializeField] private int _selectorIndex;
 
     private int _selectedCard;
@@ -41,5 +43,22 @@ public class CharacterHand : MonoBehaviourPun
         if (_selectedCard < 0) return null;
         return _cards[_selectorIndex];
     }
+
+    public void ShowWhiteCards()
+    {
+        OnShowWhiteCards.Invoke();
+        foreach (var card in _cards)
+        {
+            photonView.RPC(nameof(card.Activate), RpcTarget.All);
+        }
+    }
     
+    public void HideWhiteCards()
+    {
+        OnHideWhiteCards.Invoke();
+        foreach (var card in _cards)
+        {
+            photonView.RPC(nameof(card.Deactivate), RpcTarget.All);
+        }   
+    }
 }

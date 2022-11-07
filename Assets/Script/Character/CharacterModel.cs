@@ -31,10 +31,22 @@ public class CharacterModel : MonoBehaviourPun
 
     public void ShowWhiteCards()
     {
-        _hand.ShowWhiteCards();
+        photonView.RPC(nameof(UpdateShowWhiteCards), RpcTarget.All);
     }
 
     public void HideWhiteCards()
+    {
+        photonView.RPC(nameof(UpdateHideWhiteCards), RpcTarget.All);
+    }
+    
+    [PunRPC]
+    private void UpdateShowWhiteCards()
+    {
+        _hand.ShowWhiteCards();
+    }
+
+    [PunRPC]
+    private void UpdateHideWhiteCards()
     {
         _hand.HideWhiteCards();
     }

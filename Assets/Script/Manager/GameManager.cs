@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using Photon.Pun;
 using UnityEngine;
 
-public class GameManager : MonoBehaviour
+public class GameManager : MonoBehaviourPun
 {
     [SerializeField] private List<RoundAction> _roundActions;
 
@@ -17,6 +18,11 @@ public class GameManager : MonoBehaviour
     public List<CharacterModel> GetCharacters => _characters;
 
     private void Awake()
+    {
+        if (!PhotonNetwork.IsMasterClient) Destroy(gameObject);
+    }
+
+    private void Start()
     {
         EnqueueRoundActions();
     }
@@ -60,6 +66,19 @@ public class GameManager : MonoBehaviour
     public void SetCharacters(List<CharacterModel> characters)
     {
         _characters = characters;
+    }
+
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.F4))
+        {
+            _characters.ForEach(character => character.HideWhiteCards());
+        }
+
+        if (Input.GetKeyDown(KeyCode.F5))
+        {
+            _characters.ForEach(character => character.ShowWhiteCards());
+        }
     }
 
     public CharacterModel GetCurrentJudge()

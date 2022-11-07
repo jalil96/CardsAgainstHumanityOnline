@@ -14,6 +14,7 @@ public class WhiteCardRoundAction : RoundAction
     {
         _characters = _gameManager.GetCharacters;
         _judge = _characters[_gameManager.CurrentJudgeIndex];
+        
     }
     
     private void Update()

@@ -43,22 +43,16 @@ public class CharacterHand : MonoBehaviourPun
         if (_selectedCard < 0) return null;
         return _cards[_selectorIndex];
     }
-
+    
     public void ShowWhiteCards()
     {
         OnShowWhiteCards.Invoke();
-        foreach (var card in _cards)
-        {
-            photonView.RPC(nameof(card.Activate), RpcTarget.All);
-        }
+        _cards.ForEach(card => card.Activate());
     }
     
     public void HideWhiteCards()
     {
         OnHideWhiteCards.Invoke();
-        foreach (var card in _cards)
-        {
-            photonView.RPC(nameof(card.Deactivate), RpcTarget.All);
-        }   
+        _cards.ForEach(card => card.Deactivate());
     }
 }

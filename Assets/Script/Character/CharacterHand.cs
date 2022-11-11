@@ -34,7 +34,7 @@ public class CharacterHand : MonoBehaviourPun
 
     public void SelectCard()
     {
-        if (_selectedCard > 0 && _selectedCard == _selectorIndex) _selectedCard = -1;
+        if (_selectedCard > 0 && _selectedCard == _selectorIndex) _selectedCard = -1; // Unselects card if selects the one already selected
         else _selectedCard = _selectorIndex;
     }
 

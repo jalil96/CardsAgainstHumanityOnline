@@ -14,8 +14,9 @@ public class GameManager : MonoBehaviourPun
     private int _currentJudgeIndex;
 
     public int CurrentJudgeIndex => _currentJudgeIndex;
-    
-    public List<CharacterModel> GetCharacters => _characters;
+    public List<CharacterModel> Characters => _characters;
+
+    public List<CardModel> SelectedCards { get; set; }
 
     private void Awake()
     {

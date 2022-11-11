@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using Photon.Pun;
 using UnityEngine;
 
-public class GameManager : MonoBehaviour
+public class GameManager : MonoBehaviourPun
 {
     [SerializeField] private List<RoundAction> _roundActions;
 
@@ -11,8 +12,18 @@ public class GameManager : MonoBehaviour
 
     private List<CharacterModel> _characters;
     private int _currentJudgeIndex;
-    
+
+    public int CurrentJudgeIndex => _currentJudgeIndex;
+    public List<CharacterModel> Characters => _characters;
+
+    public List<CardModel> SelectedCards { get; set; }
+
     private void Awake()
+    {
+        if (!PhotonNetwork.IsMasterClient) Destroy(gameObject);
+    }
+
+    private void Start()
     {
         EnqueueRoundActions();
     }
@@ -34,11 +45,12 @@ public class GameManager : MonoBehaviour
 
     private void SetCurrentRoundAction(RoundAction roundAction)
     {
-        _currentRoundAction.EndRoundAction = delegate {};
+        _currentRoundAction.OnEndRoundAction = delegate {};
         
         _currentRoundAction = roundAction;
 
-        _currentRoundAction.EndRoundAction += RoundActionEnded;
+        _currentRoundAction.OnEndRoundAction += RoundActionEnded;
+        _currentRoundAction.StartRoundAction();
     }
 
     private void EnqueueRoundActions()
@@ -55,6 +67,19 @@ public class GameManager : MonoBehaviour
     public void SetCharacters(List<CharacterModel> characters)
     {
         _characters = characters;
+    }
+
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.F4))
+        {
+            _characters.ForEach(character => character.HideWhiteCards());
+        }
+
+        if (Input.GetKeyDown(KeyCode.F5))
+        {
+            _characters.ForEach(character => character.ShowWhiteCards());
+        }
     }
 
     public CharacterModel GetCurrentJudge()

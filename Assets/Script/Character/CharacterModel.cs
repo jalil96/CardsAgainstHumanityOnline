@@ -4,6 +4,9 @@ using UnityEngine;
 
 public class CharacterModel : MonoBehaviourPun
 {
+    public Action<CharacterModel> OnSelectedCard;
+    public Action<CharacterModel> OnUnselectedCard;
+    
     [SerializeField] private CharacterHand _hand;
 
     public CharacterHand Hand => _hand;
@@ -26,6 +29,30 @@ public class CharacterModel : MonoBehaviourPun
 
     public void SelectCard()
     {
-        _hand.GetSelectedCard();
+        _hand.SelectCard();
+        if (_hand.GetSelectedCard() != null) OnSelectedCard.Invoke(this);
+        else OnUnselectedCard.Invoke(this);
+    }
+
+    public void ShowWhiteCards()
+    {
+        photonView.RPC(nameof(UpdateShowWhiteCards), RpcTarget.All);
+    }
+
+    public void HideWhiteCards()
+    {
+        photonView.RPC(nameof(UpdateHideWhiteCards), RpcTarget.All);
+    }
+    
+    [PunRPC]
+    private void UpdateShowWhiteCards()
+    {
+        _hand.ShowWhiteCards();
+    }
+
+    [PunRPC]
+    private void UpdateHideWhiteCards()
+    {
+        _hand.HideWhiteCards();
     }
 }

@@ -15,7 +15,7 @@ MonoBehaviour:
   AppSettings:
     AppIdRealtime: fce0fd44-1d98-401c-ab71-0cfa7d57fa63
     AppIdFusion: 
-    AppIdChat: f9bd9d29-ad37-4fcd-8dc4-bdd9a99e5623
+    AppIdChat: 
     AppIdVoice: 
     AppVersion: 
     UseNameServer: 1
@@ -42,9 +42,9 @@ MonoBehaviour:
   - ReferenceCharacter
   - RequestMove
   - RespawnSpaceship
+  - UpdateHideWhiteCards
   - UpdateSelectorIndex
-  - GetMessage
-  - GetChatMessage
+  - UpdateShowWhiteCards
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 1

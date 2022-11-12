@@ -20,6 +20,11 @@ public class ChatManager : MonoBehaviour, IChatClientListener
     public List<Color> colorNameList = new List<Color>();
     public Color privateMessageColor = Color.yellow;
 
+    [Header("Style Status Font")]
+    public Color statusColor = Color.green;
+    public float statusFontSize = 10.5f;
+    public Font statusFontStyle;
+
     //private variables
     private string userPrivateCommand = "@";
     private ChatClient _chatClient;
@@ -93,6 +98,11 @@ public class ChatManager : MonoBehaviour, IChatClientListener
         }
     }
 
+    public void UnsuscribeFromRoom(string roomName)
+    {
+        //TODO ADD ROOM UNSUSCRIPTION
+    }
+
     //if the player doesn't use a command, send it like a private message.
     //if it starts a command, then check if the player is right, else let te player know somewhere that the nickname is wrong but don't send it.
     //if everything is right, chat and player, then send it alright. 
@@ -105,7 +115,7 @@ public class ChatManager : MonoBehaviour, IChatClientListener
 
     private void AddPrivateChatMessage(string playerNickname, string message)
     {
-        content.text += $"<color = {privateMessageColor}>{playerNickname}:</color> {message}";
+        content.text += $"<color = {privateMessageColor}>{playerNickname}:</color> {message} \n";
     }
 
     private int GetUserIndexColor(string nickname)
@@ -122,6 +132,12 @@ public class ChatManager : MonoBehaviour, IChatClientListener
     private string ColorfyNickname(string playerNickname, int playerIndex)
     {
         return $"<color = {colorNameList[playerIndex]}>{playerNickname}:</color>";
+    }
+
+    private bool IsCommand(string message)
+    {
+        //TODO for future use, have a dictionary of commands, if it's a command then call command action or something;
+        return false;
     }
     #endregion
 
@@ -142,11 +158,15 @@ public class ChatManager : MonoBehaviour, IChatClientListener
     {
         OnChatConnected?.Invoke(); //TODO make main manager listen to this and change status info
 
-        _channel = PhotonNetwork.CurrentRoom.Name;
+        _channel = PhotonNetwork.CurrentRoom.Name; //TODO MAKE UNSUSCRIBE CHANNEL ON LEAVE ROOM. 
 
         _chatClient.Subscribe(_channel);
 
         ChatEnabled = true;
+
+        string[] friends = new string[] { };
+        _chatClient.AddFriends(friends);
+        _chatClient.SetOnlineStatus(ChatUserStatus.Online);
     }
 
     public void OnChatStateChange(ChatState state)
@@ -179,7 +199,8 @@ public class ChatManager : MonoBehaviour, IChatClientListener
 
     public void OnStatusUpdate(string user, int status, bool gotMessage, object message)
     {
-        throw new NotImplementedException();
+        string userStatus = status == ChatUserStatus.Online ? "connected" : "disconected";
+        content.text += $"<color={statusColor}>{user} is {message} </color> \n";
     }
 
     public void OnUserSubscribed(string channel, string user)

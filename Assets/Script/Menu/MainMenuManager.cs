@@ -19,6 +19,7 @@ public class MainMenuManager : MonoBehaviourPunCallbacks
     [SerializeField] private TextMeshProUGUI statusText;
     [SerializeField] private Button quitButton;
     [SerializeField] private string statusPrefix = "Status: ";
+    public ChatManager chatBox;
     public string Level = "Level";
 
     [Header("All Panels")]

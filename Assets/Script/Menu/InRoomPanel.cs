@@ -1,3 +1,4 @@
+using ExitGames.Client.Photon;
 using Photon.Pun;
 using Photon.Realtime;
 using System.Collections;
@@ -178,9 +179,10 @@ public class InRoomPanel : MonoBehaviourPunCallbacks
                 if (!currentPlayerList[i].IsMasterClient)
                     OnKickPlayer(currentPlayerList[i]);
             }
-
             CloseRoom();
         }
+
+        mainMenu.chatBox.UnsuscribeFromRoom(PhotonNetwork.CurrentRoom.Name);
 
         PhotonNetwork.LeaveRoom(false);
 

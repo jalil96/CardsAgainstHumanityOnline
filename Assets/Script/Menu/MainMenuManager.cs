@@ -1,8 +1,10 @@
+using ParrelSync;
 using Photon.Pun;
 using Photon.Realtime;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -13,6 +15,9 @@ public class MainMenuManager : MonoBehaviourPunCallbacks
     private const string DEFAULT_NICK_NAME = "TestUser";
     private const int DEFAULT_MAX_PLAYERS = 6;
     private const int MINIMUM_PLAYERS_FOR_GAME = 3;
+    
+    [Header("Config")]
+    public bool isServer; 
 
     [Header("Main Settings")]
     [SerializeField] private Text txtNickname;
@@ -24,7 +29,6 @@ public class MainMenuManager : MonoBehaviourPunCallbacks
 
     [Header("All Panels")]
     public Panel loggingPanel;
-    public Panel choosePanels;
     public Panel roomSettingPanel;
     public Panel kickedPanel;
     public Panel loadingSymbolPanel;
@@ -38,10 +42,6 @@ public class MainMenuManager : MonoBehaviourPunCallbacks
     [Header("Logging")]
     [SerializeField] private TMP_InputField nickNameInput;
     [SerializeField] private Button logInButton;
-
-    [Header("Choose")]
-    [SerializeField] private Button newRoomButton;
-    [SerializeField] private Button joinRoomButton;
 
     [Header("Prompts")]
     [SerializeField] private Button kickedOutConfirmButton;
@@ -57,6 +57,7 @@ public class MainMenuManager : MonoBehaviourPunCallbacks
     public int MinPlayers => MINIMUM_PLAYERS_FOR_GAME;
     public string DefaultRoom => DEFAULT_ROOM_NAME;
     public string DefaultNickname => DEFAULT_NICK_NAME;
+    public Panel ChoosePanel => isServer ? roomSettingPanel : chooseRoomPanel;
 
     //EVENTS 
     public Action<RoomInfo> OnBannedRoom = delegate { };
@@ -65,22 +66,24 @@ public class MainMenuManager : MonoBehaviourPunCallbacks
 
     public void Awake()
     {
+#if UNITY_EDITOR 
+        isServer = !ClonesManager.IsClone();
+#endif
+
         PlayerView = GetComponent<MainMenuView>();
         MaxPlayers = DEFAULT_MAX_PLAYERS;
 
         PhotonNetwork.AutomaticallySyncScene = true;
 
         //GeneratePanels
-        GenerateChoosingPanel();
         GenerateWaitJoinningRoomPanel();
         txtNickname.gameObject.SetActive(false);
         quitButton.onClick.AddListener(OnQuitButton);
         logInButton.onClick.AddListener(LogInUser);
-        kickedOutConfirmButton.onClick.AddListener(() => { ChangePanel(choosePanels); Kicked = false; });
+        kickedOutConfirmButton.onClick.AddListener(() => { ChangePanel(ChoosePanel); Kicked = false; });
 
         //Set all panels
         allPanels.Add(loggingPanel);
-        allPanels.Add(choosePanels);
         allPanels.Add(roomSettingPanel);
         allPanels.Add(roomLobbyPanel);
         allPanels.Add(kickedPanel);
@@ -95,7 +98,7 @@ public class MainMenuManager : MonoBehaviourPunCallbacks
     {
         if (PhotonNetwork.IsConnectedAndReady)
         {
-            ChangePanel(choosePanels);
+            ChangePanel(ChoosePanel);
             SetStatus("Connected to Lobby");
         }
         else
@@ -106,12 +109,6 @@ public class MainMenuManager : MonoBehaviourPunCallbacks
     }
 
     #region GeneratingPanels
-    private void GenerateChoosingPanel()
-    {
-        joinRoomButton.onClick.AddListener(() => ChangePanel(chooseRoomPanel));
-        newRoomButton.onClick.AddListener(() => ChangePanel(roomSettingPanel));
-    }
-
     private void GenerateWaitJoinningRoomPanel()
     {
         joiningRoomsWaitPanel.OnOpen += OnOpen;
@@ -145,7 +142,7 @@ public class MainMenuManager : MonoBehaviourPunCallbacks
 
         if (!PhotonNetwork.InRoom)
         {
-            ChangePanel(choosePanels);
+            ChangePanel(ChoosePanel);
             SetStatus("No rooms found");
         }
     }
@@ -222,7 +219,7 @@ public class MainMenuManager : MonoBehaviourPunCallbacks
         }
 
         if (!Kicked)
-            ChangePanel(choosePanels);
+            ChangePanel(ChoosePanel);
 
         SetStatus("Connected to Lobby");
     }
@@ -252,7 +249,7 @@ public class MainMenuManager : MonoBehaviourPunCallbacks
     public override void OnJoinRoomFailed(short returnCode, string message)
     {
         SetStatus("Joined Room failed");
-        ChangePanel(choosePanels);
+        ChangePanel(ChoosePanel);
     }
 
     public override void OnLeftRoom()
@@ -265,7 +262,7 @@ public class MainMenuManager : MonoBehaviourPunCallbacks
         }
         else
         {
-            ChangePanel(choosePanels);
+            ChangePanel(ChoosePanel);
             SetStatus("Left Room");
         }
     }

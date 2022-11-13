@@ -61,7 +61,7 @@ public class RoomSelectionPanel : MonoBehaviourPunCallbacks
         else
             mainMenu.SetStatus("No rooms found");
 
-        mainMenu.ChangePanel(mainMenu.choosePanels);
+        mainMenu.ChangePanel(mainMenu.ChoosePanel);
     }
 
     public override void OnRoomListUpdate(List<RoomInfo> roomList)

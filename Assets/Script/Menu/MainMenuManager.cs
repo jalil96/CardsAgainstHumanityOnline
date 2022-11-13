@@ -11,13 +11,17 @@ using UnityEngine.UI;
 
 public class MainMenuManager : MonoBehaviourPunCallbacks
 {
+    private const string DEFAULT_SERVER_NAME = "Server";
     private const string DEFAULT_ROOM_NAME = "TestRoom";
-    private const string DEFAULT_NICK_NAME = "TestUser";
+    private const string DEFAULT_NICK_NAME = "Player";
     private const int DEFAULT_MAX_PLAYERS = 6;
     private const int MINIMUM_PLAYERS_FOR_GAME = 3;
     
     [Header("Config")]
-    public bool isServer; 
+    public bool isServer;
+    [Tooltip("To skip login if the build is server, this has to be false")]
+    public bool serverHasToLog;
+    public GameObject cheats;
 
     [Header("Main Settings")]
     [SerializeField] private Text txtNickname;
@@ -68,6 +72,9 @@ public class MainMenuManager : MonoBehaviourPunCallbacks
     {
 #if UNITY_EDITOR 
         isServer = !ClonesManager.IsClone();
+        cheats.SetActive(true);
+#else
+        cheats.gameObject.SetActive(false);
 #endif
 
         PlayerView = GetComponent<MainMenuView>();
@@ -103,6 +110,12 @@ public class MainMenuManager : MonoBehaviourPunCallbacks
         }
         else
         {
+            if (isServer && !serverHasToLog)
+            {
+                ServerLogIn();
+                return;
+            } 
+
             ChangePanel(loggingPanel);
             SetStatus("Please Log In");
         }
@@ -128,10 +141,10 @@ public class MainMenuManager : MonoBehaviourPunCallbacks
     private void Update()
     {
         if (Input.GetKeyDown(KeyCode.F1))
-            QuickMatchCheat();
+            ForceServerLog();
 
         if (Input.GetKeyDown(KeyCode.F2))
-            ForceStart();
+            ForceQuickStartAsPlayer();
     }
 
     private IEnumerator JoinRandomRoomTimer(float timer)
@@ -147,10 +160,10 @@ public class MainMenuManager : MonoBehaviourPunCallbacks
         }
     }
 
-    private void QuickMatchCheat()
+    private void ForceQuickStartAsPlayer()
     {
         ChangePanel(loadingSymbolPanel);
-        
+
         PhotonNetwork.NickName = DEFAULT_NICK_NAME;
         txtNickname.gameObject.SetActive(true);
         txtNickname.text = PhotonNetwork.NickName;
@@ -160,10 +173,21 @@ public class MainMenuManager : MonoBehaviourPunCallbacks
         skipEverything = true;
     }
 
-    private void ForceStart()
+    private void ForceServerLog()
     {
-        forceStart = true;
-        QuickMatchCheat();
+        isServer = true;
+        ServerLogIn();
+    }
+
+    private void ServerLogIn()
+    {
+        ChangePanel(loadingSymbolPanel);
+        PhotonNetwork.NickName = DEFAULT_SERVER_NAME; //TODO ADD A RANDOM NUMBER TO THE NAME?
+        txtNickname.gameObject.SetActive(true);
+        txtNickname.text = PhotonNetwork.NickName;
+        PhotonNetwork.ConnectUsingSettings();
+        skipEverything = true;
+
     }
 
     public void ChangePanel(Panel panelToOpen)
@@ -213,8 +237,15 @@ public class MainMenuManager : MonoBehaviourPunCallbacks
     {
         if (skipEverything)
         {
-            OnBaseCreateRoom.Invoke("", DEFAULT_MAX_PLAYERS);
-            SetStatus("Getting Room");
+            if (isServer)
+            {
+                OnBaseCreateRoom.Invoke("", DEFAULT_MAX_PLAYERS);
+                return;
+            }
+
+            ChangePanel(loadingSymbolPanel);
+            PhotonNetwork.JoinRandomRoom();
+            SetStatus("Searching for a random room");
             return;
         }
 

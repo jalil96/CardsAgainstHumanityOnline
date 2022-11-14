@@ -1843,7 +1843,7 @@ MonoBehaviour:
   statusText: {fileID: 709704154}
   quitButton: {fileID: 729633418}
   statusPrefix: 'Status: '
-  chatBox: {fileID: 0}
+  chatBox: {fileID: 740053907}
   Level: Level
   loggingPanel: {fileID: 1769930648}
   roomSettingPanel: {fileID: 1320983503}
@@ -3433,6 +3433,17 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &740053907 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 2226245802708140705, guid: d8bbfa45b6883524cae9c2ab4198f54f, type: 3}
+  m_PrefabInstance: {fileID: 2226245803113042203}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f1a111a7de0d2d947a8824ac4175e109, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1 &778428235

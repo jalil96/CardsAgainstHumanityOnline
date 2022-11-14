@@ -14,8 +14,8 @@ public class MainMenuManager : MonoBehaviourPunCallbacks
     private const string DEFAULT_SERVER_NAME = "Server";
     private const string DEFAULT_ROOM_NAME = "TestRoom";
     private const string DEFAULT_NICK_NAME = "Player";
-    private const int DEFAULT_MAX_PLAYERS = 6;
-    private const int MINIMUM_PLAYERS_FOR_GAME = 3;
+    private const int DEFAULT_MAX_PLAYERS = 7; //max default is 7 instead of 6 because we have an extra that is the server 
+    private const int MINIMUM_PLAYERS_FOR_GAME = 3; //minimum default is 4 instead of 3 for the same reason
     
     [Header("Config")]
     public bool isServer;
@@ -58,6 +58,7 @@ public class MainMenuManager : MonoBehaviourPunCallbacks
     public MainMenuView PlayerView { get; private set; }
     public bool Kicked { get; set; }
     public int MaxPlayers { get; private set; }
+    public int RealMaxPlayers => MaxPlayers - 1;
     public int MinPlayers => MINIMUM_PLAYERS_FOR_GAME;
     public string DefaultRoom => DEFAULT_ROOM_NAME;
     public string DefaultNickname => DEFAULT_NICK_NAME;

@@ -178,7 +178,7 @@ public class RoomSelectionPanel : MonoBehaviourPunCallbacks
     {
         RoomDisplay currentDisplay = currentRoomButtons[index];
         currentDisplay.nameTxt.text = room.Name;
-        currentDisplay.numberTxt.text = $"{room.PlayerCount} / {room.MaxPlayers} ";
+        currentDisplay.numberTxt.text = $"{room.PlayerCount - 1} / {room.MaxPlayers - 1} "; //We erase one number as that one is the server
         currentDisplay.RoomInfo = room;
         currentDisplay.joinButton.onClick.AddListener(() => OnClickRoom(currentDisplay));
     }

@@ -165,6 +165,8 @@ public class MainMenuManager : MonoBehaviourPunCallbacks
     {
         ChangePanel(loadingSymbolPanel);
 
+        isServer = false;
+
         PhotonNetwork.NickName = DEFAULT_NICK_NAME;
         txtNickname.gameObject.SetActive(true);
         txtNickname.text = PhotonNetwork.NickName;

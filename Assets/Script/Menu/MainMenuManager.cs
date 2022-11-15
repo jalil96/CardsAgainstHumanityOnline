@@ -64,6 +64,8 @@ public class MainMenuManager : MonoBehaviourPunCallbacks
     public string DefaultNickname => DEFAULT_NICK_NAME;
     public Panel ChoosePanel => isServer ? roomSettingPanel : chooseRoomPanel;
 
+    public bool ChatBoxEnabled { get; set; }
+
     //EVENTS 
     public Action<RoomInfo> OnBannedRoom = delegate { };
     public Action OnClearData = delegate { };
@@ -278,6 +280,9 @@ public class MainMenuManager : MonoBehaviourPunCallbacks
 
         SetStatus("Joined Room");
         ChangePanel(roomLobbyPanel);
+
+        if (!ChatBoxEnabled && !isServer)
+            chatBox.ConnectChat();
     }
 
     public override void OnJoinRoomFailed(short returnCode, string message)

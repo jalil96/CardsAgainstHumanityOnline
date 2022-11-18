@@ -10,6 +10,7 @@ public class MasterManager : MonoBehaviourPun
     private static MasterManager _instance;
     public static MasterManager Instance => _instance;
     private Dictionary<Player, CharacterModel> _characterModelReferences = new Dictionary<Player, CharacterModel>();
+    private Dictionary<CharacterModel, Player> _playerReferences = new Dictionary<CharacterModel, Player>();
 
     private void Awake()
     {
@@ -26,9 +27,20 @@ public class MasterManager : MonoBehaviourPun
         photonView.RPC(methodName, target, p);
     }
 
+    public Player GetPlayerFromCharacter(CharacterModel character)
+    {
+        return _playerReferences.ContainsKey(character) ? _playerReferences[character] : null;
+    }
+    
+    public CharacterModel GetCharacterModelFromPlayer(Player player)
+    {
+        return _characterModelReferences.ContainsKey(player) ? _characterModelReferences[player] : null;
+    }
+    
     public void AddCharacterModelReference(CharacterModel characterModel, Player client)
     {
         _characterModelReferences[client] = characterModel;
+        _playerReferences[characterModel] = client;
     }
 
     [PunRPC]
@@ -40,6 +52,7 @@ public class MasterManager : MonoBehaviourPun
         }
     }
 
+    [PunRPC]
     public void RequestSelect(Player client)
     {
         if (_characterModelReferences.ContainsKey(client))

@@ -4,8 +4,8 @@ using UnityEngine;
 
 public class CharacterModel : MonoBehaviourPun
 {
-    public Action<CharacterModel> OnSelectedCard;
-    public Action<CharacterModel> OnUnselectedCard;
+    public Action<CharacterModel> OnSelectedCard = delegate(CharacterModel model) {  };
+    public Action<CharacterModel> OnUnselectedCard = delegate(CharacterModel model) {  };
     
     [SerializeField] private CharacterHand _hand;
 
@@ -34,6 +34,8 @@ public class CharacterModel : MonoBehaviourPun
         else OnUnselectedCard.Invoke(this);
     }
 
+    
+    
     public void ShowWhiteCards()
     {
         photonView.RPC(nameof(UpdateShowWhiteCards), RpcTarget.All);

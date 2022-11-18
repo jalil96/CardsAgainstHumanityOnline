@@ -7,13 +7,16 @@ public class CharacterHand : MonoBehaviourPun
 {
     public Action OnShowWhiteCards = delegate { };
     public Action OnHideWhiteCards = delegate { };
+    public Action OnSetNewCards = delegate { };
     
     [SerializeField] private List<CardModel> _cards;
+    [SerializeField] private List<Transform> _cardsPositions;
     [SerializeField] private int _selectorIndex;
 
     private int _selectedCard;
     
     public int SelectorIndex => _selectorIndex;
+    public List<CardModel> Cards => _cards;
     public void MoveSelectorRight()
     {
         _selectorIndex = Math.Min(_cards.Count-1, _selectorIndex+1);
@@ -54,5 +57,13 @@ public class CharacterHand : MonoBehaviourPun
     {
         OnHideWhiteCards.Invoke();
         _cards.ForEach(card => card.Deactivate());
+    }
+
+    public void SetCards(List<CardModel> cards)
+    {
+        _cards = cards;
+        _selectorIndex = 0;
+        photonView.RPC(nameof(UpdateSelectorIndex), RpcTarget.Others, _selectorIndex);
+        OnSetNewCards.Invoke();
     }
 }

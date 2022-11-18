@@ -11,16 +11,17 @@ public class WhiteCardRoundAction : RoundAction
     private List<CharacterModel> _characters;
     private CharacterModel _judge;
 
-    private List<CharacterModel> _selectedCardCharacters;
+    private List<CharacterModel> _selectedCardCharacters = new List<CharacterModel>();
 
     private bool _finishedSelecting;
-    private List<CardModel> _selectedCards;
+    private Dictionary<CardModel, CharacterModel> _selectedCards;
 
     public override void StartRoundAction()
     {
         _characters = new List<CharacterModel>(_gameManager.Characters);
         _judge = _gameManager.GetCurrentJudge();
         _characters.Remove(_judge);
+        Debug.Log($"Hiding judge {MasterManager.Instance.GetPlayerFromCharacter(_judge).NickName} cards");
         _judge.HideWhiteCards();
         
         _characters.ForEach(character =>
@@ -35,9 +36,17 @@ public class WhiteCardRoundAction : RoundAction
         if (_selectedCardCharacters.Contains(character)) return;
         _selectedCardCharacters.Add(character);
 
-        if (_selectedCardCharacters.Count != _characters.Count) return;
+        Debug.Log($"Player: {MasterManager.Instance.GetPlayerFromCharacter(character).NickName} selected a card");
         
-        _selectedCards = _selectedCardCharacters.Select(c => c.Hand.GetSelectedCard()).ToList();
+        if (_selectedCardCharacters.Count != _characters.Count) return;
+
+        Debug.Log($"All players players selected their cards");
+        
+        _selectedCardCharacters.ForEach(c =>
+        {
+            _selectedCards[c.Hand.GetSelectedCard()] = c;
+        });
+        
         _gameManager.SelectedCards = _selectedCards;
         OnEndRoundAction.Invoke();
     }

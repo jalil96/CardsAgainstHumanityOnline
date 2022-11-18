@@ -1,7 +1,7 @@
 ﻿using System;
 using UnityEngine;
 
-public class RoundAction : MonoBehaviour, IRoundAction
+public abstract class RoundAction : MonoBehaviour, IRoundAction
 {
     public Action OnStartRoundAction;
     public Action OnEndRoundAction;

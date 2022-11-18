@@ -16,7 +16,7 @@ public class GameManager : MonoBehaviourPun
     public int CurrentJudgeIndex => _currentJudgeIndex;
     public List<CharacterModel> Characters => _characters;
 
-    public List<CardModel> SelectedCards { get; set; }
+    public Dictionary<CardModel, CharacterModel> SelectedCards { get; set; }
 
     private void Awake()
     {
@@ -26,6 +26,7 @@ public class GameManager : MonoBehaviourPun
     private void Start()
     {
         EnqueueRoundActions();
+        RoundActionEnded();
     }
 
     private void RoundActionEnded()
@@ -45,7 +46,7 @@ public class GameManager : MonoBehaviourPun
 
     private void SetCurrentRoundAction(RoundAction roundAction)
     {
-        _currentRoundAction.OnEndRoundAction = delegate {};
+        if (_currentRoundAction != null) _currentRoundAction.OnEndRoundAction = delegate {};
         
         _currentRoundAction = roundAction;
 
@@ -60,7 +61,7 @@ public class GameManager : MonoBehaviourPun
             _roundActionsQueue.Enqueue(roundAction);
         }
 
-        if (_currentJudgeIndex > _characters.Count - 1) _currentJudgeIndex = 0;
+        if (_currentJudgeIndex >= _characters.Count - 1) _currentJudgeIndex = 0;
         else _currentJudgeIndex++;
     }
 
@@ -84,6 +85,8 @@ public class GameManager : MonoBehaviourPun
 
     public CharacterModel GetCurrentJudge()
     {
+        
+        Debug.Log($"Current characters: {_characters.Count} & current judge index: {_currentJudgeIndex}");
         return _characters[_currentJudgeIndex];
     }
 }

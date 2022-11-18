@@ -1,7 +1,9 @@
+using ExitGames.Client.Photon;
 using Photon.Pun;
 using Photon.Realtime;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -26,7 +28,7 @@ public class InRoomPanel : MonoBehaviourPunCallbacks
     private MainMenuManager mainMenu;
     private List<PlayerDisplay> playerButtons = new List<PlayerDisplay>();
     private Dictionary<string, int> playerNames = new Dictionary<string, int>();
-    private Player[] currentPlayerList;
+    private List<Player> currentPlayerList = new List<Player>();
     private bool roomOpen;
 
     void Awake()
@@ -52,7 +54,7 @@ public class InRoomPanel : MonoBehaviourPunCallbacks
 
         //Let´s create the max of buttons needed in the game
         playerListPrefab.gameObject.SetActive(false);
-        for (int i = 0; i < mainMenu.MaxPlayers; i++)
+        for (int i = 0; i < mainMenu.RealMaxPlayers; i++)
         {
             PlayerDisplay aux = Instantiate(playerListPrefab, playerListContainer.transform);
             aux.gameObject.SetActive(false);
@@ -80,11 +82,13 @@ public class InRoomPanel : MonoBehaviourPunCallbacks
         }
     }
 
-    public void RefreshPlayerList()
+    public void RefreshPlayerList() //we susbtract everywhere a player because the master client shouldn't be seen
     {
-        currentNumberPlayersTxt.text = $"{PhotonNetwork.CurrentRoom.PlayerCount}/{PhotonNetwork.CurrentRoom.MaxPlayers}";
+        currentNumberPlayersTxt.text = $"{PhotonNetwork.CurrentRoom.PlayerCount - 1}/{PhotonNetwork.CurrentRoom.MaxPlayers - 1}";
 
-        currentPlayerList = PhotonNetwork.PlayerList;
+        currentPlayerList = PhotonNetwork.PlayerList.ToList();
+        var server = PhotonNetwork.CurrentRoom.GetPlayer(PhotonNetwork.CurrentRoom.MasterClientId);
+        currentPlayerList.Remove(server);
 
         CheckNicknames(currentPlayerList);
 
@@ -93,7 +97,7 @@ public class InRoomPanel : MonoBehaviourPunCallbacks
 
         for (int i = 0; i < playerButtons.Count; i++)
         {
-            bool overflow = (currentPlayerList.Length - 1) < i;
+            bool overflow = (currentPlayerList.Count - 1) < i;
 
             playerButtons[i].gameObject.SetActive(!overflow);
 
@@ -108,22 +112,16 @@ public class InRoomPanel : MonoBehaviourPunCallbacks
         playerButtons[index].nameTxt.text = currentPlayer.NickName;
         playerButtons[index].numberTxt.text = $"{index + 1} - ";
 
-        if (PhotonNetwork.IsMasterClient && !currentPlayer.IsMasterClient)
-        {
-            playerButtons[index].kickButton.gameObject.SetActive(true);
-            if (PhotonNetwork.IsMasterClient)
-                playerButtons[index].kickButton.onClick.AddListener(() => OnKickPlayer(currentPlayer));
-        }
-        else
-        {
-            playerButtons[index].kickButton.gameObject.SetActive(false);
-        }
+        playerButtons[index].kickButton.gameObject.SetActive(PhotonNetwork.IsMasterClient);
+
+        if (PhotonNetwork.IsMasterClient)
+            playerButtons[index].kickButton.onClick.AddListener(() => OnKickPlayer(currentPlayer));
     }
 
-    public void CheckNicknames(Player[] players)
+    public void CheckNicknames(List<Player> players)
     {
         playerNames.Clear();
-        for (int i = 0; i < players.Length; i++)
+        for (int i = 0; i < players.Count; i++)
         {
             if (playerNames.TryGetValue(players[i].NickName, out int number))
             {
@@ -171,9 +169,9 @@ public class InRoomPanel : MonoBehaviourPunCallbacks
 
         if (PhotonNetwork.IsMasterClient)
         {
-            currentPlayerList = PhotonNetwork.PlayerList;
+            currentPlayerList = PhotonNetwork.PlayerList.ToList();
 
-            for (int i = currentPlayerList.Length - 1; i >= 0; i--)
+            for (int i = currentPlayerList.Count - 1; i >= 0; i--)
             {
                 if (!currentPlayerList[i].IsMasterClient)
                     OnKickPlayer(currentPlayerList[i]);
@@ -181,6 +179,9 @@ public class InRoomPanel : MonoBehaviourPunCallbacks
 
             CloseRoom();
         }
+
+        if(mainMenu.chatBox.ChatEnabled)
+            mainMenu.chatBox.UnsuscribeFromRoom(PhotonNetwork.CurrentRoom.Name);
 
         PhotonNetwork.LeaveRoom(false);
 

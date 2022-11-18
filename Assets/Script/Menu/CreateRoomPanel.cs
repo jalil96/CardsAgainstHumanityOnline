@@ -33,7 +33,7 @@ public class CreateRoomPanel : MonoBehaviourPunCallbacks
         maxPlayersSlider.maxValue = mainMenu.MaxPlayers;
         maxPlayersSlider.minValue = mainMenu.MinPlayers;
 
-        goBackToChooseButton.onClick.AddListener(() => mainMenu.ChangePanel(mainMenu.choosePanels));
+        goBackToChooseButton.onClick.AddListener(() => mainMenu.ChangePanel(mainMenu.ChoosePanel));
         maxPlayersSlider.onValueChanged.AddListener(delegate { ValueChangeCheck(); });
 
         createRoomButton.onClick.AddListener(CreateRoom);

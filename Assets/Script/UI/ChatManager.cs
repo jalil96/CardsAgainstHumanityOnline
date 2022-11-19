@@ -21,8 +21,7 @@ public class ChatManager : MonoBehaviour, IChatClientListener
     public TMP_InputField inputField;
 
     [Header("Buttons")]
-    public Button openChatButton;
-    public Button closeChatButton;
+    public Button minimizedChat;
     public Button sendButton;
 
     [Header("Colors")]
@@ -62,8 +61,7 @@ public class ChatManager : MonoBehaviour, IChatClientListener
 
         mainChatContent.text = "";
 
-        openChatButton.onClick.AddListener(OpenChat);
-        closeChatButton.onClick.AddListener(MinimizedChat);
+        minimizedChat.onClick.AddListener(ToggleChat);
 
         sendButton.onClick.AddListener(SendChatMessage);
         inputField.onEndEdit.AddListener(SendChatMessage);
@@ -102,8 +100,8 @@ public class ChatManager : MonoBehaviour, IChatClientListener
 
         AuthenticationValues auth = new AuthenticationValues(PhotonNetwork.NickName);
         _chatClient.Connect(PhotonNetwork.PhotonServerSettings.AppSettings.AppIdChat, PhotonNetwork.PhotonServerSettings.AppSettings.AppVersion, auth);
-        ChatEnabled = true;
-        MinimizedChat();
+
+        EnableChat();
     }
 
     private void Update()
@@ -145,13 +143,15 @@ public class ChatManager : MonoBehaviour, IChatClientListener
     {
         ChatEnabled = false;
         chatBox.gameObject.SetActive(false);
-        openChatButton.gameObject.SetActive(false);
+        minimizedChat.gameObject.SetActive(false);
         currentNumberOfNewMessages = 0;
     }
 
     public void EnableChat()
     {
-        chatBox.gameObject.SetActive(true);
+        ChatEnabled = true;
+        minimizedChat.gameObject.SetActive(true);
+        MinimizedChat();
     }
 
     #region Private
@@ -168,14 +168,20 @@ public class ChatManager : MonoBehaviour, IChatClientListener
         ChatMinimized = true;
         RefreshCurrentView();
     }
-
+	
+	private void ToggleChat()
+	{
+		if(ChatMinimized)
+			OpenChat();
+		else
+			MinimizedChat();
+	}
+	
     private void RefreshCurrentView()
     {
         chatBox.SetActive(!ChatMinimized);
 
         bool hasNewMessages = currentNumberOfNewMessages > 0;
-
-        openChatButton.gameObject.SetActive(ChatMinimized);
 
         chatMinimizedCounter.text = hasNewMessages ? currentNumberOfNewMessages.ToString() : "...";
         chatMinimizedNotification.gameObject.SetActive(hasNewMessages);
@@ -248,22 +254,20 @@ public class ChatManager : MonoBehaviour, IChatClientListener
 
         _chatClient.Subscribe(_channel);
 
-        ChatEnabled = true;
+  //      var currentPlayerList = PhotonNetwork.PlayerList.ToList();
+  //      string[] friends = new string[currentPlayerList.Count];
 
-        EnableChat();
+  //      for (int i = 0; i < currentPlayerList.Count; i++)
+  //      {
+  //          if (currentPlayerList[i].IsMasterClient) continue;
 
-        var currentPlayerList = PhotonNetwork.PlayerList.ToList();
-        string[] friends = new string[currentPlayerList.Count];
+  //          AssingNewColorFromList(currentPlayerList[i].NickName);
+  //          friends[i] = currentPlayerList[i].NickName;
+  //      }
 
-        for (int i = 0; i < currentPlayerList.Count; i++)
-        {
-            if (currentPlayerList[i].IsMasterClient) continue;
-
-            AssingNewColorFromList(currentPlayerList[i].NickName);
-            friends[i] = currentPlayerList[i].NickName;
-        }
-
-        _chatClient.AddFriends(friends);
+		//if(friends.Length > 0)
+		//	_chatClient.AddFriends(friends);
+		
         _chatClient.SetOnlineStatus(ChatUserStatus.Online);
     }
 
@@ -301,7 +305,6 @@ public class ChatManager : MonoBehaviour, IChatClientListener
     public void OnSubscribed(string[] channels, bool[] results)
     {
         OnChatSuscribed?.Invoke(); //TODO make main manager listen to this and change status info
-        OpenChat();
     }
 
     public void OnUnsubscribed(string[] channels)

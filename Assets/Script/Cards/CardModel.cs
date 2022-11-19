@@ -18,7 +18,7 @@ public class CardModel : MonoBehaviourPun
 
     private void Awake()
     {
-        if (_type == null) _type = CardType.White;
+        _type = CardType.White;
         if (_text == "") _text = Guid.NewGuid().ToString();
     }
 

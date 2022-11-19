@@ -14,7 +14,7 @@ public class WhiteCardRoundAction : RoundAction
     private List<CharacterModel> _selectedCardCharacters = new List<CharacterModel>();
 
     private bool _finishedSelecting;
-    private Dictionary<CardModel, CharacterModel> _selectedCards;
+    private Dictionary<CardModel, CharacterModel> _selectedCards = new Dictionary<CardModel, CharacterModel>();
 
     public override void StartRoundAction()
     {

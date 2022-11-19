@@ -20,8 +20,6 @@ public class SelectWinnerCardRoundAction : RoundAction
         
         
         Debug.Log($"Showing judge {MasterManager.Instance.GetPlayerFromCharacter(_judge).NickName} cards");
-        
-        // TODO: set selected cards to the judge
 
         _selectedCards = _gameManager.SelectedCards.Keys.ToList();
         _judge.Hand.SetCards(_selectedCards);
@@ -35,7 +33,7 @@ public class SelectWinnerCardRoundAction : RoundAction
 
     private void JudgeSelectedWinnerCard(CharacterModel character)
     {
-        
+        OnEndRoundAction.Invoke();
     }
 
     public override void EndRoundAction()

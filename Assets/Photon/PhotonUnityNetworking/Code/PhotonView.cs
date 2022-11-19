@@ -636,16 +636,17 @@ namespace Photon.Pun
         /// <remarks>
         /// [Remote Procedure Calls](@ref rpcManual) are an essential tool in making multiplayer games with PUN.
         /// It enables you to make every client in a room call a specific method.
-        ///
+        /// 
         /// This method allows you to make an RPC calls on a specific player's client.
         /// Of course, calls are affected by this client's lag and that of remote clients.
-        ///
+        /// 
         /// Each call automatically is routed to the same PhotonView (and GameObject) that was used on the
         /// originating client.
-        ///
+        /// 
         /// See: [Remote Procedure Calls](@ref rpcManual).
         /// </remarks>
         /// <param name="methodName">The name of a fitting method that was has the RPC attribute.</param>
+        /// <param name="masterClient"></param>
         /// <param name="targetPlayer">The group of targets and the way the RPC gets sent.</param>
         /// <param name="parameters">The parameters that the RPC method has (must fit this call!).</param>
         public void RPC(string methodName, Player targetPlayer, params object[] parameters)

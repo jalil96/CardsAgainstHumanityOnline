@@ -60,6 +60,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4e549a7fadd54b869671bd608e408a68, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _text: 
+  _type: 0
 --- !u!114 &2227237798629733500
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -72,7 +74,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 981dcd489b8343c9aed94c488ef72824, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _uiCard: {fileID: 0}
+  _cardModel: {fileID: 4755478278296907846}
 --- !u!114 &1440003341917085452
 MonoBehaviour:
   m_ObjectHideFlags: 0

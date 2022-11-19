@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Photon.Pun;
+using Photon.Realtime;
 using UnityEngine;
 
 public class CharacterHand : MonoBehaviourPun
@@ -17,6 +19,44 @@ public class CharacterHand : MonoBehaviourPun
     
     public int SelectorIndex => _selectorIndex;
     public List<CardModel> Cards => _cards;
+
+    private void Start()
+    {
+        if (!PhotonNetwork.IsMasterClient)
+        {
+            photonView.RPC(nameof(RequestCards), PhotonNetwork.MasterClient, PhotonNetwork.LocalPlayer);
+        }
+    }
+
+    [PunRPC]
+    private void RequestCards(Player player)
+    {
+        
+        var cards = _cards.Select(c => (object)c.Text).ToArray();
+        Debug.Log($"Sending {cards.Length} to player {player.NickName}");
+        photonView.RPC(nameof(UpdateCards), player, cards);
+    }
+
+    [PunRPC]
+    private void UpdateCards(object[] newCards)
+    {
+        string[] cards = newCards.Select(c => (string)c).ToArray();
+        Debug.Log($"New cards to set: {cards.Length}");
+        // debug
+        string debug = "";
+        foreach (var card in cards)
+        {
+            debug += $"{card}, ";
+        }
+        Debug.Log(debug);
+        // end debug
+        for (int i = 0; i < cards.Length; i++)
+        {
+            _cards[i].Text = cards[i];
+        }
+        OnSetNewCards.Invoke();
+    }
+
     public void MoveSelectorRight()
     {
         _selectorIndex = Math.Min(_cards.Count-1, _selectorIndex+1);
@@ -59,9 +99,12 @@ public class CharacterHand : MonoBehaviourPun
         _cards.ForEach(card => card.Deactivate());
     }
 
-    public void SetCards(List<CardModel> cards)
+    public void SetCards(List<string> newCards)
     {
-        _cards = cards;
+        for (var i = 0; i < _cards.Count; i++)
+        {
+            _cards[i].Text = newCards[i];
+        }
         _selectorIndex = 0;
         photonView.RPC(nameof(UpdateSelectorIndex), RpcTarget.Others, _selectorIndex);
         OnSetNewCards.Invoke();

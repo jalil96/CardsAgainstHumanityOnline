@@ -310,46 +310,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 1215282252}
     m_Modifications:
-    - target: {fileID: 967237477822076927, guid: f98588d12fb103f47bf60f27fdc084ac, type: 3}
-      propertyPath: m_fontSize
-      value: 0.01
-      objectReference: {fileID: 0}
-    - target: {fileID: 967237477822076927, guid: f98588d12fb103f47bf60f27fdc084ac, type: 3}
-      propertyPath: m_margin.w
-      value: 1.2460108
-      objectReference: {fileID: 0}
-    - target: {fileID: 967237477822076927, guid: f98588d12fb103f47bf60f27fdc084ac, type: 3}
-      propertyPath: m_margin.x
-      value: 0.9920547
-      objectReference: {fileID: 0}
-    - target: {fileID: 967237477822076927, guid: f98588d12fb103f47bf60f27fdc084ac, type: 3}
-      propertyPath: m_margin.y
-      value: 1.248935
-      objectReference: {fileID: 0}
-    - target: {fileID: 967237477822076927, guid: f98588d12fb103f47bf60f27fdc084ac, type: 3}
-      propertyPath: m_margin.z
-      value: 0.9872799
-      objectReference: {fileID: 0}
-    - target: {fileID: 967237477822076927, guid: f98588d12fb103f47bf60f27fdc084ac, type: 3}
-      propertyPath: m_fontSizeBase
-      value: 0.01
-      objectReference: {fileID: 0}
-    - target: {fileID: 2570928832191745870, guid: f98588d12fb103f47bf60f27fdc084ac, type: 3}
-      propertyPath: m_EffectDistance.x
-      value: 0.1
-      objectReference: {fileID: 0}
-    - target: {fileID: 2570928832191745870, guid: f98588d12fb103f47bf60f27fdc084ac, type: 3}
-      propertyPath: m_EffectDistance.y
-      value: -0.1
-      objectReference: {fileID: 0}
-    - target: {fileID: 3041266272132429496, guid: f98588d12fb103f47bf60f27fdc084ac, type: 3}
-      propertyPath: m_SizeDelta.x
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 3041266272132429496, guid: f98588d12fb103f47bf60f27fdc084ac, type: 3}
-      propertyPath: m_SizeDelta.y
-      value: 1.2532
-      objectReference: {fileID: 0}
     - target: {fileID: 3590678232768752961, guid: f98588d12fb103f47bf60f27fdc084ac, type: 3}
       propertyPath: m_Name
       value: WhiteCard_UI (1)
@@ -820,46 +780,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 1215282252}
     m_Modifications:
-    - target: {fileID: 967237477822076927, guid: f98588d12fb103f47bf60f27fdc084ac, type: 3}
-      propertyPath: m_fontSize
-      value: 0.01
-      objectReference: {fileID: 0}
-    - target: {fileID: 967237477822076927, guid: f98588d12fb103f47bf60f27fdc084ac, type: 3}
-      propertyPath: m_margin.w
-      value: 1.2460108
-      objectReference: {fileID: 0}
-    - target: {fileID: 967237477822076927, guid: f98588d12fb103f47bf60f27fdc084ac, type: 3}
-      propertyPath: m_margin.x
-      value: 0.9920547
-      objectReference: {fileID: 0}
-    - target: {fileID: 967237477822076927, guid: f98588d12fb103f47bf60f27fdc084ac, type: 3}
-      propertyPath: m_margin.y
-      value: 1.248935
-      objectReference: {fileID: 0}
-    - target: {fileID: 967237477822076927, guid: f98588d12fb103f47bf60f27fdc084ac, type: 3}
-      propertyPath: m_margin.z
-      value: 0.9872799
-      objectReference: {fileID: 0}
-    - target: {fileID: 967237477822076927, guid: f98588d12fb103f47bf60f27fdc084ac, type: 3}
-      propertyPath: m_fontSizeBase
-      value: 0.01
-      objectReference: {fileID: 0}
-    - target: {fileID: 2570928832191745870, guid: f98588d12fb103f47bf60f27fdc084ac, type: 3}
-      propertyPath: m_EffectDistance.x
-      value: 0.1
-      objectReference: {fileID: 0}
-    - target: {fileID: 2570928832191745870, guid: f98588d12fb103f47bf60f27fdc084ac, type: 3}
-      propertyPath: m_EffectDistance.y
-      value: -0.1
-      objectReference: {fileID: 0}
-    - target: {fileID: 3041266272132429496, guid: f98588d12fb103f47bf60f27fdc084ac, type: 3}
-      propertyPath: m_SizeDelta.x
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 3041266272132429496, guid: f98588d12fb103f47bf60f27fdc084ac, type: 3}
-      propertyPath: m_SizeDelta.y
-      value: 1.2532
-      objectReference: {fileID: 0}
     - target: {fileID: 3590678232768752961, guid: f98588d12fb103f47bf60f27fdc084ac, type: 3}
       propertyPath: m_Name
       value: WhiteCard_UI
@@ -973,46 +893,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 1215282252}
     m_Modifications:
-    - target: {fileID: 967237477822076927, guid: f98588d12fb103f47bf60f27fdc084ac, type: 3}
-      propertyPath: m_fontSize
-      value: 0.01
-      objectReference: {fileID: 0}
-    - target: {fileID: 967237477822076927, guid: f98588d12fb103f47bf60f27fdc084ac, type: 3}
-      propertyPath: m_margin.w
-      value: 1.2460108
-      objectReference: {fileID: 0}
-    - target: {fileID: 967237477822076927, guid: f98588d12fb103f47bf60f27fdc084ac, type: 3}
-      propertyPath: m_margin.x
-      value: 0.9920547
-      objectReference: {fileID: 0}
-    - target: {fileID: 967237477822076927, guid: f98588d12fb103f47bf60f27fdc084ac, type: 3}
-      propertyPath: m_margin.y
-      value: 1.248935
-      objectReference: {fileID: 0}
-    - target: {fileID: 967237477822076927, guid: f98588d12fb103f47bf60f27fdc084ac, type: 3}
-      propertyPath: m_margin.z
-      value: 0.9872799
-      objectReference: {fileID: 0}
-    - target: {fileID: 967237477822076927, guid: f98588d12fb103f47bf60f27fdc084ac, type: 3}
-      propertyPath: m_fontSizeBase
-      value: 0.01
-      objectReference: {fileID: 0}
-    - target: {fileID: 2570928832191745870, guid: f98588d12fb103f47bf60f27fdc084ac, type: 3}
-      propertyPath: m_EffectDistance.x
-      value: 0.1
-      objectReference: {fileID: 0}
-    - target: {fileID: 2570928832191745870, guid: f98588d12fb103f47bf60f27fdc084ac, type: 3}
-      propertyPath: m_EffectDistance.y
-      value: -0.1
-      objectReference: {fileID: 0}
-    - target: {fileID: 3041266272132429496, guid: f98588d12fb103f47bf60f27fdc084ac, type: 3}
-      propertyPath: m_SizeDelta.x
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 3041266272132429496, guid: f98588d12fb103f47bf60f27fdc084ac, type: 3}
-      propertyPath: m_SizeDelta.y
-      value: 1.2532
-      objectReference: {fileID: 0}
     - target: {fileID: 3590678232768752961, guid: f98588d12fb103f47bf60f27fdc084ac, type: 3}
       propertyPath: m_Name
       value: WhiteCard_UI (3)
@@ -1915,46 +1795,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 1215282252}
     m_Modifications:
-    - target: {fileID: 967237477822076927, guid: f98588d12fb103f47bf60f27fdc084ac, type: 3}
-      propertyPath: m_fontSize
-      value: 0.01
-      objectReference: {fileID: 0}
-    - target: {fileID: 967237477822076927, guid: f98588d12fb103f47bf60f27fdc084ac, type: 3}
-      propertyPath: m_margin.w
-      value: 1.2460108
-      objectReference: {fileID: 0}
-    - target: {fileID: 967237477822076927, guid: f98588d12fb103f47bf60f27fdc084ac, type: 3}
-      propertyPath: m_margin.x
-      value: 0.9920547
-      objectReference: {fileID: 0}
-    - target: {fileID: 967237477822076927, guid: f98588d12fb103f47bf60f27fdc084ac, type: 3}
-      propertyPath: m_margin.y
-      value: 1.248935
-      objectReference: {fileID: 0}
-    - target: {fileID: 967237477822076927, guid: f98588d12fb103f47bf60f27fdc084ac, type: 3}
-      propertyPath: m_margin.z
-      value: 0.9872799
-      objectReference: {fileID: 0}
-    - target: {fileID: 967237477822076927, guid: f98588d12fb103f47bf60f27fdc084ac, type: 3}
-      propertyPath: m_fontSizeBase
-      value: 0.01
-      objectReference: {fileID: 0}
-    - target: {fileID: 2570928832191745870, guid: f98588d12fb103f47bf60f27fdc084ac, type: 3}
-      propertyPath: m_EffectDistance.x
-      value: 0.1
-      objectReference: {fileID: 0}
-    - target: {fileID: 2570928832191745870, guid: f98588d12fb103f47bf60f27fdc084ac, type: 3}
-      propertyPath: m_EffectDistance.y
-      value: -0.1
-      objectReference: {fileID: 0}
-    - target: {fileID: 3041266272132429496, guid: f98588d12fb103f47bf60f27fdc084ac, type: 3}
-      propertyPath: m_SizeDelta.x
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 3041266272132429496, guid: f98588d12fb103f47bf60f27fdc084ac, type: 3}
-      propertyPath: m_SizeDelta.y
-      value: 1.2532
-      objectReference: {fileID: 0}
     - target: {fileID: 3590678232768752961, guid: f98588d12fb103f47bf60f27fdc084ac, type: 3}
       propertyPath: m_Name
       value: WhiteCard_UI (4)
@@ -2276,46 +2116,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 1215282252}
     m_Modifications:
-    - target: {fileID: 967237477822076927, guid: f98588d12fb103f47bf60f27fdc084ac, type: 3}
-      propertyPath: m_fontSize
-      value: 0.01
-      objectReference: {fileID: 0}
-    - target: {fileID: 967237477822076927, guid: f98588d12fb103f47bf60f27fdc084ac, type: 3}
-      propertyPath: m_margin.w
-      value: 1.2460108
-      objectReference: {fileID: 0}
-    - target: {fileID: 967237477822076927, guid: f98588d12fb103f47bf60f27fdc084ac, type: 3}
-      propertyPath: m_margin.x
-      value: 0.9920547
-      objectReference: {fileID: 0}
-    - target: {fileID: 967237477822076927, guid: f98588d12fb103f47bf60f27fdc084ac, type: 3}
-      propertyPath: m_margin.y
-      value: 1.248935
-      objectReference: {fileID: 0}
-    - target: {fileID: 967237477822076927, guid: f98588d12fb103f47bf60f27fdc084ac, type: 3}
-      propertyPath: m_margin.z
-      value: 0.9872799
-      objectReference: {fileID: 0}
-    - target: {fileID: 967237477822076927, guid: f98588d12fb103f47bf60f27fdc084ac, type: 3}
-      propertyPath: m_fontSizeBase
-      value: 0.01
-      objectReference: {fileID: 0}
-    - target: {fileID: 2570928832191745870, guid: f98588d12fb103f47bf60f27fdc084ac, type: 3}
-      propertyPath: m_EffectDistance.x
-      value: 0.1
-      objectReference: {fileID: 0}
-    - target: {fileID: 2570928832191745870, guid: f98588d12fb103f47bf60f27fdc084ac, type: 3}
-      propertyPath: m_EffectDistance.y
-      value: -0.1
-      objectReference: {fileID: 0}
-    - target: {fileID: 3041266272132429496, guid: f98588d12fb103f47bf60f27fdc084ac, type: 3}
-      propertyPath: m_SizeDelta.x
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 3041266272132429496, guid: f98588d12fb103f47bf60f27fdc084ac, type: 3}
-      propertyPath: m_SizeDelta.y
-      value: 1.2532
-      objectReference: {fileID: 0}
     - target: {fileID: 3590678232768752961, guid: f98588d12fb103f47bf60f27fdc084ac, type: 3}
       propertyPath: m_Name
       value: WhiteCard_UI (2)

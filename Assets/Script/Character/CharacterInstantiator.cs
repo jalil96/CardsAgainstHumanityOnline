@@ -50,7 +50,6 @@ public class CharacterInstantiator : MonoBehaviourPunCallbacks
         if (character != null)
         {
             var handUI = FindObjectOfType<CharacterHandUI>();
-            
             handUI.SetCharacterHand(character.Hand);
         }
     }

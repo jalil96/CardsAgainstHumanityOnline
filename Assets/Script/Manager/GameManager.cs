@@ -13,6 +13,9 @@ public class GameManager : MonoBehaviourPun
     private List<CharacterModel> _characters;
     private int _currentJudgeIndex;
 
+    private Stack<string> _blackCards = new Stack<string>();
+    private Stack<string> _whiteCards = new Stack<string>();
+    
     public int CurrentJudgeIndex => _currentJudgeIndex;
     public List<CharacterModel> Characters => _characters;
 
@@ -44,6 +47,19 @@ public class GameManager : MonoBehaviourPun
         EnqueueRoundActions();
     }
 
+    private void LoadCards()
+    {
+        for (int i = 0; i < 300; i++)
+        {
+            _whiteCards.Push(Guid.NewGuid().ToString());
+        }
+        
+        for (int i = 0; i < 100; i++)
+        {
+            _blackCards.Push(Guid.NewGuid().ToString());
+        }
+    }
+
     private void SetCurrentRoundAction(RoundAction roundAction)
     {
         if (_currentRoundAction != null) _currentRoundAction.OnEndRoundAction = delegate {};
@@ -68,6 +84,16 @@ public class GameManager : MonoBehaviourPun
     public void SetCharacters(List<CharacterModel> characters)
     {
         _characters = characters;
+        if (_whiteCards.Count <= 0)
+        {
+            LoadCards();
+        }
+        _characters.ForEach(c =>
+        {
+            List<string> newCards = new List<string>();
+            for (int i = 0; i < 5; i++) newCards.Add(_whiteCards.Pop());
+            c.Hand.SetCards(newCards);
+        });
     }
 
     private void Update()

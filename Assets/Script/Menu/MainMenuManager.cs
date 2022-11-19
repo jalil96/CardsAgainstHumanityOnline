@@ -104,6 +104,11 @@ public class MainMenuManager : MonoBehaviourPunCallbacks
         RestartMenu();
     }
 
+    public void Start()
+    {
+        chatBox = CommunicationsManager.Instance.chatManager;
+    }
+
     public void RestartMenu()
     {
         if (PhotonNetwork.IsConnectedAndReady)

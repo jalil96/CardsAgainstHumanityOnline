@@ -1,12 +1,11 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor.XR;
 using UnityEngine;
 
 public class CommandManager : MonoBehaviour
 {
-    static public CommandManager Instance { get; private set;}
-
     private string commandPrefix = "/";
     private Dictionary<string, Action> commandDictionary = new Dictionary<string, Action>();
     private string currentCommand;
@@ -17,16 +16,6 @@ public class CommandManager : MonoBehaviour
 
     private void Awake()
     {
-        if (Instance != null)
-        {
-            Destroy(gameObject);
-        }
-        else
-        {
-            Instance = this;
-            DontDestroyOnLoad(gameObject);
-        }
-
         commandDictionary.Add("whisper", PrivateMessage);
         commandDictionary.Add("help", HelpList);
     }

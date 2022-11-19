@@ -80,26 +80,30 @@ public class ChatManager : MonoBehaviour, IChatClientListener
         privateHexColor = ColorUtility.ToHtmlStringRGBA(privateMessageColor);
     }
 
-    private void Start()
+    private void SuscribeEvents()
     {
-        CommandManager.Instance.PrivateMessageCommand += SendPrivateChatMessage;
-        CommandManager.Instance.ErrorCommand += ErrorCommandMessage;
+		CommunicationsManager.Instance.commandManager.PrivateMessageCommand += SendPrivateChatMessage;
+        CommunicationsManager.Instance.commandManager.ErrorCommand += ErrorCommandMessage;
     }
 
     private void OnDestroy()
     {
-        CommandManager.Instance.PrivateMessageCommand -= SendPrivateChatMessage;
-        CommandManager.Instance.ErrorCommand -= ErrorCommandMessage;
+        if (!CommunicationsManager.HasInstance) return;
+
+        CommunicationsManager.Instance.commandManager.PrivateMessageCommand -= SendPrivateChatMessage;
+        CommunicationsManager.Instance.commandManager.ErrorCommand -= ErrorCommandMessage;
     }
 
     public void ConnectChat()
     {
+		SuscribeEvents();
+		
         _chatClient = new ChatClient(this);
 
         AuthenticationValues auth = new AuthenticationValues(PhotonNetwork.NickName);
         _chatClient.Connect(PhotonNetwork.PhotonServerSettings.AppSettings.AppIdChat, PhotonNetwork.PhotonServerSettings.AppSettings.AppVersion, auth);
         ChatEnabled = true;
-        OpenChat();
+        MinimizedChat();
     }
 
     private void Update()
@@ -118,7 +122,7 @@ public class ChatManager : MonoBehaviour, IChatClientListener
     public void SendChatMessage(string message)
     {
         if (!IsMessageValid(message)) return;
-        if (CommandManager.Instance.IsCommand(message)) return;
+        if (CommunicationsManager.Instance.commandManager.IsCommand(message)) return;
 
         _chatClient.PublishMessage(_channel, message);
 
@@ -323,7 +327,11 @@ public class ChatManager : MonoBehaviour, IChatClientListener
 
     public void OnUserSubscribed(string channel, string user)
     {
+        string[] friends = new  string[] {user};
+        _chatClient.AddFriends(friends);
+
         AssingNewColorFromList(user);
+
         var text = ColorfyWords($"{user} has entered the chat", serverHexColor);
         _chatClient.PublishMessage(channel, $"{text}\n");
     }

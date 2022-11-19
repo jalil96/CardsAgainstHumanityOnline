@@ -1,3 +1,4 @@
+using System;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -14,8 +15,9 @@ public class VoiceUserUI : MonoBehaviour
     public Sprite mic_on;
     public Sprite mic_off;
 
-
     private bool micEnabled;
+
+    public Action<bool> MicStatus = delegate {};
 
     private void Start()
     {
@@ -32,6 +34,8 @@ public class VoiceUserUI : MonoBehaviour
         micEnabled = value;
 
         mic_Image.sprite = micEnabled ? mic_on : mic_off;
+
+        MicStatus(micEnabled);
     }
 
 }

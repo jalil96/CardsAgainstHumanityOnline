@@ -22,7 +22,7 @@ public class VoiceManager : MonoBehaviour
 
     public void Awake()
     {
-        CompleteDropdown();
+        //CompleteDropdown();
     }
 
     public void Start()

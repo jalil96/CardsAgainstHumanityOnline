@@ -10,6 +10,7 @@ public class CommunicationsManager : MonoBehaviour
     public ChatManager chatManager;
     public VoiceManager voiceManager;
     public CommandManager commandManager;
+    public ChatColorsDictionary colorsDictionary;
 
     private void Awake()
     {

@@ -1,4 +1,3 @@
-using ParrelSync;
 using Photon.Pun;
 using Photon.Realtime;
 using System;
@@ -74,7 +73,7 @@ public class MainMenuManager : MonoBehaviourPunCallbacks
     public void Awake()
     {
 #if UNITY_EDITOR 
-        isServer = !ClonesManager.IsClone();
+        isServer = !ParrelSync.ClonesManager.IsClone();
         cheats.SetActive(true);
 #else
         cheats.gameObject.SetActive(false);

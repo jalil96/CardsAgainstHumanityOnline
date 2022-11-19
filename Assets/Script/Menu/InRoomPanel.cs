@@ -192,7 +192,6 @@ public class InRoomPanel : MonoBehaviourPunCallbacks
     {
         RefreshPlayerList();
         UpdateRoomFullness();
-
     }
 
     public override void OnPlayerLeftRoom(Player otherPlayer)
@@ -209,7 +208,6 @@ public class InRoomPanel : MonoBehaviourPunCallbacks
             CloseRoom();
         else
             OpenRoom();
-
     }
 
     public void OpenRoom()

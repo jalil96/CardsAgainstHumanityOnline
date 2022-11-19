@@ -39,7 +39,6 @@ public class ChatManager : MonoBehaviour, IChatClientListener
     private ChatClient _chatClient;
     private string _channel;
     private Dictionary<string, int> playersColorDictionary = new Dictionary<string, int>();
-    private List<int> availableColors = new List<int>();
     private string[] colorHex;
 
     public bool ChatEnabled { get; set; }
@@ -70,7 +69,6 @@ public class ChatManager : MonoBehaviour, IChatClientListener
         for (int i = 0; i < colorNameList.Count; i++) //in the beginning all colors all available
         {
             colorHex[i] = ColorUtility.ToHtmlStringRGBA(colorNameList[i]);
-            availableColors.Add(i);
         }
 
         statusHexColor = ColorUtility.ToHtmlStringRGBA(statusColor);
@@ -82,6 +80,7 @@ public class ChatManager : MonoBehaviour, IChatClientListener
     {
 		CommunicationsManager.Instance.commandManager.PrivateMessageCommand += SendPrivateChatMessage;
         CommunicationsManager.Instance.commandManager.ErrorCommand += ErrorCommandMessage;
+        CommunicationsManager.Instance.colorsDictionary.OnColorsUpdate += UpdateColorDictionary;
     }
 
     private void OnDestroy()
@@ -90,6 +89,7 @@ public class ChatManager : MonoBehaviour, IChatClientListener
 
         CommunicationsManager.Instance.commandManager.PrivateMessageCommand -= SendPrivateChatMessage;
         CommunicationsManager.Instance.commandManager.ErrorCommand -= ErrorCommandMessage;
+        CommunicationsManager.Instance.colorsDictionary.OnColorsUpdate -= UpdateColorDictionary;
     }
 
     public void ConnectChat()
@@ -155,6 +155,10 @@ public class ChatManager : MonoBehaviour, IChatClientListener
     }
 
     #region Private
+    private void UpdateColorDictionary(Dictionary<string, int> newDictionary)
+    {
+        playersColorDictionary = newDictionary;
+    }
 
     private void OpenChat()
     {
@@ -201,24 +205,6 @@ public class ChatManager : MonoBehaviour, IChatClientListener
         return 0;
     }
 
-    private void AssingNewColorFromList(string nickname)
-    {
-        if (playersColorDictionary.ContainsKey(nickname)) return;
-        Debug.Assert(availableColors.Count > 0, "No colors are available");
-
-        int currentIndex = availableColors[0];
-        availableColors.Remove(currentIndex);
-
-        playersColorDictionary.Add(nickname, currentIndex);
-    }
-
-    private void RemoveFromColorList(string nickname)
-    {
-        if (playersColorDictionary.TryGetValue(nickname, out int index))
-        {
-            availableColors.Add(index);
-        }
-    }
 
     private bool IsMessageValid(string message)
     {
@@ -254,20 +240,20 @@ public class ChatManager : MonoBehaviour, IChatClientListener
 
         _chatClient.Subscribe(_channel);
 
-  //      var currentPlayerList = PhotonNetwork.PlayerList.ToList();
-  //      string[] friends = new string[currentPlayerList.Count];
+        //      var currentPlayerList = PhotonNetwork.PlayerList.ToList();
+        //      string[] friends = new string[currentPlayerList.Count];
 
-  //      for (int i = 0; i < currentPlayerList.Count; i++)
-  //      {
-  //          if (currentPlayerList[i].IsMasterClient) continue;
+        //      for (int i = 0; i < currentPlayerList.Count; i++)
+        //      {
+        //          if (currentPlayerList[i].IsMasterClient) continue;
 
-  //          AssingNewColorFromList(currentPlayerList[i].NickName);
-  //          friends[i] = currentPlayerList[i].NickName;
-  //      }
+        //          AssingNewColorFromList(currentPlayerList[i].NickName);
+        //          friends[i] = currentPlayerList[i].NickName;
+        //      }
 
-		//if(friends.Length > 0)
-		//	_chatClient.AddFriends(friends);
-		
+        //if(friends.Length > 0)
+        //	_chatClient.AddFriends(friends);
+
         _chatClient.SetOnlineStatus(ChatUserStatus.Online);
     }
 
@@ -333,15 +319,12 @@ public class ChatManager : MonoBehaviour, IChatClientListener
         string[] friends = new  string[] {user};
         _chatClient.AddFriends(friends);
 
-        AssingNewColorFromList(user);
-
         var text = ColorfyWords($"{user} has entered the chat", serverHexColor);
         _chatClient.PublishMessage(channel, $"{text}\n");
     }
 
     public void OnUserUnsubscribed(string channel, string user)
     {
-        RemoveFromColorList(user);
         var text = ColorfyWords($"{user} has left the chat", serverHexColor);
         _chatClient.PublishMessage(channel, $"{text}\n");
     }

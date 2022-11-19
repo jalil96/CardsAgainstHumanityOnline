@@ -7,8 +7,6 @@ public class CommandManager : MonoBehaviour
 {
     static public CommandManager Instance { get; private set;}
 
-    public List<string> commands =  new List<string>();
-
     private string commandPrefix = "/";
     private Dictionary<string, Action> commandDictionary = new Dictionary<string, Action>();
     private string currentCommand;

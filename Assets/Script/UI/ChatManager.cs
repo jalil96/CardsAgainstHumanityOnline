@@ -27,14 +27,12 @@ public class ChatManager : MonoBehaviour, IChatClientListener
 
     [Header("Colors")]
     public List<Color> colorNameList = new List<Color>();
+
+    [Header("SpecialColors")]
     public Color privateMessageColor = Color.yellow;
     private string privateHexColor;
-
-    [Header("Info Font")]
     public Color serverInfoColor = Color.grey;
     private string serverHexColor;
-
-    [Header("Status Font")]
     public Color statusColor = Color.green;
     private string statusHexColor;
 

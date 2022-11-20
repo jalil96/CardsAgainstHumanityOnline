@@ -71,6 +71,7 @@ public class ChatColorsDictionary : MonoBehaviourPunCallbacks
 
     private void RefreshColorList()
     {
+        if (!PhotonNetwork.InRoom) return;
         ExitGames.Client.Photon.Hashtable colorDictionary = new ExitGames.Client.Photon.Hashtable();
 
         colorDictionary.Add(ColorTag, _playersColors);
@@ -80,15 +81,16 @@ public class ChatColorsDictionary : MonoBehaviourPunCallbacks
 
     public override void OnPlayerEnteredRoom(Player newPlayer)
     {
-        if (PhotonNetwork.IsMasterClient & !newPlayer.IsMasterClient)
-            RequestAddToColorList(newPlayer);
+        if (!PhotonNetwork.IsMasterClient) return;
+        if (newPlayer.IsMasterClient) return;
+        RequestAddToColorList(newPlayer);
     }
 
     public override void OnPlayerLeftRoom(Player otherPlayer)
     {
-
-        if (PhotonNetwork.IsMasterClient && !otherPlayer.IsMasterClient)
-            RequestRemoveFromColorList(otherPlayer);
+        if (!PhotonNetwork.IsMasterClient) return;
+        if (otherPlayer.IsMasterClient) return;
+        RequestRemoveFromColorList(otherPlayer);
     }
 
     public override void OnRoomPropertiesUpdate(ExitGames.Client.Photon.Hashtable propertiesThatChanged)

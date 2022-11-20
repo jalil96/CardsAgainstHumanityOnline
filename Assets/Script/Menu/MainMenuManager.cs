@@ -308,6 +308,8 @@ public class MainMenuManager : MonoBehaviourPunCallbacks
             ChangePanel(ChoosePanel);
             SetStatus("Left Room");
         }
+
+        ClearData();
     }
 
     public void KickedPlayer()

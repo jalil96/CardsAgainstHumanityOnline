@@ -8,7 +8,6 @@ using UnityEngine.UI;
 public class RoomSelectionPanel : MonoBehaviourPunCallbacks
 {
     public GameObject roomListContainer;
-    public Button goBackButton;
     public RoomDisplay roomPrefab;
     public Text availableRoomsNumber;
     public GameObject loadingAnimation;
@@ -35,8 +34,6 @@ public class RoomSelectionPanel : MonoBehaviourPunCallbacks
     {
         mainMenu.chooseRoomPanel.OnOpen += OnOpen;
         mainMenu.chooseRoomPanel.OnClose += OnClose;
-
-        goBackButton.onClick.AddListener(GoBack);
 
         roomPrefab.gameObject.SetActive(false);
         loadingAnimation.SetActive(false);

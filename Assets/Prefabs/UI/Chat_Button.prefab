@@ -273,6 +273,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &6786338417083718852 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 8893350939854281693, guid: c43ecdf292fc4ec4dad75e71c0b97780, type: 3}
+  m_PrefabInstance: {fileID: 2685954461678569241}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &5953869464280941657 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 8639603800261837632, guid: c43ecdf292fc4ec4dad75e71c0b97780, type: 3}
@@ -299,5 +310,8 @@ MonoBehaviour:
   titleText: {fileID: 5953869464280941657}
   button: {fileID: 3065545687050955920}
   notificationActiveIcon: {fileID: 3585780939662635509}
-  counter: 0
   chatText: 
+  nickname: 
+  bgColor: {fileID: 6786338417083718852}
+  openChatColor: {r: 0, g: 0, b: 0, a: 1}
+  closeChatColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}

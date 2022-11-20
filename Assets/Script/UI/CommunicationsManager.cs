@@ -101,6 +101,32 @@ public class CommunicationsManager : MonoBehaviourPunCallbacks
     }
     #endregion
 
+    #region ColorRPC
+
+    public void RemoveFromColorList(Player player)
+    {
+        photonView.RPC(nameof(RemovePlayerFromColorList), RpcTarget.Others, player.NickName);
+    }
+
+    [PunRPC]
+    public void RemovePlayerFromColorList(string player)
+    {
+
+    }
+
+    public void AddToColorList(Player player)
+    {
+        photonView.RPC(nameof(AddPlayerToColorList), RpcTarget.Others, player.NickName);
+    }
+
+    [PunRPC]
+    public void AddPlayerToColorList(string player)
+    {
+
+    }
+
+    #endregion
+
     #region Callbacks
     public override void OnPlayerEnteredRoom(Player newPlayer)
     {

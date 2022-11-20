@@ -5,18 +5,24 @@ using UnityEngine;
 
 public class CommandManager : MonoBehaviour
 {
+    [Header("Commands")]
+    public string privateMessage = "whisper";
+    public string help = "help";
+
     private string commandPrefix = "/";
     private Dictionary<string, Action> commandDictionary = new Dictionary<string, Action>();
-    private string currentCommand;
+    private Dictionary<string, string> commandDescriptions = new Dictionary<string, string>();
+    private string currentMessage;
 
     //EVENTS FOR COMMANDS
     public Action<string> ErrorCommand = delegate { };
     public Action<string> PrivateMessageCommand =  delegate { };
+    public Action<string> HelpCommand = delegate { };
 
     private void Awake()
     {
-        commandDictionary.Add("whisper", PrivateMessage);
-        commandDictionary.Add("help", HelpList);
+        AddACommand(privateMessage, PrivateMessage, $"Write /{privateMessage} UserName to open a private chat");
+        AddACommand(help, HelpList, "Prints a list of all available commands with a description");
     }
 
     //if it's a command will return true and invoke the command
@@ -25,10 +31,14 @@ public class CommandManager : MonoBehaviour
         string[] words = message.Split(' ');
         if (words[0].StartsWith(commandPrefix))
         {
-            currentCommand = message;
             var target = words[0].Remove(0, commandPrefix.Length);
             if(commandDictionary.TryGetValue(target, out Action value))
             {
+                if(target == privateMessage)
+                {
+                    currentMessage = words[1];
+                }
+
                 value();
                 return true;
             }
@@ -40,14 +50,28 @@ public class CommandManager : MonoBehaviour
         return false;
     }
 
+    //set command name, event to call and a short description of what it does;
+    private void AddACommand(string command, Action action, string description)
+    {
+        commandDictionary.Add(command, action);
+        commandDescriptions.Add(command, description);
+    }
+
     private void PrivateMessage()
     {
-        PrivateMessageCommand.Invoke(currentCommand);
+        print("Private Message is:" + currentMessage);
+        PrivateMessageCommand.Invoke(currentMessage);
     }
 
     private void HelpList()
     {
-        //TODO print a list of all commands or show a list of commands somewhere?
-        //some commands should only be available while in gameplay maybe?
+        string allCommands = "";
+
+        foreach (var command in commandDictionary)
+        {
+            allCommands += $"{commandPrefix}{command.Key} {commandDescriptions[command.Key]}";
+        }
+
+        HelpCommand.Invoke(allCommands);
     }
 }

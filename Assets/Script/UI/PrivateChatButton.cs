@@ -11,6 +11,11 @@ public class PrivateChatButton : MonoBehaviour
     public Button button;
     public GameObject notificationActiveIcon;
     public string chatText;
+    public string nickname;
+    public Image bgColor;
+
+    public Color openChatColor = Color.black;
+    public Color closeChatColor = Color.grey;
 
     private bool isChatOpen;
     private int counter;
@@ -26,7 +31,7 @@ public class PrivateChatButton : MonoBehaviour
 
     public void UpdateText(string newText)
     {
-        chatText += newText;
+        chatText = newText;
 
         if (!isChatOpen)
             SetNotificationActive();
@@ -42,11 +47,13 @@ public class PrivateChatButton : MonoBehaviour
     public void ShowChat()
     {
         isChatOpen = true;
+        bgColor.color = openChatColor;
         CleanNotifications();
     }
 
     public void HideChat()
     {
+        bgColor.color = closeChatColor;
         isChatOpen = false;
     }
     #endregion
@@ -60,7 +67,6 @@ public class PrivateChatButton : MonoBehaviour
 
     private void CleanNotifications()
     {
-        if (!HasNotifications) return;
         counter = 0;
         notificationActiveIcon.SetActive(false);
     }

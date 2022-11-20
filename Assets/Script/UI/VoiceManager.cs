@@ -10,6 +10,7 @@ using Photon.Voice;
 using Photon.Voice.Unity;
 using Recorder = Photon.Voice.Unity.Recorder;
 using Photon.Pun;
+using Photon.Realtime;
 
 //Create Game Object with Pun Voice Client to connect 
 //Use PUN App Settings, Use Pun Auth Values. Auto Connect and Join. Auto Leave and Disconnect, all true;
@@ -25,14 +26,14 @@ public class VoiceManager : MonoBehaviour
     [Header("References")]
     public Sprite voiceChatEnabledIMG;
     public Sprite voiceChatDisabledIMG;
-    public VoiceUserUI voiceUserPrefab;
-    public GameObject voiceContainer;
+    public VoiceUI voiceUserPrefab;
+    public GameObject micContainers;
 
     private Recorder recorder;
     private PunVoiceClient punVoiceClient;
     private bool voiceSettingsActive;
     private List<GameObject> voiceObjects = new List<GameObject>();
-    private List<VoiceUserUI> users = new List<VoiceUserUI>();
+    private List<VoiceUI> users = new List<VoiceUI>();
 
     public void Awake()
     {
@@ -48,6 +49,11 @@ public class VoiceManager : MonoBehaviour
     public void EnableVoiceSettings()
     {
         voiceSettingsButton.gameObject.SetActive(true);
+        punVoiceClient = GetComponent<PunVoiceClient>();
+
+        if (punVoiceClient != null)
+            recorder = punVoiceClient.PrimaryRecorder;
+
         InstantiatePhotonVoiceObject();
         CompleteDropdown();
     }
@@ -94,16 +100,23 @@ public class VoiceManager : MonoBehaviour
     }
 #endregion
 
-    public void InstantiatePhotonVoiceObject()
+    public void InstantiatePhotonVoiceObject() //we set ourselves here
     {
-        //TODO: instanciar desde un controlador algo un VoiceObject que tenga PhotonVire, Photon Voice View, Speaker (y AudioSource, que se deja en Audio 2D). 
         var voice = PhotonNetwork.Instantiate("VoiceObject", Vector3.zero, Quaternion.identity);
         voiceObjects.Add(voice);
 
-        //VoiceUserUI userUI = voice.GetComponent<VoiceUserUI>();
-
-        //if(userUI != null)
-        //    users.Add(userUI);
+        VoiceController voiceController = voice.GetComponent<VoiceController>();
+        CreateVisualUI(voiceController, PhotonNetwork.LocalPlayer, recorder);
     }
 
+    public void CreateVisualUI(VoiceController voiceController, Player player, Recorder recorder = null)
+    {
+        //if (PhotonNetwork.IsMasterClient) return;
+
+        VoiceUI voiceUI = Instantiate(voiceUserPrefab, micContainers.transform);
+        voiceController.SetUI(voiceUI, player, recorder);
+
+        if (voiceUI != null)
+            users.Add(voiceUI);
+    }
 }

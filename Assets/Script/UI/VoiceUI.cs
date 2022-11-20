@@ -20,6 +20,7 @@ public class VoiceUI : MonoBehaviour
     [Header("Spirtes")]
     public Sprite mic_on;
     public Sprite mic_off;
+    public GameObject sound_off;
 
     private bool micEnabled;
     private Image currentImage;
@@ -38,6 +39,11 @@ public class VoiceUI : MonoBehaviour
 
         currentImage.sprite = micEnabled ? mic_on : mic_off;
         currentImage.color = micEnabled ? speakingColor : muteColor;
+    }
+
+    public void SetSoundEnabled(bool value)
+    {
+        sound_off.SetActive(!value);
     }
 
     public void ShowTalking(bool isCurrentlySpeaking)

@@ -11,6 +11,7 @@ public class VoiceController : MonoBehaviourPun
 {
     public VoiceUI voiceUI;
     public Speaker speaker;
+    public AudioSource audioSource;
 
     private bool hasVoiceUser = false;
     private bool isUsingMic = false;
@@ -18,7 +19,10 @@ public class VoiceController : MonoBehaviourPun
     void Awake()
     {
         if (!photonView.IsMine)
+        {
             CommunicationsManager.Instance.voiceManager.CreateVisualUI(this, photonView.Owner);
+            CommunicationsManager.Instance.voiceManager.AddVoiceObject(this.gameObject);
+        }
     }
 
     void Update()
@@ -58,10 +62,20 @@ public class VoiceController : MonoBehaviourPun
         SetVoice(false);
     }
 
+    public void EnableMicSystem(bool value)
+    {
+        audioSource.volume = value ? 1.0f : 0.0f;
+        SetVoice(value);
+
+        voiceUI.SetSoundEnabled(value);
+        //TODO send a request to show the others I'm not hearing anything;
+    }
+
     private void OnDestroy()
     {
         if (hasVoiceUser)
         {
+            if (voiceUI == null) return;
             voiceUI.micButton.onClick.RemoveListener(ToggleVoice);
             Destroy(voiceUI.gameObject);
         }

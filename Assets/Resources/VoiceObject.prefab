@@ -82,7 +82,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   voiceUI: {fileID: 0}
   speaker: {fileID: 1058891106605477097}
-  recorder: {fileID: 0}
+  audioSource: {fileID: 1058891106605477078}
 --- !u!1 &1058891106605477099
 GameObject:
   m_ObjectHideFlags: 0

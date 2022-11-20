@@ -1,43 +1,86 @@
+using Newtonsoft.Json.Linq;
+using Photon.Voice.PUN;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Profiling;
-//using Photon.Voice.Unity
+using UnityEngine.UI;
+using Photon.Voice;
+using Photon.Voice.Unity;
+using Recorder = Photon.Voice.Unity.Recorder;
+using Photon.Pun;
 
 //Create Game Object with Pun Voice Client to connect 
 //Use PUN App Settings, Use Pun Auth Values. Auto Connect and Join. Auto Leave and Disconnect, all true;
 //it will automatically connect and disconnect from rooms
 //Add Recorder too
 
-
 public class VoiceManager : MonoBehaviour
 {
-    [SerializeField] private Sprite voiceChatEnabledIMG;
-    [SerializeField] private Sprite voiceChatDisabledIMG;
-    [SerializeField] private TMP_Dropdown micSelectionDropdown; //TODO move all the mic selection to it's on script. but lets leave it here for now
+    public GameObject voiceSettingsPanel;
+    public TMP_Dropdown micSelectionDropdown;
+    public Button voiceSettingsButton;
+
+    [Header("References")]
+    public Sprite voiceChatEnabledIMG;
+    public Sprite voiceChatDisabledIMG;
+    public VoiceUserUI voiceUserPrefab;
+    public GameObject voiceContainer;
 
     private Recorder recorder;
-    //private PunVoiceClient punVoiceClient;
+    private PunVoiceClient punVoiceClient;
+    private bool voiceSettingsActive;
+    private List<GameObject> voiceObjects = new List<GameObject>();
+    private List<VoiceUserUI> users = new List<VoiceUserUI>();
 
     public void Awake()
     {
-        //CompleteDropdown();
+        voiceSettingsButton.onClick.AddListener(ToggleVoiceSettingsPanel); //TODO add somewhere a listener for and ESC button, if the settings are open, close them;
+        voiceSettingsButton.gameObject.SetActive(false);
+        DisableVoiceSettings();
+#if !UNITY_EDITOR
+        recorder.DebugEchoMode = false; //just in case. never never let recorder work in a build
+#endif
     }
 
-    public void Start()
+    #region Settings
+    public void EnableVoiceSettings()
     {
-        
+        voiceSettingsButton.gameObject.SetActive(true);
+        InstantiatePhotonVoiceObject();
+        CompleteDropdown();
     }
 
-    public void Update()
+    public void DisableVoiceSettings()
     {
-        
+        SetVoiceSettingsVisible(false);
+        voiceSettingsButton.gameObject.SetActive(false);
+
+        //we destroy all gameObjects, from players and whatnot
+        for (int i = voiceObjects.Count - 1; i >= 0; i--)
+        {
+            var voice = voiceObjects[i];
+
+            voiceObjects.Remove(voice);
+            Destroy(voice);
+        }
     }
 
+    private void ToggleVoiceSettingsPanel()
+    {
+        SetVoiceSettingsVisible(!voiceSettingsActive);
+    }
+
+    private void SetVoiceSettingsVisible(bool value)
+    {
+        voiceSettingsActive = value;
+        voiceSettingsPanel.SetActive(value);
+    }
     private void CompleteDropdown()
     {
         micSelectionDropdown.options.Clear();
+        micSelectionDropdown.onValueChanged.AddListener(SetMic);
 
         List<string> availableMics = new List<string>(Microphone.devices);
 
@@ -47,9 +90,20 @@ public class VoiceManager : MonoBehaviour
     private void SetMic(int i)
     {
         var currMic = Microphone.devices[i];
-        //recorder.MicrophoneDevice = new Photon.DeviceInfo(currMic);
+        recorder.MicrophoneDevice = new Photon.Voice.DeviceInfo(currMic);
+    }
+#endregion
+
+    public void InstantiatePhotonVoiceObject()
+    {
+        //TODO: instanciar desde un controlador algo un VoiceObject que tenga PhotonVire, Photon Voice View, Speaker (y AudioSource, que se deja en Audio 2D). 
+        var voice = PhotonNetwork.Instantiate("VoiceObject", Vector3.zero, Quaternion.identity);
+        voiceObjects.Add(voice);
+
+        //VoiceUserUI userUI = voice.GetComponent<VoiceUserUI>();
+
+        //if(userUI != null)
+        //    users.Add(userUI);
     }
 
-    //TODO SOMEWHERE ELSE: instanciar desde un controlador algo un VoiceObject que tenga PhotonVire, Photon Voice View, Speaker (y AudioSource, que se deja en Audio 2D). 
-    //PhotonNetwork. Instantiate("VoiceObject", Vector3.zero, Quaternion.identity);
 }

@@ -56,7 +56,7 @@ public class ChatManager : MonoBehaviour, IChatClientListener
 
     private void Awake()
     {
-        DisableAllChat();
+        DisableChat();
 
         mainChatContent.text = "";
 
@@ -80,7 +80,7 @@ public class ChatManager : MonoBehaviour, IChatClientListener
     {
 		CommunicationsManager.Instance.commandManager.PrivateMessageCommand += SendPrivateChatMessage;
         CommunicationsManager.Instance.commandManager.ErrorCommand += ErrorCommandMessage;
-        CommunicationsManager.Instance.colorsDictionary.OnColorsUpdate += UpdateColorDictionary;
+        CommunicationsManager.Instance.OnColorsUpdate += UpdateColorDictionary;
     }
 
     private void OnDestroy()
@@ -89,7 +89,7 @@ public class ChatManager : MonoBehaviour, IChatClientListener
 
         CommunicationsManager.Instance.commandManager.PrivateMessageCommand -= SendPrivateChatMessage;
         CommunicationsManager.Instance.commandManager.ErrorCommand -= ErrorCommandMessage;
-        CommunicationsManager.Instance.colorsDictionary.OnColorsUpdate -= UpdateColorDictionary;
+        CommunicationsManager.Instance.OnColorsUpdate -= UpdateColorDictionary;
     }
 
     public void ConnectChat()
@@ -102,6 +102,11 @@ public class ChatManager : MonoBehaviour, IChatClientListener
         _chatClient.Connect(PhotonNetwork.PhotonServerSettings.AppSettings.AppIdChat, PhotonNetwork.PhotonServerSettings.AppSettings.AppVersion, auth);
 
         EnableChat();
+    }
+
+    public void DisconnectChat()
+    {
+
     }
 
     private void Update()
@@ -137,11 +142,19 @@ public class ChatManager : MonoBehaviour, IChatClientListener
         string[] roomsList = new string[] { roomName };
 
         _chatClient.Unsubscribe(roomsList);
+
     }
 
-    public void DisableAllChat()
+    public void DisableChat()
     {
         ChatEnabled = false;
+
+        if(_channel != null)
+        {
+            UnsuscribeFromRoom(_channel);
+            _channel = null;
+        }
+
         chatBox.gameObject.SetActive(false);
         minimizedChat.gameObject.SetActive(false);
         currentNumberOfNewMessages = 0;

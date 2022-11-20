@@ -27,7 +27,6 @@ public class MainMenuManager : MonoBehaviourPunCallbacks
     [SerializeField] private TextMeshProUGUI statusText;
     [SerializeField] private Button quitButton;
     [SerializeField] private string statusPrefix = "Status: ";
-    public ChatManager chatBox;
     public string Level = "Level";
 
     [Header("All Panels")]
@@ -101,11 +100,6 @@ public class MainMenuManager : MonoBehaviourPunCallbacks
         allPanels.Add(chooseRoomPanel);
 
         RestartMenu();
-    }
-
-    public void Start()
-    {
-        chatBox = CommunicationsManager.Instance.chatManager;
     }
 
     public void RestartMenu()
@@ -284,9 +278,6 @@ public class MainMenuManager : MonoBehaviourPunCallbacks
 
         SetStatus("Joined Room");
         ChangePanel(roomLobbyPanel);
-
-        if (!ChatBoxEnabled && !isServer)
-            chatBox.ConnectChat();
     }
 
     public override void OnJoinRoomFailed(short returnCode, string message)

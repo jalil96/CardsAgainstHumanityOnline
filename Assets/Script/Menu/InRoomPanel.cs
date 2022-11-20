@@ -180,9 +180,6 @@ public class InRoomPanel : MonoBehaviourPunCallbacks
             CloseRoom();
         }
 
-        if(mainMenu.chatBox.ChatEnabled)
-            mainMenu.chatBox.UnsuscribeFromRoom(PhotonNetwork.CurrentRoom.Name);
-
         PhotonNetwork.LeaveRoom(false);
 
         mainMenu.OnLeftRoom();

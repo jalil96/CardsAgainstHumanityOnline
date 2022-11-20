@@ -30,6 +30,8 @@ public class PrivateChatButton : MonoBehaviour
 
         if (!isChatOpen)
             SetNotificationActive();
+        else
+            CommunicationsManager.Instance.chatManager.UpdateText(chatText);
     }
 
     public void SetInFocus()

@@ -33,7 +33,7 @@ public class CommandManager : MonoBehaviour
                 return true;
             }
 
-            ErrorCommand($"{words[0]} is not a recognizable command, please see {commandPrefix}help for full available list of commands");
+            ErrorCommand($"'{words[0]}' is not a command. Get full list in {commandPrefix}help");
             return true;
         }
 

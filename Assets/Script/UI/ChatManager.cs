@@ -10,6 +10,7 @@ using ExitGames.Client.Photon;
 using Photon.Voice;
 using JetBrains.Annotations;
 using System.Linq;
+using UnityEngine.SocialPlatforms;
 
 public class ChatManager : MonoBehaviour, IChatClientListener
 {
@@ -37,6 +38,9 @@ public class ChatManager : MonoBehaviour, IChatClientListener
     private string serverHexColor;
     public Color statusColor = Color.green;
     private string statusHexColor;
+    public Color errorColor = Color.red;
+    private string errorHexColor;
+
 
     //private variables
     private ChatClient _chatClient;
@@ -51,6 +55,7 @@ public class ChatManager : MonoBehaviour, IChatClientListener
 
     private int currentNumberOfNewMessages = 0;
     private PrivateChatButton currentChat;
+    private TextMeshProUGUI currentTextChat;
 
     //EVENTS
     public Action OnChatConnected;
@@ -64,27 +69,18 @@ public class ChatManager : MonoBehaviour, IChatClientListener
     {
         DisableChat();
 
-        mainChatContent.text = "";
-
         minimizedChat.onClick.AddListener(ToggleChat);
         sendButton.onClick.AddListener(SendChatMessage);
         inputField.onEndEdit.AddListener(SendChatMessage);
+        mainChatButton.button.onClick.AddListener(SetMainChatInFocus);
 
         mainChatButton.titleText.text = "MAIN";
-        mainChatButton.button.onClick.AddListener(SetMainChatInFocus);
-        currentChat = mainChatButton;
+        mainChatContent.text = "";
         privateChatContent.text = "";
         privateChatContent.gameObject.SetActive(false);
+        currentTextChat = mainChatContent;
 
-        colorHex = new string[colorNameList.Count];
-        for (int i = 0; i < colorNameList.Count; i++) //in the beginning all colors all available
-        {
-            colorHex[i] = ColorUtility.ToHtmlStringRGBA(colorNameList[i]);
-        }
-
-        statusHexColor = ColorUtility.ToHtmlStringRGBA(statusColor);
-        serverHexColor = ColorUtility.ToHtmlStringRGBA(serverInfoColor);
-        privateHexColor = ColorUtility.ToHtmlStringRGBA(privateMessageColor);
+        SetColors();
     }
 
     private void SuscribeEvents()
@@ -113,6 +109,7 @@ public class ChatManager : MonoBehaviour, IChatClientListener
         _chatClient.Connect(PhotonNetwork.PhotonServerSettings.AppSettings.AppIdChat, PhotonNetwork.PhotonServerSettings.AppSettings.AppVersion, auth);
 
         EnableChat();
+        SetMainChatInFocus();
     }
 
 
@@ -192,19 +189,23 @@ public class ChatManager : MonoBehaviour, IChatClientListener
 
     public void SetMainChatInFocus()
     {
-        mainChatContent.gameObject.SetActive(true);
-        privateChatContent.gameObject.SetActive(false);
+        if (currentTextChat == mainChatContent) return;
 
+        SwitchTextBox(mainChatContent);
         SwitchCurrentChat(mainChatButton);
     }
 
     public void SetPrivateChatInFocus(PrivateChatButton chat)
     {
-        mainChatContent.gameObject.SetActive(false);
-        privateChatContent.gameObject.SetActive(true);
+        SwitchTextBox(privateChatContent);
         SwitchCurrentChat(chat);
+        UpdateText(chat.chatText);
     }
 
+    public void UpdateText(string message)
+    {
+        currentTextChat.text += message;
+    }
 
     #region Private
 
@@ -222,6 +223,13 @@ public class ChatManager : MonoBehaviour, IChatClientListener
         //take out the command + user 
 
         return null;
+    }
+
+    private void SwitchTextBox(TextMeshProUGUI newText)
+    {
+        currentTextChat.gameObject.SetActive(false);
+        currentTextChat = newText;
+        currentTextChat.gameObject.SetActive(true);
     }
 
     private void SwitchCurrentChat(PrivateChatButton chat)
@@ -308,8 +316,8 @@ public class ChatManager : MonoBehaviour, IChatClientListener
 
     private void ErrorCommandMessage(string error)
     {
-        //TODO show the error message somewhere for the player
-        Debug.Log("ERROR: " + error);
+        var text = $"{ColorfyWords($"ERROR: {error}", errorHexColor)} \n";
+        UpdateText(text);
     }
 
     private int GetUserIndexColor(string nickname)
@@ -320,10 +328,23 @@ public class ChatManager : MonoBehaviour, IChatClientListener
         return 0;
     }
 
-
     private bool IsMessageValid(string message)
     {
         return !(string.IsNullOrEmpty(message) || string.IsNullOrWhiteSpace(message));
+    }
+
+    private void SetColors()
+    {
+        colorHex = new string[colorNameList.Count];
+        for (int i = 0; i < colorNameList.Count; i++) //in the beginning all colors all available
+        {
+            colorHex[i] = ColorUtility.ToHtmlStringRGBA(colorNameList[i]);
+        }
+
+        statusHexColor = ColorUtility.ToHtmlStringRGBA(statusColor);
+        serverHexColor = ColorUtility.ToHtmlStringRGBA(serverInfoColor);
+        privateHexColor = ColorUtility.ToHtmlStringRGBA(privateMessageColor);
+        errorHexColor = ColorUtility.ToHtmlStringRGB(errorColor);
     }
 
     private string ColorfyWords(string wordsToColor, string hex)
@@ -383,13 +404,14 @@ public class ChatManager : MonoBehaviour, IChatClientListener
         for (int i = 0; i < senders.Length; i++)
         {
             int playerIndex = GetUserIndexColor(senders[i]);
-            mainChatContent.text += $"{ColorfyWords($"{senders[i]}:", colorHex[playerIndex])} {messages[i]} \n";
-        }
+            var message = $"{ColorfyWords($"{senders[i]}:", colorHex[playerIndex])} {messages[i]} \n";
+            mainChatButton.UpdateText(message);
 
-        if (ChatMinimized)
-        {
-            currentNumberOfNewMessages++;
-            RefreshCurrentView();
+            if (ChatMinimized)
+            {
+                currentNumberOfNewMessages++;
+                RefreshCurrentView();
+            }
         }
     }
 
@@ -427,8 +449,8 @@ public class ChatManager : MonoBehaviour, IChatClientListener
     public void OnStatusUpdate(string user, int status, bool gotMessage, object message)
     {
         string userStatus = status == ChatUserStatus.Online ? "connected" : "disconected";
-        var text = $"{user} is {userStatus}";
-        mainChatContent.text += $"{ColorfyWords(text, statusHexColor)} \n";
+        var text = $"{ColorfyWords($"{user} is {userStatus}", statusHexColor)} \n";
+        mainChatButton.UpdateText(text);
     }
 
     public void OnUserSubscribed(string channel, string user)
@@ -444,6 +466,7 @@ public class ChatManager : MonoBehaviour, IChatClientListener
     {
         var text = ColorfyWords($"{user} has left the chat", serverHexColor);
         _chatClient.PublishMessage(channel, $"{text}\n");
+        CloseChat(user);
     }
     #endregion
 }

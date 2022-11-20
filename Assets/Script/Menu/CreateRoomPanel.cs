@@ -65,7 +65,7 @@ public class CreateRoomPanel : MonoBehaviourPunCallbacks
         options.IsOpen = true;
         options.IsVisible = true;
 
-        PhotonNetwork.JoinOrCreateRoom(roomName, options, TypedLobby.Default);
+        PhotonNetwork.CreateRoom(roomName, options, TypedLobby.Default);
     }
 
     public void ValueChangeCheck()

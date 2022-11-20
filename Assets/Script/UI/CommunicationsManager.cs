@@ -104,15 +104,15 @@ public class CommunicationsManager : MonoBehaviourPunCallbacks
     #region Callbacks
     public override void OnPlayerEnteredRoom(Player newPlayer)
     {
-        if (!PhotonNetwork.IsMasterClient) return;
         if (newPlayer.IsMasterClient) return;
+        if (!PhotonNetwork.IsMasterClient) return;
         RequestAddToColorList(newPlayer);
     }
 
     public override void OnPlayerLeftRoom(Player otherPlayer)
     {
-        if (!PhotonNetwork.IsMasterClient) return;
         if (otherPlayer.IsMasterClient) return;
+        if (!PhotonNetwork.IsMasterClient) return;
         RequestRemoveFromColorList(otherPlayer);
     }
 
@@ -129,7 +129,6 @@ public class CommunicationsManager : MonoBehaviourPunCallbacks
                 }
         }
     }
-
 
     public override void OnJoinedRoom()
     {

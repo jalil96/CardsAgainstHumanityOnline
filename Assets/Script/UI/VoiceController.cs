@@ -11,12 +11,9 @@ public class VoiceController : MonoBehaviourPun
 {
     public VoiceUI voiceUI;
     public Speaker speaker;
-    public Recorder recorder;
 
     private bool hasVoiceUser = false;
     private bool isUsingMic = false;
-    private bool isRecording = false;
-    private bool hasRecorder = false;
 
     void Awake()
     {
@@ -42,24 +39,23 @@ public class VoiceController : MonoBehaviourPun
 
     public void ToggleVoice()
     {
-        isUsingMic = !isUsingMic;
+        SetVoice(!isUsingMic);
+    }
+
+    public void SetVoice(bool value)
+    {
+        isUsingMic = value;
         PunVoiceClient.Instance.PrimaryRecorder.TransmitEnabled = isUsingMic;
         voiceUI.SetMicStatus(isUsingMic);
     }
 
-    public void SetUI(VoiceUI voiceUser, Player player, Recorder recorder = null)
+    public void SetUI(VoiceUI voiceUser, Player player)
     {
         this.voiceUI = voiceUser;
         voiceUI.SetUser(speaker, player);
         hasVoiceUser = true;
         voiceUI.micButton.onClick.AddListener(ToggleVoice);
-        voiceUI.SetMicStatus(PunVoiceClient.Instance.PrimaryRecorder.TransmitEnabled);
-
-        if (recorder != null)
-        {
-            hasRecorder = true;
-            this.recorder = recorder;
-        }
+        SetVoice(false);
     }
 
     private void OnDestroy()

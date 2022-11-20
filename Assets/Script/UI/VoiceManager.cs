@@ -106,15 +106,15 @@ public class VoiceManager : MonoBehaviour
         voiceObjects.Add(voice);
 
         VoiceController voiceController = voice.GetComponent<VoiceController>();
-        CreateVisualUI(voiceController, PhotonNetwork.LocalPlayer, recorder);
+        CreateVisualUI(voiceController, PhotonNetwork.LocalPlayer);
     }
 
-    public void CreateVisualUI(VoiceController voiceController, Player player, Recorder recorder = null)
+    public void CreateVisualUI(VoiceController voiceController, Player player)
     {
-        //if (PhotonNetwork.IsMasterClient) return;
+        if (PhotonNetwork.IsMasterClient) return;
 
         VoiceUI voiceUI = Instantiate(voiceUserPrefab, micContainers.transform);
-        voiceController.SetUI(voiceUI, player, recorder);
+        voiceController.SetUI(voiceUI, player);
 
         if (voiceUI != null)
             users.Add(voiceUI);

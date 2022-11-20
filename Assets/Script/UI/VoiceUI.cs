@@ -57,6 +57,7 @@ public class VoiceUI : MonoBehaviour
             micButton.onClick.AddListener(ToggleMic);
             currentImage = micButton.GetComponent<Image>();
         }
+        else
         {
             currentImage = micIcon;
         }

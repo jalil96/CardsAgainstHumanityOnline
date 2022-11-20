@@ -265,7 +265,7 @@ public class MainMenuManager : MonoBehaviourPunCallbacks
 
     public override void OnCreateRoomFailed(short returnCode, string message)
     {
-        SetStatus("Created Room failed");
+        SetStatus($"Created Room failed: {message}");
     }
 
     public override void OnJoinedRoom()

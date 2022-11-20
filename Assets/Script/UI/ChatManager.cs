@@ -18,7 +18,10 @@ public class ChatManager : MonoBehaviour, IChatClientListener
     public GameObject chatMinimizedNotification;
     public TextMeshProUGUI chatMinimizedCounter;
     public TextMeshProUGUI mainChatContent;
+    public TextMeshProUGUI privateChatContent;
     public TMP_InputField inputField;
+    public PrivateChatButton mainChatButton;
+    public GameObject chatPrivateButtonsContainer;
 
     [Header("Buttons")]
     public Button minimizedChat;
@@ -39,12 +42,15 @@ public class ChatManager : MonoBehaviour, IChatClientListener
     private ChatClient _chatClient;
     private string _channel;
     private Dictionary<string, int> playersColorDictionary = new Dictionary<string, int>();
+    private Dictionary<string, PrivateChatButton> privateChatsButtons = new Dictionary<string, PrivateChatButton>();
+    private Dictionary<PrivateChatButton, string> privateUserButtons = new Dictionary<PrivateChatButton, string>();
     private string[] colorHex;
 
     public bool ChatEnabled { get; set; }
     public bool ChatMinimized { get; private set; }
 
     private int currentNumberOfNewMessages = 0;
+    private PrivateChatButton currentChat;
 
     //EVENTS
     public Action OnChatConnected;
@@ -61,9 +67,14 @@ public class ChatManager : MonoBehaviour, IChatClientListener
         mainChatContent.text = "";
 
         minimizedChat.onClick.AddListener(ToggleChat);
-
         sendButton.onClick.AddListener(SendChatMessage);
         inputField.onEndEdit.AddListener(SendChatMessage);
+
+        mainChatButton.titleText.text = "MAIN";
+        mainChatButton.button.onClick.AddListener(SetMainChatInFocus);
+        currentChat = mainChatButton;
+        privateChatContent.text = "";
+        privateChatContent.gameObject.SetActive(false);
 
         colorHex = new string[colorNameList.Count];
         for (int i = 0; i < colorNameList.Count; i++) //in the beginning all colors all available
@@ -104,10 +115,6 @@ public class ChatManager : MonoBehaviour, IChatClientListener
         EnableChat();
     }
 
-    public void DisconnectChat()
-    {
-
-    }
 
     private void Update()
     {
@@ -131,11 +138,26 @@ public class ChatManager : MonoBehaviour, IChatClientListener
 
         inputField.text = "";
         inputField.ActivateInputField();
+        inputField.Select();
     }
 
     public void SendPrivateChatMessage(string message)
     {
         //TODO: Verify that there is an user withing the message. if not, then throw a warning in the chatbox. 
+
+        var user = GetUserValid(message);
+
+        if (string.IsNullOrEmpty(user))
+        {
+            //TODO throw a warning in the chat (only for the local) that the player name was written wrong or doesn't exist;
+
+            return;
+        }
+
+        var realMessage = GetRealMessage(user, message);
+
+        UpdateChats(user, realMessage);
+        _chatClient.SendPrivateMessage(user, message);
     }
 
     public void UnsuscribeFromRoom(string roomName)
@@ -168,7 +190,86 @@ public class ChatManager : MonoBehaviour, IChatClientListener
         MinimizedChat();
     }
 
+    public void SetMainChatInFocus()
+    {
+        mainChatContent.gameObject.SetActive(true);
+        privateChatContent.gameObject.SetActive(false);
+
+        SwitchCurrentChat(mainChatButton);
+    }
+
+    public void SetPrivateChatInFocus(PrivateChatButton chat)
+    {
+        mainChatContent.gameObject.SetActive(false);
+        privateChatContent.gameObject.SetActive(true);
+        SwitchCurrentChat(chat);
+    }
+
+
     #region Private
+
+    private string GetUserValid(string text)
+    {
+        //first get the name that comes after the command. 
+        //then check if the name is one of the players currently in the room?
+        //the return it
+
+        return null;
+    }
+
+    private string GetRealMessage(string user, string text)
+    {
+        //take out the command + user 
+
+        return null;
+    }
+
+    private void SwitchCurrentChat(PrivateChatButton chat)
+    {
+        currentChat.HideChat();
+        currentChat = chat;
+        currentChat.ShowChat();
+    }
+
+    private void UpdateChats(string nickname, string newText)
+    {
+        if(privateChatsButtons.TryGetValue(nickname, out PrivateChatButton chatButton))
+        {
+            chatButton.UpdateText(newText);
+            return;
+        }
+
+        CreateNewPrivateChat(nickname);
+    }
+
+    private void CreateNewPrivateChat(string nickname)
+    {
+        PrivateChatButton newButton = Instantiate(mainChatButton, chatPrivateButtonsContainer.transform);
+        newButton.AssignUser(nickname);
+        privateChatsButtons[nickname] = newButton;
+        privateUserButtons[newButton] = nickname;
+    }
+
+    private void CloseChat(PrivateChatButton chatbutton)
+    {
+        if (privateUserButtons.TryGetValue(chatbutton, out string nickname))
+        {
+            SwitchCurrentChat(mainChatButton);
+            privateUserButtons.Remove(chatbutton);
+            privateChatsButtons.Remove(nickname);
+        }
+    }
+
+    private void CloseChat(string nickname)
+    {
+        if (privateChatsButtons.TryGetValue(nickname, out PrivateChatButton chatbutton))
+        {
+            SwitchCurrentChat(mainChatButton);
+            privateUserButtons.Remove(chatbutton);
+            privateChatsButtons.Remove(nickname);
+        }
+    }
+
     private void UpdateColorDictionary(Dictionary<string, int> newDictionary)
     {
         playersColorDictionary = newDictionary;
@@ -250,23 +351,24 @@ public class ChatManager : MonoBehaviour, IChatClientListener
     {
         OnChatConnected?.Invoke(); //TODO make main manager listen to this and change status info
 
-        _channel = PhotonNetwork.CurrentRoom.Name; //TODO MAKE UNSUSCRIBE CHANNEL ON LEAVE ROOM. 
+        _channel = PhotonNetwork.CurrentRoom.Name;
 
         _chatClient.Subscribe(_channel);
 
-        //      var currentPlayerList = PhotonNetwork.PlayerList.ToList();
-        //      string[] friends = new string[currentPlayerList.Count];
+        var currentPlayerList = PhotonNetwork.PlayerList.ToList();
+        List<string> newFriends = new List<string>();
 
-        //      for (int i = 0; i < currentPlayerList.Count; i++)
-        //      {
-        //          if (currentPlayerList[i].IsMasterClient) continue;
+        for (int i = 0; i < currentPlayerList.Count; i++)
+        {
+            if (currentPlayerList[i].IsMasterClient) continue;
+            newFriends.Add(currentPlayerList[i].NickName);
+        }
 
-        //          AssingNewColorFromList(currentPlayerList[i].NickName);
-        //          friends[i] = currentPlayerList[i].NickName;
-        //      }
-
-        //if(friends.Length > 0)
-        //	_chatClient.AddFriends(friends);
+        if (newFriends.Count > 0)
+        {
+            string[] friends = newFriends.ToArray();
+            _chatClient.AddFriends(friends);
+        }
 
         _chatClient.SetOnlineStatus(ChatUserStatus.Online);
     }
@@ -293,7 +395,8 @@ public class ChatManager : MonoBehaviour, IChatClientListener
 
     public void OnPrivateMessage(string sender, object message, string channelName)
     {
-        mainChatContent.text += $"{ColorfyWords($"{sender}:", privateHexColor)} {message} \n";
+        var newMessage = $"{ColorfyWords($"{sender}:", privateHexColor)} {message} \n";
+        UpdateChats(sender, newMessage);
 
         if (ChatMinimized)
         {

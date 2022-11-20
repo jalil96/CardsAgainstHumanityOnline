@@ -15,6 +15,7 @@ public class VoiceController : MonoBehaviourPun
 
     private bool hasVoiceUser = false;
     private bool isUsingMic = false;
+    private bool isSoundOpen = true;
 
     void Awake()
     {
@@ -28,6 +29,7 @@ public class VoiceController : MonoBehaviourPun
     void Update()
     {
         if (!hasVoiceUser) return;
+        if (!isSoundOpen) return;
 
         if (photonView.IsMine)
         {
@@ -55,21 +57,34 @@ public class VoiceController : MonoBehaviourPun
 
     public void SetUI(VoiceUI voiceUser, Player player)
     {
-        this.voiceUI = voiceUser;
-        voiceUI.SetUser(speaker, player);
+        voiceUI = voiceUser;
         hasVoiceUser = true;
+        isSoundOpen = true;
+        voiceUI.SetUser(speaker, player);
         voiceUI.micButton.onClick.AddListener(ToggleVoice);
+        voiceUI.SetSoundEnabled(true);
         SetVoice(false);
+        //The system by default is open
     }
 
-    public void EnableMicSystem(bool value)
+    public void EnabelSoundSystem(bool value)
     {
+        isSoundOpen = value;
         audioSource.volume = value ? 1.0f : 0.0f;
         SetVoice(value);
 
         voiceUI.SetSoundEnabled(value);
-        //TODO send a request to show the others I'm not hearing anything;
+
+        photonView.RPC(nameof(UpdateSoundSystem), RpcTarget.Others, isSoundOpen);
     }
+
+    [PunRPC]
+    private void UpdateSoundSystem(bool isOpen)
+    {
+        if (PhotonNetwork.IsMasterClient) return;
+        EnabelSoundSystem(isOpen);
+    }
+
 
     private void OnDestroy()
     {

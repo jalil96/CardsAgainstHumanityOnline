@@ -130,6 +130,7 @@ public class ChatManager : MonoBehaviour, IChatClientListener
         _chatClient.PublishMessage(_channel, message);
 
         inputField.text = "";
+        inputField.ActivateInputField();
     }
 
     public void SendPrivateChatMessage(string message)

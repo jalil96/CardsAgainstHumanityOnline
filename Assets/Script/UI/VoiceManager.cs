@@ -87,7 +87,7 @@ public class VoiceManager : MonoBehaviour
 
     private void EnableVoiceSound(bool value)
     {
-        voiceController.EnableMicSystem(value);
+        voiceController.EnabelSoundSystem(value);
         micContainers.gameObject.SetActive(value);
         soundIconOff.SetActive(!value);
         //soundIconOn.SetActive(value);
@@ -124,6 +124,8 @@ public class VoiceManager : MonoBehaviour
 
         voiceController = voice.GetComponent<VoiceController>();
         CreateVisualUI(voiceController, PhotonNetwork.LocalPlayer);
+
+        MasterVoiceManager.Instance.AddSoundReference(voiceController, PhotonNetwork.LocalPlayer);
     }
 
     public void CreateVisualUI(VoiceController voiceController, Player player)

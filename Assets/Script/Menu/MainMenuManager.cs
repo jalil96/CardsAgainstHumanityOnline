@@ -242,6 +242,7 @@ public class MainMenuManager : MonoBehaviourPunCallbacks
         {
             if (isServer)
             {
+                SetStatus("Force creating room");
                 OnBaseCreateRoom.Invoke("", DEFAULT_MAX_PLAYERS);
                 return;
             }
@@ -275,8 +276,9 @@ public class MainMenuManager : MonoBehaviourPunCallbacks
             PhotonNetwork.LoadLevel(Level);
             return;
         }
-
-        SetStatus("Joined Room");
+        
+        var message = isServer ? "Server created room" : "Joined Room";
+        SetStatus(message);
         ChangePanel(roomLobbyPanel);
     }
 

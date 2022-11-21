@@ -24,6 +24,12 @@ public class VoiceController : MonoBehaviourPun
             CommunicationsManager.Instance.voiceManager.CreateVisualUI(this, photonView.Owner);
             CommunicationsManager.Instance.voiceManager.AddVoiceObject(this.gameObject);
         }
+
+        if (PhotonNetwork.IsMasterClient)
+        {
+            MasterVoiceManager.Instance.AddSoundReference(this, photonView.Owner);
+            audioSource.volume = 0f;
+        }
     }
 
     void Update()
@@ -64,17 +70,11 @@ public class VoiceController : MonoBehaviourPun
         voiceUI.micButton.onClick.AddListener(ToggleVoice);
         voiceUI.SetSoundEnabled(true);
         SetVoice(false);
-        //The system by default is open
     }
 
     public void EnabelSoundSystem(bool value)
     {
-        isSoundOpen = value;
-        audioSource.volume = value ? 1.0f : 0.0f;
-        SetVoice(value);
-
-        voiceUI.SetSoundEnabled(value);
-
+        SetSoundSystem(value);
         photonView.RPC(nameof(UpdateSoundSystem), RpcTarget.Others, isSoundOpen);
     }
 
@@ -82,12 +82,25 @@ public class VoiceController : MonoBehaviourPun
     private void UpdateSoundSystem(bool isOpen)
     {
         if (PhotonNetwork.IsMasterClient) return;
-        EnabelSoundSystem(isOpen);
+        SetSoundSystem(isOpen);
+    }
+
+    private void SetSoundSystem(bool value)
+    {
+        if (!hasVoiceUser) return;
+        isSoundOpen = value;
+        audioSource.volume = value ? 1.0f : 0.0f;
+        SetVoice(value);
+
+        voiceUI.SetSoundEnabled(value);
     }
 
 
     private void OnDestroy()
     {
+        if (PhotonNetwork.IsMasterClient && MasterVoiceManager.Instance != null)
+            MasterVoiceManager.Instance.RemoveSoundReference(this, photonView.Owner);
+
         if (hasVoiceUser)
         {
             if (voiceUI == null) return;

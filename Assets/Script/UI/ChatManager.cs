@@ -11,7 +11,6 @@ using Photon.Voice;
 using JetBrains.Annotations;
 using System.Linq;
 using UnityEngine.SocialPlatforms;
-using UnityEditor.VersionControl;
 
 public class ChatManager : MonoBehaviour, IChatClientListener
 {

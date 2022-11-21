@@ -25,8 +25,6 @@ public class VoiceManager : MonoBehaviour
     public Toggle enableVoiceChatToggle;
 
     [Header("Sound Info")]
-    public GameObject soundIconContainer;
-    public GameObject soundIconOn;
     public GameObject soundIconOff;
 
     [Header("References")]
@@ -49,6 +47,7 @@ public class VoiceManager : MonoBehaviour
     {
         voiceSettingsButton.onClick.AddListener(ToggleVoiceSettingsMenu); //TODO add somewhere a listener for and ESC button, if the settings are open, close them;
         enableVoiceChatToggle.onValueChanged.AddListener(EnableVoiceSound);
+        soundIconOff.SetActive(false);
 
         DisableVoiceSettings();
 #if !UNITY_EDITOR
@@ -59,9 +58,9 @@ public class VoiceManager : MonoBehaviour
     #region Settings
     public void EnableVoiceSettings()
     {
+        if (PhotonNetwork.IsMasterClient) return;
         voiceSettingsButton.gameObject.SetActive(true);
         punVoiceClient = GetComponent<PunVoiceClient>();
-        soundIconContainer.SetActive(true);
 
         if (punVoiceClient != null)
             recorder = punVoiceClient.PrimaryRecorder;
@@ -75,7 +74,6 @@ public class VoiceManager : MonoBehaviour
     {
         SetVoiceSettingsVisible(false);
         voiceSettingsButton.gameObject.SetActive(false);
-        soundIconContainer.gameObject.SetActive(false);
 
         ClearData();
     }
@@ -87,10 +85,9 @@ public class VoiceManager : MonoBehaviour
 
     private void EnableVoiceSound(bool value)
     {
-        voiceController.EnabelSoundSystem(value);
+        MasterVoiceManager.Instance.RPCMaster(nameof(MasterVoiceManager.Instance.RequestUpdateSoundStatus), PhotonNetwork.LocalPlayer, value);
         micContainers.gameObject.SetActive(value);
         soundIconOff.SetActive(!value);
-        //soundIconOn.SetActive(value);
     }
 
     private void SetVoiceSettingsVisible(bool value)
@@ -124,8 +121,6 @@ public class VoiceManager : MonoBehaviour
 
         voiceController = voice.GetComponent<VoiceController>();
         CreateVisualUI(voiceController, PhotonNetwork.LocalPlayer);
-
-        MasterVoiceManager.Instance.AddSoundReference(voiceController, PhotonNetwork.LocalPlayer);
     }
 
     public void CreateVisualUI(VoiceController voiceController, Player player)

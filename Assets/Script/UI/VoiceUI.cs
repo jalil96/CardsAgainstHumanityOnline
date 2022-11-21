@@ -26,6 +26,12 @@ public class VoiceUI : MonoBehaviour
     private Image currentImage;
     private bool isSpeaking = false;
 
+    private void Awake()
+    {
+        SetMicStatus(false);
+        SetSoundEnabled(true);
+    }
+
     public void ToggleMic()
     {
         SetMicStatus(!micEnabled);

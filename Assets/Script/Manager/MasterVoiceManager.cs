@@ -2,6 +2,7 @@ using Photon.Pun;
 using Photon.Realtime;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class MasterVoiceManager : MonoBehaviourPun
@@ -21,10 +22,31 @@ public class MasterVoiceManager : MonoBehaviourPun
         else _instance = this;
     }
 
+    public void RPCMaster(string methodName, params object[] p)
+    {
+        RPC(methodName, PhotonNetwork.MasterClient, p);
+    }
+    private void RPC(string methodName, Player target, params object[] p)
+    {
+        photonView.RPC(methodName, target, p);
+    }
+
     #region SoundManagement
     public void AddSoundReference(VoiceController soundRef, Player client)
     {
         _soundReference[client] = soundRef;
+    }
+
+    [PunRPC]
+    private void ReferenceSound(int photonID, string nickname)
+    {
+        var voiceControllers = FindObjectsOfType<VoiceController>().ToList();
+        var voiceController = voiceControllers.Find(ch => ch.photonView.ViewID == photonID);
+
+        if (voiceController != null)
+        {
+
+        }
     }
 
     public void RemoveSoundReference(VoiceController soundRef, Player client)

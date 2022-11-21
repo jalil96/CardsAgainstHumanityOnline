@@ -20,6 +20,8 @@ public class VoiceController : MonoBehaviourPun
 
     void Awake()
     {
+        transform.SetParent(CommunicationsManager.Instance.transform);
+
         if (PhotonNetwork.IsMasterClient)
         {
             MasterVoiceManager.Instance.AddSoundReference(this, photonView.Owner);
@@ -36,6 +38,7 @@ public class VoiceController : MonoBehaviourPun
             CommunicationsManager.Instance.voiceManager.CreateVisualUI(this, photonView.Owner);
             CommunicationsManager.Instance.voiceManager.AddVoiceObject(this.gameObject);
         }
+
     }
 
     void Update()
@@ -82,7 +85,7 @@ public class VoiceController : MonoBehaviourPun
     public void EnabelSoundSystem(bool value)
     {
         SetSoundSystem(value);
-        photonView.RPC(nameof(UpdateSoundSystem), RpcTarget.Others, isSoundOpen);
+        photonView.RPC(nameof(UpdateSoundSystem), RpcTarget.Others, value);
     }
 
     [PunRPC]
@@ -96,7 +99,7 @@ public class VoiceController : MonoBehaviourPun
     {
         if (!hasVoiceUser) return;
         isSoundOpen = value;
-        audioSource.volume = value ? 1.0f : 0.0f;
+        audioSource.enabled = value;
         voiceUI.SetSoundEnabled(value);
 
         if (photonView.IsMine) 
@@ -110,6 +113,8 @@ public class VoiceController : MonoBehaviourPun
         {
             voiceUI.SetMicStatus(speaker.IsPlaying);
         }
+
+        print($"{photonView.Owner.NickName} was called, set sound system to set sound to: " + value);
     }
 
     private void OnDestroy()

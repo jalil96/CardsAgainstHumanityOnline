@@ -18,8 +18,14 @@ public class MasterVoiceManager : MonoBehaviourPun
     public Dictionary<string, int> PlayersColors => _playersColors;
     private void Awake()
     {
-        if (_instance != null) Destroy(gameObject);
-        else _instance = this;
+        if (_instance != null)
+        {
+            Destroy(gameObject);
+            return;
+        }
+
+        _instance = this;
+        DontDestroyOnLoad(gameObject);
     }
 
     public void RPCMaster(string methodName, params object[] p)

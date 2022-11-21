@@ -47,7 +47,7 @@ public class VoiceManager : MonoBehaviour
     public void Awake()
     {
         voiceSettingsButton.onClick.AddListener(ToggleVoiceSettingsMenu); //TODO add somewhere a listener for and ESC button, if the settings are open, close them;
-        enableVoiceChatToggle.onValueChanged.AddListener(EnablAudioSourceSystem);
+        enableVoiceChatToggle.onValueChanged.AddListener(EnableAudioSourceSystem);
         soundIconOff.SetActive(false);
 
         DisableVoiceSettings();
@@ -83,11 +83,13 @@ public class VoiceManager : MonoBehaviour
         SetVoiceSettingsVisible(!voiceSettingsActive);
     }
 
-    private void EnablAudioSourceSystem(bool value)
+    private void EnableAudioSourceSystem(bool value)
     {
+        print("AudioSourceSystem was: " + value);
         MasterVoiceManager.Instance.RPCMaster(nameof(MasterVoiceManager.Instance.RequestUpdateSoundStatus), PhotonNetwork.LocalPlayer, value);
         micContainers.gameObject.SetActive(value);
         soundIconOff.SetActive(!value);
+
         if (!value) //if we are disabling the system, we want to mute ourselves
             voiceController.SetMic(value);
     }

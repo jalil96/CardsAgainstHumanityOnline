@@ -140,6 +140,7 @@ public class CommunicationsManager : MonoBehaviourPunCallbacks
         if (otherPlayer.IsMasterClient) return;
         if (!PhotonNetwork.IsMasterClient) return;
         RequestRemoveFromColorList(otherPlayer);
+        chatManager.CloseChat(otherPlayer.NickName);
     }
 
     public override void OnRoomPropertiesUpdate(ExitGames.Client.Photon.Hashtable propertiesThatChanged)

@@ -68,22 +68,23 @@ public class ChatManager : MonoBehaviour, IChatClientListener
 
     private void Awake()
     {
-        DisableChat();
 
         minimizedChat.onClick.AddListener(ToggleChat);
         sendButton.onClick.AddListener(SendChatMessage);
         inputField.onEndEdit.AddListener(SendChatMessage);
-        mainChatButton.button.onClick.AddListener(SetMainChatInFocus);
 
-        mainChatButton.titleText.text = "MAIN";
-        mainChatContent.text = "";
-        privateChatContent.text = "";
+        mainChatButton.AssingAsMain(mainChatContent);
+        
+        //let's set up everything
         privateChatContent.gameObject.SetActive(false);
+        mainChatContent.gameObject.SetActive(true);
+        privateChatContent.text = "";
+        mainChatContent.text = "";
         currentTextChat = mainChatContent;
         currentChat = mainChatButton;
-        mainChatButton.ShowChat();
 
         SetColors();
+        DisableChat();
     }
 
     private void SuscribeEvents()
@@ -132,9 +133,10 @@ public class ChatManager : MonoBehaviour, IChatClientListener
     public void SendChatMessage(string message)
     {
         if (!IsMessageValid(message)) return;
+
         if (!CommunicationsManager.Instance.commandManager.IsCommand(message))
         {
-            if (currentChat == mainChatButton)
+            if (currentChat == mainChatButton) //we check which chat is open, depending if it's the main chat or one of the privat chats is HOW we send the message
                 _chatClient.PublishMessage(_channel, message);
             else
                 SendPrivateChatMessage(message);
@@ -147,19 +149,21 @@ public class ChatManager : MonoBehaviour, IChatClientListener
 
     private void OpenAPrivateChat(string nickname)
     {
+        string text = "";
         if (!IsInUserList(nickname))
         {
-            var text = $"{ColorfyWords($"ERROR: User '{nickname}' was not found", errorHexColor)} \n";
+            text = $"{ColorfyWords($"ERROR: User '{nickname}' was not found", errorHexColor)} \n";
             UpdateText(text);
             return;
         }
 
-        GetPrivateChat(nickname);
+        text = $"{ColorfyWords($"A private chat with {nickname}' was open, say 'Hi'", serverHexColor)} \n";
+        UpdateChats(nickname, text, true);
     }
 
     public void SendPrivateChatMessage(string message)
     {
-        UpdateChats(currentChat.nickname, message);
+        //UpdateChats(currentChat.nickname, message);
         _chatClient.SendPrivateMessage(currentChat.nickname, message);
     }
 
@@ -205,7 +209,6 @@ public class ChatManager : MonoBehaviour, IChatClientListener
     {
         SwitchTextBox(privateChatContent);
         SwitchCurrentChat(chat);
-        UpdateText(chat.chatText);
     }
 
     public void UpdateText(string message)
@@ -260,7 +263,8 @@ public class ChatManager : MonoBehaviour, IChatClientListener
     private PrivateChatButton CreateNewPrivateChat(string nickname)
     {
         PrivateChatButton newButton = Instantiate(mainChatButton, chatPrivateButtonsContainer.transform);
-        newButton.AssignUser(nickname);
+        newButton.chatText = "";
+        newButton.AssignUser(nickname, privateChatContent);
         privateChatsButtons[nickname] = newButton;
         privateUserButtons[newButton] = nickname;
         return newButton;
@@ -440,7 +444,12 @@ public class ChatManager : MonoBehaviour, IChatClientListener
     public void OnPrivateMessage(string sender, object message, string channelName)
     {
         var newMessage = $"{ColorfyWords($"{sender}:", privateHexColor)} {message} \n";
-        UpdateChats(sender, newMessage, true);
+        string channel = sender;
+
+        if(sender == PhotonNetwork.LocalPlayer.NickName)
+             channel = channelName.Remove(0, sender.Length + 1);
+
+        UpdateChats(channel, newMessage);
 
         if (ChatMinimized)
         {

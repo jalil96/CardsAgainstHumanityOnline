@@ -13,6 +13,7 @@ public class PrivateChatButton : MonoBehaviour
     public string chatText;
     public string nickname;
     public Image bgColor;
+    public TextMeshProUGUI messageContainer;
 
     public Color openChatColor = Color.black;
     public Color closeChatColor = Color.grey;
@@ -20,32 +21,51 @@ public class PrivateChatButton : MonoBehaviour
     private bool isChatOpen;
     private int counter;
 
+    public bool IsMainChat { get; private set; }
     public bool HasNotifications => counter > 0;
 
     #region PUBLIC
-    public void AssignUser(string player)
+    public void AssignUser(string player, TextMeshProUGUI textContainer)
     {
         button.onClick.AddListener(SetInFocus);
         titleText.text = player;
+        nickname = player;
+        messageContainer = textContainer;
+        IsMainChat = false;
+        HideChat();
+    }
+
+    public void AssingAsMain(TextMeshProUGUI textContainer)
+    {
+        button.onClick.AddListener(SetInFocus);
+        titleText.text = "MAIN";
+        nickname = "MAIN";
+        IsMainChat = true;
+        messageContainer = textContainer;
+        ShowChat();
     }
 
     public void UpdateText(string newText)
     {
-        chatText = newText;
+        chatText += newText;
 
-        if (!isChatOpen)
-            SetNotificationActive();
+        if (isChatOpen)
+            messageContainer.text = chatText;
         else
-            CommunicationsManager.Instance.chatManager.UpdateText(chatText);
+            SetNotificationActive();
     }
 
     public void SetInFocus()
     {
-        CommunicationsManager.Instance.chatManager.SetPrivateChatInFocus(this);
+        if(IsMainChat)
+            CommunicationsManager.Instance.chatManager.SetMainChatInFocus();
+        else
+            CommunicationsManager.Instance.chatManager.SetPrivateChatInFocus(this);
     }
 
     public void ShowChat()
     {
+        messageContainer.text = chatText;
         isChatOpen = true;
         bgColor.color = openChatColor;
         CleanNotifications();

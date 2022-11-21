@@ -23,13 +23,12 @@ public class VoiceUI : MonoBehaviour
     public GameObject sound_off;
 
     private bool micEnabled;
-    private Image currentImage;
-    private bool isSpeaking = false;
 
     private void Awake()
     {
         SetMicStatus(false);
         SetSoundEnabled(true);
+        micButton.interactable = false;
     }
 
     public void ToggleMic()
@@ -39,12 +38,10 @@ public class VoiceUI : MonoBehaviour
 
     public void SetMicStatus(bool value)
     {
-        if (micEnabled == value) return;
-
         micEnabled = value;
 
-        currentImage.sprite = micEnabled ? mic_on : mic_off;
-        currentImage.color = micEnabled ? speakingColor : muteColor;
+        micIcon.sprite = micEnabled ? mic_on : mic_off;
+        micIcon.color = micEnabled ? speakingColor : muteColor;
     }
 
     public void SetSoundEnabled(bool value)
@@ -54,30 +51,15 @@ public class VoiceUI : MonoBehaviour
 
     public void ShowTalking(bool isCurrentlySpeaking)
     {
-        if (isSpeaking == isCurrentlySpeaking) return;
-        isSpeaking = isCurrentlySpeaking;
-
-        currentImage.color = isCurrentlySpeaking ? speakingColor : notSpeaking;
+        micIcon.color = isCurrentlySpeaking ? speakingColor : notSpeaking;
     }
 
-    public void SetUser(Speaker speaker, Player player)
+    public void SetUser(Player player)
     {
         bool isOwner = player.IsLocal;
 
-        if (isOwner)
-        {
-            micButton.onClick.AddListener(ToggleMic);
-            currentImage = micButton.GetComponent<Image>();
-        }
-        else
-        {
-            currentImage = micIcon;
-        }
-
+        micButton.interactable = isOwner;
         voiceAura.gameObject.SetActive(isOwner);
-        micButton.gameObject.SetActive(isOwner);
-        micIcon.gameObject.SetActive(!isOwner);
-
         nicknameTxt.text = player.NickName;
     }
 }

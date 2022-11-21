@@ -29,6 +29,7 @@ public class VoiceController : MonoBehaviourPun
         {
             MasterVoiceManager.Instance.AddSoundReference(this, photonView.Owner);
             audioSource.volume = 0f;
+            return;
         }
     }
 
@@ -57,19 +58,19 @@ public class VoiceController : MonoBehaviourPun
     public void SetVoice(bool value)
     {
         isUsingMic = value;
-        PunVoiceClient.Instance.PrimaryRecorder.TransmitEnabled = isUsingMic;
-        voiceUI.SetMicStatus(isUsingMic);
+        PunVoiceClient.Instance.PrimaryRecorder.TransmitEnabled = value;
+        voiceUI.SetMicStatus(value);
     }
 
     public void SetUI(VoiceUI voiceUser, Player player)
     {
-        voiceUI = voiceUser;
         hasVoiceUser = true;
         isSoundOpen = true;
-        voiceUI.SetUser(speaker, player);
+        voiceUI = voiceUser;
         voiceUI.micButton.onClick.AddListener(ToggleVoice);
-        voiceUI.SetSoundEnabled(true);
-        SetVoice(false);
+        voiceUI.SetUser(player);
+        SetSoundSystem(true); //by default, for everyone the sound is enabled. 
+        SetVoice(false); //but the mic is muted
     }
 
     public void EnabelSoundSystem(bool value)
@@ -90,11 +91,9 @@ public class VoiceController : MonoBehaviourPun
         if (!hasVoiceUser) return;
         isSoundOpen = value;
         audioSource.volume = value ? 1.0f : 0.0f;
-        SetVoice(value);
-
         voiceUI.SetSoundEnabled(value);
+        SetVoice(value);
     }
-
 
     private void OnDestroy()
     {

@@ -89,6 +89,7 @@ public class MainMenuManager : MonoBehaviourPunCallbacks
         quitButton.onClick.AddListener(OnQuitButton);
         logInButton.onClick.AddListener(LogInUser);
         kickedOutConfirmButton.onClick.AddListener(() => { ChangePanel(ChoosePanel); Kicked = false; });
+        nickNameInput.onEndEdit.AddListener(LogInUser);
 
         //Set all panels
         allPanels.Add(loggingPanel);
@@ -211,10 +212,14 @@ public class MainMenuManager : MonoBehaviourPunCallbacks
 
     public void LogInUser()
     {
-        if (string.IsNullOrEmpty(nickNameInput.text) || string.IsNullOrWhiteSpace(nickNameInput.text)) return;
+        LogInUser(nickNameInput.text);
+    }
 
-        PhotonNetwork.NickName = nickNameInput.text;
-        txtNickname.text = nickNameInput.text;
+    public void LogInUser(string nickname)
+    {
+        if (string.IsNullOrEmpty(nickname) || string.IsNullOrWhiteSpace(nickname)) return;
+        PhotonNetwork.NickName = nickname;
+        txtNickname.text = nickname;
 
         txtNickname.gameObject.SetActive(true);
         PhotonNetwork.ConnectUsingSettings();

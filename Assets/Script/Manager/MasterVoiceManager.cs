@@ -37,18 +37,6 @@ public class MasterVoiceManager : MonoBehaviourPun
         _soundReference[client] = soundRef;
     }
 
-    [PunRPC]
-    private void ReferenceSound(int photonID, string nickname)
-    {
-        var voiceControllers = FindObjectsOfType<VoiceController>().ToList();
-        var voiceController = voiceControllers.Find(ch => ch.photonView.ViewID == photonID);
-
-        if (voiceController != null)
-        {
-
-        }
-    }
-
     public void RemoveSoundReference(VoiceController soundRef, Player client)
     {
         if (_soundReference.ContainsKey(client))

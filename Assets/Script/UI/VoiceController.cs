@@ -16,20 +16,25 @@ public class VoiceController : MonoBehaviourPun
     private bool hasVoiceUser = false;
     private bool isUsingMic = false;
     private bool isSoundOpen = true;
+    private bool lastMicStatusWasOpen = false;
 
     void Awake()
     {
-        if (!photonView.IsMine)
-        {
-            CommunicationsManager.Instance.voiceManager.CreateVisualUI(this, photonView.Owner);
-            CommunicationsManager.Instance.voiceManager.AddVoiceObject(this.gameObject);
-        }
-
         if (PhotonNetwork.IsMasterClient)
         {
             MasterVoiceManager.Instance.AddSoundReference(this, photonView.Owner);
-            audioSource.volume = 0f;
+            audioSource.enabled = false;
             return;
+        }
+
+        if (photonView.IsMine)
+        {
+            gameObject.name += "OWNER";
+        }
+        else
+        {
+            CommunicationsManager.Instance.voiceManager.CreateVisualUI(this, photonView.Owner);
+            CommunicationsManager.Instance.voiceManager.AddVoiceObject(this.gameObject);
         }
     }
 
@@ -41,7 +46,7 @@ public class VoiceController : MonoBehaviourPun
         if (photonView.IsMine)
         {
             if (Input.GetKeyDown(KeyCode.M))
-                ToggleVoice();
+                ToggleMic();
         }
         else
         {
@@ -50,12 +55,12 @@ public class VoiceController : MonoBehaviourPun
 
     }
 
-    public void ToggleVoice()
+    public void ToggleMic()
     {
-        SetVoice(!isUsingMic);
+        SetMic(!isUsingMic);
     }
 
-    public void SetVoice(bool value)
+    public void SetMic(bool value)
     {
         isUsingMic = value;
         PunVoiceClient.Instance.PrimaryRecorder.TransmitEnabled = value;
@@ -67,10 +72,11 @@ public class VoiceController : MonoBehaviourPun
         hasVoiceUser = true;
         isSoundOpen = true;
         voiceUI = voiceUser;
-        voiceUI.micButton.onClick.AddListener(ToggleVoice);
+        voiceUI.micButton.onClick.AddListener(ToggleMic);
         voiceUI.SetUser(player);
-        SetSoundSystem(true); //by default, for everyone the sound is enabled. 
-        SetVoice(false); //but the mic is muted
+
+        if (!photonView.IsMine)
+            voiceUI.SetMicStatus(speaker.IsPlaying);
     }
 
     public void EnabelSoundSystem(bool value)
@@ -92,7 +98,18 @@ public class VoiceController : MonoBehaviourPun
         isSoundOpen = value;
         audioSource.volume = value ? 1.0f : 0.0f;
         voiceUI.SetSoundEnabled(value);
-        SetVoice(value);
+
+        if (photonView.IsMine) 
+        {
+            if (value)
+                voiceUI.SetMicStatus(lastMicStatusWasOpen);
+            else
+                lastMicStatusWasOpen = isUsingMic;
+        }
+        else
+        {
+            voiceUI.SetMicStatus(speaker.IsPlaying);
+        }
     }
 
     private void OnDestroy()
@@ -103,7 +120,7 @@ public class VoiceController : MonoBehaviourPun
         if (hasVoiceUser)
         {
             if (voiceUI == null) return;
-            voiceUI.micButton.onClick.RemoveListener(ToggleVoice);
+            voiceUI.micButton.onClick.RemoveListener(ToggleMic);
             Destroy(voiceUI.gameObject);
         }
     }

@@ -1504,6 +1504,7 @@ MonoBehaviour:
   voiceSettingsButton: {fileID: 663737476099114239}
   enableVoiceChatToggle: {fileID: 4811243965617420548}
   soundIconOff: {fileID: 810911668}
+  allPlayersStartMute: 1
   openSettingsColor: {r: 0, g: 0, b: 0, a: 1}
   closeSettingsColor: {r: 1, g: 1, b: 1, a: 1}
   voiceSettingsImage: {fileID: 5590385988417491291}
@@ -1571,7 +1572,7 @@ MonoBehaviour:
   debugEchoMode: 0
   reliableMode: 0
   encrypt: 0
-  transmitEnabled: 1
+  transmitEnabled: 0
   samplingRate: 24000
   frameDuration: 20000
   bitrate: 30000

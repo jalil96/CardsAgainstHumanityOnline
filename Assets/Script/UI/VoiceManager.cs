@@ -26,6 +26,7 @@ public class VoiceManager : MonoBehaviour
 
     [Header("Sound Info")]
     public GameObject soundIconOff;
+    public bool allPlayersStartMute = true;
 
     [Header("References")]
     public Color openSettingsColor = Color.black;
@@ -46,7 +47,7 @@ public class VoiceManager : MonoBehaviour
     public void Awake()
     {
         voiceSettingsButton.onClick.AddListener(ToggleVoiceSettingsMenu); //TODO add somewhere a listener for and ESC button, if the settings are open, close them;
-        enableVoiceChatToggle.onValueChanged.AddListener(EnableVoiceSound);
+        enableVoiceChatToggle.onValueChanged.AddListener(EnablAudioSourceSystem);
         soundIconOff.SetActive(false);
 
         DisableVoiceSettings();
@@ -58,15 +59,14 @@ public class VoiceManager : MonoBehaviour
     #region Settings
     public void EnableVoiceSettings()
     {
-        if (PhotonNetwork.IsMasterClient) return;
-        voiceSettingsButton.gameObject.SetActive(true);
         punVoiceClient = GetComponent<PunVoiceClient>();
+        if (PhotonNetwork.IsMasterClient) return;
 
+        voiceSettingsButton.gameObject.SetActive(true);
         if (punVoiceClient != null)
             recorder = punVoiceClient.PrimaryRecorder;
 
         InstantiatePhotonVoiceObject();
-        EnableVoiceSound(true);
         CompleteDropdown();
     }
 
@@ -83,11 +83,13 @@ public class VoiceManager : MonoBehaviour
         SetVoiceSettingsVisible(!voiceSettingsActive);
     }
 
-    private void EnableVoiceSound(bool value)
+    private void EnablAudioSourceSystem(bool value)
     {
         MasterVoiceManager.Instance.RPCMaster(nameof(MasterVoiceManager.Instance.RequestUpdateSoundStatus), PhotonNetwork.LocalPlayer, value);
         micContainers.gameObject.SetActive(value);
         soundIconOff.SetActive(!value);
+        if (!value) //if we are disabling the system, we want to mute ourselves
+            voiceController.SetMic(value);
     }
 
     private void SetVoiceSettingsVisible(bool value)
@@ -121,6 +123,7 @@ public class VoiceManager : MonoBehaviour
 
         voiceController = voice.GetComponent<VoiceController>();
         CreateVisualUI(voiceController, PhotonNetwork.LocalPlayer);
+        voiceController.SetMic(!allPlayersStartMute);
     }
 
     public void CreateVisualUI(VoiceController voiceController, Player player)
@@ -150,12 +153,5 @@ public class VoiceManager : MonoBehaviour
             voiceObjects.Remove(voice);
             Destroy(voice);
         }
-
-        //for (int i = users.Count - 1; i >= 0; i--)
-        //{
-        //    var user = users[i];
-        //    users.Remove(user);
-        //    Destroy(user);
-        //}
     }
 }

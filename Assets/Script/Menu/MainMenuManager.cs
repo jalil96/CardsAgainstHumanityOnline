@@ -146,7 +146,13 @@ public class MainMenuManager : MonoBehaviourPunCallbacks
             ForceServerLog();
 
         if (Input.GetKeyDown(KeyCode.F2))
-            ForceQuickStartAsPlayer();
+            ForceQuickStartAsPlayer("Jess");
+
+        if (Input.GetKeyDown(KeyCode.F3))
+            ForceQuickStartAsPlayer("Jalil");
+
+        if (Input.GetKeyDown(KeyCode.F4))
+            ForceQuickStartAsPlayer("Sebas");
     }
 
     private IEnumerator JoinRandomRoomTimer(float timer)
@@ -162,13 +168,13 @@ public class MainMenuManager : MonoBehaviourPunCallbacks
         }
     }
 
-    private void ForceQuickStartAsPlayer()
+    private void ForceQuickStartAsPlayer(string nickname)
     {
         ChangePanel(loadingSymbolPanel);
 
         isServer = false;
 
-        PhotonNetwork.NickName = DEFAULT_NICK_NAME;
+        PhotonNetwork.NickName = nickname;
         txtNickname.gameObject.SetActive(true);
         txtNickname.text = PhotonNetwork.NickName;
 

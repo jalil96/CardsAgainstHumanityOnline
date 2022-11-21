@@ -47,6 +47,8 @@ MonoBehaviour:
   - UpdateShowWhiteCards
   - RequestUpdateSoundStatus
   - UpdateSoundSystem
+  - AddPlayerToColorList
+  - RemovePlayerFromColorList
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 1

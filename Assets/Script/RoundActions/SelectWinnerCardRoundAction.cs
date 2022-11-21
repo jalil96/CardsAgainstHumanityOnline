@@ -25,9 +25,7 @@ public class SelectWinnerCardRoundAction : RoundAction
         _judge.Hand.SetCards(_selectedCards.Select(c => c.Text).ToList());
         
         _characters.ForEach(character => character.HideWhiteCards());
-        
-        _judge.ShowWhiteCards();
-        
+
         _judge.OnSelectedCard += JudgeSelectedWinnerCard;
     }
 

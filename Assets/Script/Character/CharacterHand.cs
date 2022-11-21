@@ -101,9 +101,18 @@ public class CharacterHand : MonoBehaviourPun
 
     public void SetCards(List<string> newCards)
     {
+        Debug.Log($"_cards array length: {_cards.Count}, newCards array length: {newCards.Count}");
         for (var i = 0; i < _cards.Count; i++)
         {
-            _cards[i].Text = newCards[i];
+            if (newCards.Count > i)
+            {
+                _cards[i].Text = newCards[i];
+                _cards[i].Activate();
+            }
+            else
+            {
+                _cards[i].Deactivate();
+            }
         }
         _selectorIndex = 0;
         photonView.RPC(nameof(UpdateSelectorIndex), RpcTarget.Others, _selectorIndex);

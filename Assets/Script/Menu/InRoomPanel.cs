@@ -180,9 +180,6 @@ public class InRoomPanel : MonoBehaviourPunCallbacks
             CloseRoom();
         }
 
-        if(mainMenu.chatBox.ChatEnabled)
-            mainMenu.chatBox.UnsuscribeFromRoom(PhotonNetwork.CurrentRoom.Name);
-
         PhotonNetwork.LeaveRoom(false);
 
         mainMenu.OnLeftRoom();
@@ -192,7 +189,6 @@ public class InRoomPanel : MonoBehaviourPunCallbacks
     {
         RefreshPlayerList();
         UpdateRoomFullness();
-
     }
 
     public override void OnPlayerLeftRoom(Player otherPlayer)
@@ -209,7 +205,6 @@ public class InRoomPanel : MonoBehaviourPunCallbacks
             CloseRoom();
         else
             OpenRoom();
-
     }
 
     public void OpenRoom()

@@ -12,7 +12,6 @@ public class CreateRoomPanel : MonoBehaviourPunCallbacks
     public Slider maxPlayersSlider;
     public Text txtMaxPlayersValue;
     public Button createRoomButton;
-    public Button goBackToChooseButton;
 
     private MainMenuManager mainMenu;
 
@@ -30,24 +29,32 @@ public class CreateRoomPanel : MonoBehaviourPunCallbacks
 
     private void GenerateCreateRoomPanel()
     {
-        maxPlayersSlider.maxValue = mainMenu.MaxPlayers;
+        maxPlayersSlider.maxValue = mainMenu.RealMaxPlayers;
         maxPlayersSlider.minValue = mainMenu.MinPlayers;
 
-        goBackToChooseButton.onClick.AddListener(() => mainMenu.ChangePanel(mainMenu.ChoosePanel));
         maxPlayersSlider.onValueChanged.AddListener(delegate { ValueChangeCheck(); });
 
         createRoomButton.onClick.AddListener(CreateRoom);
+
+        ValueChangeCheck();
+
+        mainMenu.roomSettingPanel.OnOpen += OnOpenPanel;
+    }
+
+    private void OnOpenPanel()
+    {
+        ClearData();
     }
 
     public void CreateRoom()
     {
         if (string.IsNullOrEmpty(roomNameInput.text) || string.IsNullOrWhiteSpace(roomNameInput.text)) return;
 
-        BaseCreateRoom(roomNameInput.text, (byte)maxPlayersSlider.value);
+        BaseCreateRoom(roomNameInput.text, (byte)(maxPlayersSlider.value + 1)); //we add one extra for the server space
         mainMenu.ChangePanel(mainMenu.loadingSymbolPanel);
     }
 
-    private void BaseCreateRoom(string roomName = "", byte maxPlayers = 4)
+    private void BaseCreateRoom(string roomName = "", byte maxPlayers = 7)
     {
         if (string.IsNullOrEmpty(roomName) || string.IsNullOrWhiteSpace(roomName))
             roomName = mainMenu.DefaultRoom;
@@ -58,11 +65,18 @@ public class CreateRoomPanel : MonoBehaviourPunCallbacks
         options.IsOpen = true;
         options.IsVisible = true;
 
-        PhotonNetwork.JoinOrCreateRoom(roomName, options, TypedLobby.Default);
+        PhotonNetwork.CreateRoom(roomName, options, TypedLobby.Default);
     }
 
     public void ValueChangeCheck()
     {
         txtMaxPlayersValue.text = maxPlayersSlider.value.ToString();
+    }
+
+    public void ClearData()
+    {
+        maxPlayersSlider.value = mainMenu.MinPlayers;
+        roomNameInput.text = "";
+        ValueChangeCheck();
     }
 }

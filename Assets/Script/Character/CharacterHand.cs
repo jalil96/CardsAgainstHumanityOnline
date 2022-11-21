@@ -16,6 +16,7 @@ public class CharacterHand : MonoBehaviourPun
     [SerializeField] private int _selectorIndex;
 
     private int _selectedCard;
+    private int _activeCards = 5;
     
     public int SelectorIndex => _selectorIndex;
     public List<CardModel> Cards => _cards;
@@ -32,15 +33,15 @@ public class CharacterHand : MonoBehaviourPun
     private void RequestCards(Player player)
     {
         
-        var cards = _cards.Select(c => (object)c.Text).ToArray();
+        var cards = _cards.Select(c => c.Text).ToArray();
         Debug.Log($"Sending {cards.Length} to player {player.NickName}");
-        photonView.RPC(nameof(UpdateCards), player, cards);
+        photonView.RPC(nameof(UpdateCards), player, (object)cards);
     }
 
     [PunRPC]
-    private void UpdateCards(object[] newCards)
+    private void UpdateCards(object newCards)
     {
-        string[] cards = newCards.Select(c => (string)c).ToArray();
+        string[] cards = (string[])newCards;
         Debug.Log($"New cards to set: {cards.Length}");
         // debug
         string debug = "";
@@ -50,9 +51,17 @@ public class CharacterHand : MonoBehaviourPun
         }
         Debug.Log(debug);
         // end debug
-        for (int i = 0; i < cards.Length; i++)
+        for (var i = 0; i < _cards.Count; i++)
         {
-            _cards[i].Text = cards[i];
+            if (cards.Length > i)
+            {
+                _cards[i].Text = cards[i];
+                _cards[i].Activate();
+            }
+            else
+            {
+                _cards[i].Deactivate();
+            }
         }
         OnSetNewCards.Invoke();
     }
@@ -114,7 +123,11 @@ public class CharacterHand : MonoBehaviourPun
                 _cards[i].Deactivate();
             }
         }
+
+        _activeCards = newCards.Count;
         _selectorIndex = 0;
+        
+        photonView.RPC(nameof(UpdateCards), RpcTarget.Others, (object)newCards.ToArray());
         photonView.RPC(nameof(UpdateSelectorIndex), RpcTarget.Others, _selectorIndex);
         OnSetNewCards.Invoke();
     }

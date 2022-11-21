@@ -31,6 +31,8 @@ public class SelectWinnerCardRoundAction : RoundAction
 
     private void JudgeSelectedWinnerCard(CharacterModel character)
     {
+        //TODO: Get judge card, map it with the character that selected it and give the point to that character
+        
         OnEndRoundAction.Invoke();
     }
 

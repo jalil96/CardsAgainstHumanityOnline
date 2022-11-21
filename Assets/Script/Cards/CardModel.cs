@@ -18,6 +18,9 @@ public class CardModel : MonoBehaviourPun
     [SerializeField] private string _text;
     [SerializeField] private CardType _type;
 
+    private bool _isActive = true;
+    public bool IsActive => _isActive;
+
     public string Text
     {
         get
@@ -46,11 +49,13 @@ public class CardModel : MonoBehaviourPun
     public void Deactivate()
     {
         gameObject.SetActive(false);
+        _isActive = false;
     }
 
     public void Activate()
     {
         gameObject.SetActive(true);
+        _isActive = true;
     }
 
     [PunRPC]

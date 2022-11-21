@@ -44,6 +44,9 @@ public class GameManager : MonoBehaviourPun
 
     private void RoundEnded()
     {
+        // TODO: Check win condition by points, Call SetCharacters To give new cards
+        // TODO: If win condition met, show Win/Lose screen on respective players and move to the scoreboard scene
+        
         EnqueueRoundActions();
     }
 

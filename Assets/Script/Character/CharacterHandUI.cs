@@ -46,9 +46,10 @@ public class CharacterHandUI : MonoBehaviour
     {
         for (var i = 0; i < _cards.Count; i++)
         {
-            if (_hand.Cards.Count > i)
+            if (_hand.Cards[i].IsActive)
             {
                 _cards[i].text.text = _hand.Cards[i].Text;
+                _cards[i].Activate();
             }
             else
             {

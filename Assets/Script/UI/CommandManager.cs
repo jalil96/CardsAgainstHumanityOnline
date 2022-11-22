@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor;
 using UnityEngine;
 
 public class CommandManager : MonoBehaviour
@@ -8,6 +9,10 @@ public class CommandManager : MonoBehaviour
     [Header("Commands")]
     public string privateMessage = "whisper";
     public string help = "help";
+
+    [Header("Color")]
+    public Color helpDescriptionColor;
+    private string helpDesHex;
 
     private string commandPrefix = "/";
     private Dictionary<string, Action> commandDictionary = new Dictionary<string, Action>();
@@ -21,7 +26,9 @@ public class CommandManager : MonoBehaviour
 
     private void Awake()
     {
-        AddACommand(privateMessage, PrivateMessage, $"Write /{privateMessage} UserName to open a private chat");
+        helpDesHex = ColorUtility.ToHtmlStringRGBA(helpDescriptionColor);
+
+        AddACommand(privateMessage, PrivateMessage, $"Write '/{privateMessage} UserName' to open a private chat");
         AddACommand(help, HelpList, "Prints a list of all available commands with a description");
     }
 
@@ -69,7 +76,7 @@ public class CommandManager : MonoBehaviour
 
         foreach (var command in commandDictionary)
         {
-            allCommands += $"{commandPrefix}{command.Key} {commandDescriptions[command.Key]}";
+            allCommands += $"<b>{commandPrefix}{command.Key}</b>: <color=#{helpDesHex}>{commandDescriptions[command.Key]} </color> \n";
         }
 
         HelpCommand.Invoke(allCommands);

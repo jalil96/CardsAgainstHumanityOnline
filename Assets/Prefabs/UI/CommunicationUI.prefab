@@ -1713,7 +1713,6 @@ MonoBehaviour:
   chatManager: {fileID: 324187125149485867}
   voiceManager: {fileID: 324187125328882867}
   commandManager: {fileID: 324187126499975833}
-  masterVoiceManagerPrefab: {fileID: 8956270081296225923, guid: 05d2655d33e2bf34299d7df6647fc3e8, type: 3}
 --- !u!1 &324187126499975830
 GameObject:
   m_ObjectHideFlags: 0
@@ -1759,6 +1758,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   privateMessage: whisper
   help: help
+  helpDescriptionColor: {r: 0.6132076, g: 0.6132076, b: 0.6132076, a: 1}
 --- !u!1 &1561858679171338154
 GameObject:
   m_ObjectHideFlags: 0

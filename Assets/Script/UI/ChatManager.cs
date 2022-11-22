@@ -90,6 +90,7 @@ public class ChatManager : MonoBehaviour, IChatClientListener
     {
 		CommunicationsManager.Instance.commandManager.PrivateMessageCommand += OpenAPrivateChat;
         CommunicationsManager.Instance.commandManager.ErrorCommand += ErrorCommandMessage;
+        CommunicationsManager.Instance.commandManager.HelpCommand += HelpCommandMessage;
         CommunicationsManager.Instance.OnColorsUpdate += UpdateColorDictionary;
     }
 
@@ -329,6 +330,12 @@ public class ChatManager : MonoBehaviour, IChatClientListener
     {
         var text = $"{ColorfyWords($"ERROR: {error}", errorHexColor)} \n";
         UpdateText(text);
+    }
+
+    private void HelpCommandMessage(string help)
+    {
+        //var text = $"{ColorfyWords($"{help}", serverHexColor)} \n";
+        UpdateText(help);
     }
 
     private int GetUserIndexColor(string nickname)

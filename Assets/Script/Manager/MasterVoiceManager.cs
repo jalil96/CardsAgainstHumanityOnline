@@ -5,6 +5,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Xml;
 using UnityEngine;
+using UnityEngine.SceneManagement;
+using UnityEngine.VFX;
 
 public class MasterVoiceManager : MonoBehaviourPun
 {
@@ -23,7 +25,22 @@ public class MasterVoiceManager : MonoBehaviourPun
         }
 
         _instance = this;
-        DontDestroyOnLoad(gameObject);
+    }
+
+    private void Start()
+    {
+        LoadSoundReferences();
+    }
+
+    private void LoadSoundReferences()
+    {
+        var voiceControllers = FindObjectsOfType<VoiceController>().ToList();
+
+        foreach (var vc in voiceControllers)
+        {
+            if (vc.Owner.IsMasterClient) continue;
+            AddSoundReference(vc, vc.Owner);
+        }
     }
 
     public void RPCMaster(string methodName, params object[] p)

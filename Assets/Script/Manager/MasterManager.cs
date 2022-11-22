@@ -40,6 +40,7 @@ public class MasterManager : MonoBehaviourPun
         }
     }
 
+    [PunRPC]
     public void RequestSelect(Player client)
     {
         if (_characterModelReferences.ContainsKey(client))

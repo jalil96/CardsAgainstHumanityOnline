@@ -18,13 +18,17 @@ public class VoiceController : MonoBehaviourPun
     private bool isSoundOpen = true;
     private bool lastMicStatusWasOpen = false;
 
+    public Player Owner { get; private set; }
+
     void Awake()
     {
         transform.SetParent(CommunicationsManager.Instance.transform);
 
+        Owner = photonView.Owner;
+
         if (PhotonNetwork.IsMasterClient)
         {
-            MasterVoiceManager.Instance.AddSoundReference(this, photonView.Owner);
+            MasterVoiceManager.Instance.AddSoundReference(this, Owner);
             audioSource.enabled = false;
             return;
         }
@@ -35,7 +39,7 @@ public class VoiceController : MonoBehaviourPun
         }
         else
         {
-            CommunicationsManager.Instance.voiceManager.CreateVisualUI(this, photonView.Owner);
+            CommunicationsManager.Instance.voiceManager.CreateVisualUI(this, Owner);
             CommunicationsManager.Instance.voiceManager.AddVoiceObject(this.gameObject);
         }
 

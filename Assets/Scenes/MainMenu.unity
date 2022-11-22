@@ -9205,6 +9205,10 @@ PrefabInstance:
       propertyPath: m_AnchorMax.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 2395046818929502897, guid: 9a73e9fce4973434fb96003326f8257d, type: 3}
+      propertyPath: sceneViewId
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 6734136504448125970, guid: 9a73e9fce4973434fb96003326f8257d, type: 3}
       propertyPath: m_AnchorMax.x
       value: 0
@@ -9229,7 +9233,8 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: 0
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 2395046818929502897, guid: 9a73e9fce4973434fb96003326f8257d, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: 9a73e9fce4973434fb96003326f8257d, type: 3}
 --- !u!1001 &625605400528603438
 PrefabInstance:

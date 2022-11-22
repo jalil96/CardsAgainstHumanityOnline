@@ -40,7 +40,7 @@ public class VoiceController : MonoBehaviourPun
         else
         {
             CommunicationsManager.Instance.voiceManager.CreateVisualUI(this, Owner);
-            CommunicationsManager.Instance.voiceManager.AddVoiceObject(this.gameObject);
+            CommunicationsManager.Instance.voiceManager.AddVoiceObject(this);
         }
 
     }

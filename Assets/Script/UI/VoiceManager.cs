@@ -41,7 +41,7 @@ public class VoiceManager : MonoBehaviour
     private Recorder recorder;
     private PunVoiceClient punVoiceClient;
     private bool voiceSettingsActive;
-    private List<GameObject> voiceObjects = new List<GameObject>();
+    private List<VoiceController> voiceObjects = new List<VoiceController>();
     private List<VoiceUI> users = new List<VoiceUI>();
 
     public void Awake()
@@ -90,6 +90,8 @@ public class VoiceManager : MonoBehaviour
         micContainers.gameObject.SetActive(value);
         soundIconOff.SetActive(!value);
 
+        SetAudioInVoiceObjects(value);
+
         if (!value) //if we are disabling the system, we want to mute ourselves
             voiceController.SetMic(value);
     }
@@ -121,11 +123,10 @@ public class VoiceManager : MonoBehaviour
     public void InstantiatePhotonVoiceObject() //we set ourselves here
     {
         var voice = PhotonNetwork.Instantiate("VoiceObject", Vector3.zero, Quaternion.identity);
-        AddVoiceObject(voice);
-
         voiceController = voice.GetComponent<VoiceController>();
         CreateVisualUI(voiceController, PhotonNetwork.LocalPlayer);
         voiceController.SetMic(!allPlayersStartMute);
+        AddVoiceObject(voiceController);
     }
 
     public void CreateVisualUI(VoiceController voiceController, Player player)
@@ -139,10 +140,18 @@ public class VoiceManager : MonoBehaviour
             users.Add(voiceUI);
     }
 
-    public void AddVoiceObject(GameObject voice)
+    public void AddVoiceObject(VoiceController voice)
     {
         if (voiceObjects.Contains(voice)) return;
         voiceObjects.Add(voice);
+    }
+
+    public void SetAudioInVoiceObjects(bool canHear)
+    {
+        for (int i = voiceObjects.Count - 1; i >= 0; i--)
+        {
+            voiceObjects[i].audioSource.enabled = canHear;
+        }
     }
 
     public void ClearData()

@@ -1,11 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
+using Newtonsoft.Json;
 using Photon.Pun;
 using Photon.Pun.UtilityScripts;
+using UnityEditor;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 public class GameManager : MonoBehaviourPun
 {
+    [SerializeField] private TextAsset _blackCardsJson;
+    [SerializeField] private TextAsset _whiteCardsJson;
+    
     [SerializeField] private List<RoundAction> _roundActions;
     [SerializeField] private BlackCardModel _blackCard;
     
@@ -14,6 +21,9 @@ public class GameManager : MonoBehaviourPun
 
     private List<CharacterModel> _characters;
     private int _currentJudgeIndex;
+
+    private string[] _blackCardsStrings;
+    private string[] _whiteCardsStrings;
 
     private Stack<string> _blackCards = new Stack<string>();
     private Stack<string> _whiteCards = new Stack<string>();
@@ -26,10 +36,17 @@ public class GameManager : MonoBehaviourPun
     private void Awake()
     {
         if (!PhotonNetwork.IsMasterClient) Destroy(gameObject);
+        
+        _blackCardsStrings = JsonUtility.FromJson<Cards>(_blackCardsJson.text).cards;
+        _whiteCardsStrings = JsonUtility.FromJson<Cards>(_whiteCardsJson.text).cards;
+        
+        Debug.Log($"White cards loaded: {_whiteCardsStrings.Length}");
+        Debug.Log($"Black cards loaded: {_blackCardsStrings.Length}");
     }
 
     private void Start()
     {
+        
         EnqueueRoundActions();
         RoundActionEnded();
     }
@@ -46,7 +63,6 @@ public class GameManager : MonoBehaviourPun
 
     private void RoundEnded()
     {
-        // TODO: Check win condition by points, Call SetCharacters To give new cards DONE
         // TODO: If win condition met, show Win/Lose screen on respective players and move to the scoreboard scene
 
         foreach (var character in _characters)
@@ -60,6 +76,11 @@ public class GameManager : MonoBehaviourPun
         }
         
         SetCharacters(_characters);
+
+        if (_blackCards.Count <= 0)
+        {
+            LoadBlackCards();
+        }
         
         _blackCard.SetText(_blackCards.Pop());
         _blackCard.SetShowCard();
@@ -78,14 +99,35 @@ public class GameManager : MonoBehaviourPun
 
     private void LoadCards()
     {
-        for (int i = 0; i < 300; i++)
-        {
-            _whiteCards.Push(Guid.NewGuid().ToString());
-        }
+        LoadBlackCards();
+        LoadWhiteCards();
+    }
+
+    private void LoadBlackCards()
+    {
+        if (_blackCardsStrings == null || _blackCardsStrings.Length <= 0)
+            _blackCardsStrings = JsonUtility.FromJson<Cards>(_blackCardsJson.text).cards;
+        ShuffleDeck(ref _blackCardsStrings);
         
-        for (int i = 0; i < 100; i++)
-        {
-            _blackCards.Push(Guid.NewGuid().ToString());
+        _blackCards = new Stack<string>(_blackCardsStrings);
+    }
+
+    private void LoadWhiteCards()
+    {
+        if (_whiteCardsStrings == null || _whiteCardsStrings.Length <= 0)
+            _whiteCardsStrings = JsonUtility.FromJson<Cards>(_whiteCardsJson.text).cards;
+        ShuffleDeck(ref _whiteCardsStrings);
+        
+        _whiteCards = new Stack<string>(_whiteCardsStrings);
+    }
+
+    private void ShuffleDeck(ref string[] cards)
+    {
+        for (int i = 0; i < cards.Length; i++) {
+            string temp = cards[i];
+            int randomIndex = Random.Range(i, cards.Length);
+            cards[i] = cards[randomIndex];
+            cards[randomIndex] = temp;
         }
     }
 
@@ -113,9 +155,9 @@ public class GameManager : MonoBehaviourPun
     public void SetCharacters(List<CharacterModel> characters)
     {
         _characters = characters;
-        if (_whiteCards.Count <= 0)
+        if (_whiteCards.Count <= 5)
         {
-            LoadCards();
+            LoadWhiteCards();
         }
         _characters.ForEach(c =>
         {
@@ -139,4 +181,10 @@ public class GameManager : MonoBehaviourPun
         Debug.Log($"Current characters: {_characters.Count} & current judge index: {_currentJudgeIndex}");
         return _characters[_currentJudgeIndex];
     }
+}
+
+[Serializable]
+public class Cards
+{
+    public string[] cards;
 }

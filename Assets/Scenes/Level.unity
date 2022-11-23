@@ -2084,6 +2084,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1bde2db8cb5b4e9c86751af484e812e3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _blackCardsJson: {fileID: 4900000, guid: bd2f8d4ad6054a84bc33755e611bd554, type: 3}
+  _whiteCardsJson: {fileID: 4900000, guid: ecc52cc3a675467b837751b1d5cbf119, type: 3}
   _roundActions:
   - {fileID: 2087077779}
   - {fileID: 1453432422}

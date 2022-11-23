@@ -28,6 +28,7 @@ public class WhiteCardRoundAction : RoundAction
         {
             character.OnSelectedCard += CharacterSelectedCard;
             character.OnUnselectedCard += CharacterUnselectedCard;
+            character.ShowWhiteCards();
         });
     }
 

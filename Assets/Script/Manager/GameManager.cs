@@ -137,7 +137,6 @@ public class GameManager : MonoBehaviourPun
 
     public CharacterModel GetCurrentJudge()
     {
-        
         Debug.Log($"Current characters: {_characters.Count} & current judge index: {_currentJudgeIndex}");
         return _characters[_currentJudgeIndex];
     }

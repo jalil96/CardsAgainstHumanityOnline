@@ -51,6 +51,13 @@ MonoBehaviour:
   - RemovePlayerFromColorList
   - ReferenceSound
   - RequestSelect
+  - RequestCards
+  - RequestText
+  - UpdateCards
+  - UpdateIsActive
+  - UpdatePoints
+  - UpdateText
+  - WinConditionMet
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 1

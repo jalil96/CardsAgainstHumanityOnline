@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Photon.Pun;
+using Photon.Pun.UtilityScripts;
 using UnityEngine;
 
 public class GameManager : MonoBehaviourPun
@@ -46,8 +47,30 @@ public class GameManager : MonoBehaviourPun
     {
         // TODO: Check win condition by points, Call SetCharacters To give new cards
         // TODO: If win condition met, show Win/Lose screen on respective players and move to the scoreboard scene
+
+        foreach (var character in _characters)
+        {
+            if (character.Points >= 3) // Parametrize win condition value
+            {
+                Debug.Log($"Win condition met, winner is: {MasterManager.Instance.GetPlayerFromCharacter(character).NickName}");
+                WinConditionMet(character);
+                break;
+            }
+        }
+        
+        SetCharacters(_characters);
         
         EnqueueRoundActions();
+    }
+
+    private void WinConditionMet(CharacterModel winner)
+    {
+        foreach (var characterModel in _characters)
+        {
+            var player = MasterManager.Instance.GetPlayerFromCharacter(characterModel);
+            player.SetScore(characterModel.Points);
+            MasterManager.Instance.RPC(nameof(MasterManager.Instance.WinConditionMet) ,player,characterModel == winner);
+        }
     }
 
     private void LoadCards()

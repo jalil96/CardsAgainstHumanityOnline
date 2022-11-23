@@ -17,13 +17,16 @@ public class CharacterHand : MonoBehaviourPun
 
     private int _selectedCard;
     private int _activeCards = 5;
+    private bool _isMine;
     
     public int SelectorIndex => _selectorIndex;
     public List<CardModel> Cards => _cards;
 
+    public bool IsMine => _isMine;
+
     private void Start()
     {
-        if (!PhotonNetwork.IsMasterClient)
+        if (!PhotonNetwork.IsMasterClient && _isMine)
         {
             photonView.RPC(nameof(RequestCards), PhotonNetwork.MasterClient, PhotonNetwork.LocalPlayer);
         }
@@ -32,7 +35,6 @@ public class CharacterHand : MonoBehaviourPun
     [PunRPC]
     private void RequestCards(Player player)
     {
-        
         var cards = _cards.Select(c => c.Text).ToArray();
         Debug.Log($"Sending {cards.Length} to player {player.NickName}");
         photonView.RPC(nameof(UpdateCards), player, (object)cards);
@@ -56,7 +58,7 @@ public class CharacterHand : MonoBehaviourPun
             if (cards.Length > i)
             {
                 _cards[i].Text = cards[i];
-                _cards[i].Activate();
+                // _cards[i].Activate();
             }
             else
             {
@@ -66,6 +68,11 @@ public class CharacterHand : MonoBehaviourPun
         OnSetNewCards.Invoke();
     }
 
+    public void SetIsMine(bool isMine)
+    {
+        _isMine = isMine;
+    }
+    
     public void MoveSelectorRight()
     {
         _selectorIndex = Math.Min(_cards.Count-1, _selectorIndex+1);
@@ -86,8 +93,7 @@ public class CharacterHand : MonoBehaviourPun
 
     public void SelectCard()
     {
-        if (_selectedCard > 0 && _selectedCard == _selectorIndex) _selectedCard = -1; // Unselects card if selects the one already selected
-        else _selectedCard = _selectorIndex;
+        _selectedCard = _selectorIndex;
     }
 
     public CardModel GetSelectedCard()

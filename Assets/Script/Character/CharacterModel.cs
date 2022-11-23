@@ -8,16 +8,25 @@ public class CharacterModel : MonoBehaviourPun
     public Action<CharacterModel> OnUnselectedCard = delegate(CharacterModel model) {  };
     
     [SerializeField] private CharacterHand _hand;
+    [SerializeField] private int _points;
+
+    private bool _isMine = false;
+
+    public bool IsMine => _isMine;
+
+    public int Points
+    {
+        get => _points;
+        set
+        {
+            _points = value;
+            photonView.RPC(nameof(UpdatePoints), RpcTarget.Others, _points);
+        }
+    }
 
     public CharacterHand Hand => _hand;
     public int HandSelectorIndex => _hand.SelectorIndex;
-
-    private void Start()
-    {
-        // if (!Equals(Client, PhotonNetwork.LocalPlayer)) return;
-        // var handUI = FindObjectOfType<CharacterHandUI>();
-        // handUI.SetCharacterHand(_hand);
-    }
+    
 
     public void Move(bool dir)
     {
@@ -34,8 +43,11 @@ public class CharacterModel : MonoBehaviourPun
         else OnUnselectedCard.Invoke(this);
     }
 
-    
-    
+    public void SetIsMine(bool isMine)
+    {
+        _isMine = isMine;
+    }
+        
     public void ShowWhiteCards()
     {
         photonView.RPC(nameof(UpdateShowWhiteCards), RpcTarget.All);
@@ -56,5 +68,11 @@ public class CharacterModel : MonoBehaviourPun
     private void UpdateHideWhiteCards()
     {
         _hand.HideWhiteCards();
+    }
+
+    [PunRPC]
+    private void UpdatePoints(int points)
+    {
+        _points = points;
     }
 }

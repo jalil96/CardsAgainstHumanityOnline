@@ -42,12 +42,21 @@ public class WhiteCardRoundAction : RoundAction
 
         Debug.Log($"All players players selected their cards");
         
+        _characters.ForEach(c =>
+        {
+            c.OnSelectedCard = delegate(CharacterModel model) {  };
+            c.OnUnselectedCard = delegate(CharacterModel model) {  };
+        });
+
+        _selectedCards = new Dictionary<CardModel, CharacterModel>();
+        
         _selectedCardCharacters.ForEach(c =>
         {
             _selectedCards[c.Hand.GetSelectedCard()] = c;
         });
-        
+
         _gameManager.SelectedCards = _selectedCards;
+        _selectedCardCharacters.Clear();
         OnEndRoundAction.Invoke();
     }
     

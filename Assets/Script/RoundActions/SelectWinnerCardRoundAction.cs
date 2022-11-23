@@ -31,8 +31,24 @@ public class SelectWinnerCardRoundAction : RoundAction
 
     private void JudgeSelectedWinnerCard(CharacterModel character)
     {
-        //TODO: Get judge card, map it with the character that selected it and give the point to that character
+        //TODO: Get judge card, map it with the character that selected it and give the point to that character DONE
+
+        var selectedCard = _judge.Hand.GetSelectedCard();
+        CharacterModel winner;
         
+        foreach (var card in _gameManager.SelectedCards.Keys)
+        {
+            if (card.Text == selectedCard.Text)
+            {
+                winner = _gameManager.SelectedCards[card];
+                winner.Points++;
+                Debug.Log($"Giving point to player: {MasterManager.Instance.GetPlayerFromCharacter(winner).NickName}");
+                break;
+            }
+        }
+        
+        _judge.OnSelectedCard = delegate(CharacterModel model) {  };
+
         OnEndRoundAction.Invoke();
     }
 

@@ -50,12 +50,14 @@ public class CardModel : MonoBehaviourPun
     {
         gameObject.SetActive(false);
         _isActive = false;
+        photonView.RPC(nameof(UpdateIsActive), RpcTarget.Others, _isActive);
     }
 
     public void Activate()
     {
         gameObject.SetActive(true);
         _isActive = true;
+        photonView.RPC(nameof(UpdateIsActive), RpcTarget.Others, _isActive);
     }
 
     [PunRPC]
@@ -69,5 +71,11 @@ public class CardModel : MonoBehaviourPun
     {
         _text = text;
         OnTextUpdated.Invoke(_text);
+    }
+
+    [PunRPC]
+    private void UpdateIsActive(bool isActive)
+    {
+        _isActive = isActive;
     }
 }

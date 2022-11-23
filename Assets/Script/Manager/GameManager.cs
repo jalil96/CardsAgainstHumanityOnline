@@ -7,7 +7,8 @@ using UnityEngine;
 public class GameManager : MonoBehaviourPun
 {
     [SerializeField] private List<RoundAction> _roundActions;
-
+    [SerializeField] private BlackCardModel _blackCard;
+    
     private Queue<RoundAction> _roundActionsQueue = new Queue<RoundAction>();
     private RoundAction _currentRoundAction;
 
@@ -45,7 +46,7 @@ public class GameManager : MonoBehaviourPun
 
     private void RoundEnded()
     {
-        // TODO: Check win condition by points, Call SetCharacters To give new cards
+        // TODO: Check win condition by points, Call SetCharacters To give new cards DONE
         // TODO: If win condition met, show Win/Lose screen on respective players and move to the scoreboard scene
 
         foreach (var character in _characters)
@@ -60,6 +61,8 @@ public class GameManager : MonoBehaviourPun
         
         SetCharacters(_characters);
         
+        _blackCard.SetText(_blackCards.Pop());
+        _blackCard.SetShowCard();
         EnqueueRoundActions();
     }
 
@@ -126,13 +129,9 @@ public class GameManager : MonoBehaviourPun
     {
         if (Input.GetKeyDown(KeyCode.F4))
         {
-            _characters.ForEach(character => character.HideWhiteCards());
+            _blackCard.SetShowCard();
         }
-
-        if (Input.GetKeyDown(KeyCode.F5))
-        {
-            _characters.ForEach(character => character.ShowWhiteCards());
-        }
+        
     }
 
     public CharacterModel GetCurrentJudge()

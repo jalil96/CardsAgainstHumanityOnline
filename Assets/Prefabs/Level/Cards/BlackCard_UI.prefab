@@ -12,7 +12,11 @@ GameObject:
   - component: {fileID: 3910370244855065570}
   - component: {fileID: 6407738348067937573}
   - component: {fileID: 7423526625141769691}
-  - component: {fileID: 6784959682727743529}
+  - component: {fileID: 1804619345}
+  - component: {fileID: 2442102502781991707}
+  - component: {fileID: 5008482529564200757}
+  - component: {fileID: 1707863638839676000}
+  - component: {fileID: 374725266386479120}
   m_Layer: 5
   m_Name: BlackCard_UI
   m_TagString: Untagged
@@ -91,9 +95,28 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_EffectColor: {r: 0, g: 0, b: 0, a: 0.5}
-  m_EffectDistance: {x: 2, y: -2}
+  m_EffectDistance: {x: 5, y: -7}
   m_UseGraphicAlpha: 1
---- !u!114 &6784959682727743529
+--- !u!95 &1804619345
+Animator:
+  serializedVersion: 3
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3092404370797837570}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 84f12e573c0194c45bd1979ef492ed0e, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorControllerStateOnDisable: 0
+--- !u!114 &2442102502781991707
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -102,11 +125,70 @@ MonoBehaviour:
   m_GameObject: {fileID: 3092404370797837570}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: de65eb2eacff47a4ea6e1348935a67e1, type: 3}
+  m_Script: {fileID: 11500000, guid: e73cb8af5924ecc4988f3ace4214d871, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  bg: {fileID: 6407738348067937573}
-  text: {fileID: 2411191988864638851}
+  _text: 
+--- !u!114 &5008482529564200757
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3092404370797837570}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6d18902d0a851be4e9d25d78539bebdc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _model: {fileID: 2442102502781991707}
+  _animator: {fileID: 1804619345}
+  _backgroundAnimator: {fileID: 0}
+  _text: {fileID: 2411191988864638851}
+--- !u!114 &1707863638839676000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3092404370797837570}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ObservedComponentsFoldoutOpen: 1
+  Group: 0
+  prefixField: -1
+  Synchronization: 3
+  OwnershipTransfer: 0
+  observableSearch: 2
+  ObservedComponents:
+  - {fileID: 374725266386479120}
+  sceneViewId: 0
+  InstantiationId: 0
+  isRuntimeInstantiated: 0
+--- !u!114 &374725266386479120
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3092404370797837570}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9b8c4a61274f60b4ea5fb4299cfdbf14, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ShowLayerWeightsInspector: 1
+  ShowParameterInspector: 1
+  m_SynchronizeParameters:
+  - Type: 4
+    SynchronizeType: 2
+    Name: Show
+  m_SynchronizeLayers:
+  - SynchronizeType: 0
+    LayerIndex: 0
 --- !u!1 &7964764976274061962
 GameObject:
   m_ObjectHideFlags: 0
@@ -139,10 +221,10 @@ RectTransform:
   m_Father: {fileID: 4864570629686081739}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -0.00028229, y: 0.000015259}
-  m_SizeDelta: {x: 100.42, y: 125.37}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 1, y: 1}
+  m_AnchoredPosition: {x: 0.1322937, y: 0.1126709}
+  m_SizeDelta: {x: 0.26456, y: -0.2254}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &2043289646945881584
 CanvasRenderer:
@@ -174,8 +256,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: My gym teacher got fire for adding _____ to the obstacle course
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 38d522233de6f8c45ad98e536a08e939, type: 2}
-  m_sharedMaterial: {fileID: 2050109843522086529, guid: 38d522233de6f8c45ad98e536a08e939, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 34bde709214ab7f4baac59e829694795, type: 2}
+  m_sharedMaterial: {fileID: 5375374886263196432, guid: 34bde709214ab7f4baac59e829694795, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -199,8 +281,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 15
-  m_fontSizeBase: 15
+  m_fontSize: 35
+  m_fontSizeBase: 35
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -235,7 +317,7 @@ MonoBehaviour:
   m_VertexBufferAutoSizeReduction: 0
   m_useMaxVisibleDescender: 1
   m_pageToDisplay: 1
-  m_margin: {x: 5, y: 10, z: 5, w: 10}
+  m_margin: {x: 28.807373, y: 29.484009, z: 39.62915, w: 37.42163}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   m_hasFontAssetChanged: 0

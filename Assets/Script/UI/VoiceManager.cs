@@ -25,9 +25,8 @@ public class VoiceManager : MonoBehaviour
     public Toggle enableVoiceChatToggle;
 
     [Header("Sound Info")]
-    public GameObject soundIconContainer;
-    public GameObject soundIconOn;
     public GameObject soundIconOff;
+    public bool allPlayersStartMute = true;
 
     [Header("References")]
     public Color openSettingsColor = Color.black;
@@ -42,13 +41,14 @@ public class VoiceManager : MonoBehaviour
     private Recorder recorder;
     private PunVoiceClient punVoiceClient;
     private bool voiceSettingsActive;
-    private List<GameObject> voiceObjects = new List<GameObject>();
+    private List<VoiceController> voiceObjects = new List<VoiceController>();
     private List<VoiceUI> users = new List<VoiceUI>();
 
     public void Awake()
     {
         voiceSettingsButton.onClick.AddListener(ToggleVoiceSettingsMenu); //TODO add somewhere a listener for and ESC button, if the settings are open, close them;
-        enableVoiceChatToggle.onValueChanged.AddListener(EnableVoiceSound);
+        enableVoiceChatToggle.onValueChanged.AddListener(EnableAudioSourceSystem);
+        soundIconOff.SetActive(false);
 
         DisableVoiceSettings();
 #if !UNITY_EDITOR
@@ -59,15 +59,14 @@ public class VoiceManager : MonoBehaviour
     #region Settings
     public void EnableVoiceSettings()
     {
-        voiceSettingsButton.gameObject.SetActive(true);
         punVoiceClient = GetComponent<PunVoiceClient>();
-        soundIconContainer.SetActive(true);
+        if (PhotonNetwork.IsMasterClient) return;
 
+        voiceSettingsButton.gameObject.SetActive(true);
         if (punVoiceClient != null)
             recorder = punVoiceClient.PrimaryRecorder;
 
         InstantiatePhotonVoiceObject();
-        EnableVoiceSound(true);
         CompleteDropdown();
     }
 
@@ -75,7 +74,6 @@ public class VoiceManager : MonoBehaviour
     {
         SetVoiceSettingsVisible(false);
         voiceSettingsButton.gameObject.SetActive(false);
-        soundIconContainer.gameObject.SetActive(false);
 
         ClearData();
     }
@@ -85,12 +83,17 @@ public class VoiceManager : MonoBehaviour
         SetVoiceSettingsVisible(!voiceSettingsActive);
     }
 
-    private void EnableVoiceSound(bool value)
+    private void EnableAudioSourceSystem(bool value)
     {
-        voiceController.EnabelSoundSystem(value);
+        print("AudioSourceSystem was: " + value);
+        MasterVoiceManager.Instance.RPCMaster(nameof(MasterVoiceManager.Instance.RequestUpdateSoundStatus), PhotonNetwork.LocalPlayer, value);
         micContainers.gameObject.SetActive(value);
         soundIconOff.SetActive(!value);
-        //soundIconOn.SetActive(value);
+
+        SetAudioInVoiceObjects(value);
+
+        if (!value) //if we are disabling the system, we want to mute ourselves
+            voiceController.SetMic(value);
     }
 
     private void SetVoiceSettingsVisible(bool value)
@@ -120,12 +123,10 @@ public class VoiceManager : MonoBehaviour
     public void InstantiatePhotonVoiceObject() //we set ourselves here
     {
         var voice = PhotonNetwork.Instantiate("VoiceObject", Vector3.zero, Quaternion.identity);
-        AddVoiceObject(voice);
-
         voiceController = voice.GetComponent<VoiceController>();
         CreateVisualUI(voiceController, PhotonNetwork.LocalPlayer);
-
-        MasterVoiceManager.Instance.AddSoundReference(voiceController, PhotonNetwork.LocalPlayer);
+        voiceController.SetMic(!allPlayersStartMute);
+        AddVoiceObject(voiceController);
     }
 
     public void CreateVisualUI(VoiceController voiceController, Player player)
@@ -139,10 +140,18 @@ public class VoiceManager : MonoBehaviour
             users.Add(voiceUI);
     }
 
-    public void AddVoiceObject(GameObject voice)
+    public void AddVoiceObject(VoiceController voice)
     {
         if (voiceObjects.Contains(voice)) return;
         voiceObjects.Add(voice);
+    }
+
+    public void SetAudioInVoiceObjects(bool canHear)
+    {
+        for (int i = voiceObjects.Count - 1; i >= 0; i--)
+        {
+            voiceObjects[i].audioSource.enabled = canHear;
+        }
     }
 
     public void ClearData()
@@ -155,12 +164,5 @@ public class VoiceManager : MonoBehaviour
             voiceObjects.Remove(voice);
             Destroy(voice);
         }
-
-        //for (int i = users.Count - 1; i >= 0; i--)
-        //{
-        //    var user = users[i];
-        //    users.Remove(user);
-        //    Destroy(user);
-        //}
     }
 }

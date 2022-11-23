@@ -16,14 +16,33 @@ public class VoiceController : MonoBehaviourPun
     private bool hasVoiceUser = false;
     private bool isUsingMic = false;
     private bool isSoundOpen = true;
+    private bool lastMicStatusWasOpen = false;
+
+    public Player Owner { get; private set; }
 
     void Awake()
     {
-        if (!photonView.IsMine)
+        transform.SetParent(CommunicationsManager.Instance.transform);
+
+        Owner = photonView.Owner;
+
+        if (PhotonNetwork.IsMasterClient)
         {
-            CommunicationsManager.Instance.voiceManager.CreateVisualUI(this, photonView.Owner);
-            CommunicationsManager.Instance.voiceManager.AddVoiceObject(this.gameObject);
+            MasterVoiceManager.Instance.AddSoundReference(this, Owner);
+            audioSource.enabled = false;
+            return;
         }
+
+        if (photonView.IsMine)
+        {
+            gameObject.name += "OWNER";
+        }
+        else
+        {
+            CommunicationsManager.Instance.voiceManager.CreateVisualUI(this, Owner);
+            CommunicationsManager.Instance.voiceManager.AddVoiceObject(this);
+        }
+
     }
 
     void Update()
@@ -34,7 +53,7 @@ public class VoiceController : MonoBehaviourPun
         if (photonView.IsMine)
         {
             if (Input.GetKeyDown(KeyCode.M))
-                ToggleVoice();
+                ToggleMic();
         }
         else
         {
@@ -43,55 +62,74 @@ public class VoiceController : MonoBehaviourPun
 
     }
 
-    public void ToggleVoice()
+    public void ToggleMic()
     {
-        SetVoice(!isUsingMic);
+        SetMic(!isUsingMic);
     }
 
-    public void SetVoice(bool value)
+    public void SetMic(bool value)
     {
         isUsingMic = value;
-        PunVoiceClient.Instance.PrimaryRecorder.TransmitEnabled = isUsingMic;
-        voiceUI.SetMicStatus(isUsingMic);
+        PunVoiceClient.Instance.PrimaryRecorder.TransmitEnabled = value;
+        voiceUI.SetMicStatus(value);
     }
 
     public void SetUI(VoiceUI voiceUser, Player player)
     {
-        voiceUI = voiceUser;
         hasVoiceUser = true;
         isSoundOpen = true;
-        voiceUI.SetUser(speaker, player);
-        voiceUI.micButton.onClick.AddListener(ToggleVoice);
-        voiceUI.SetSoundEnabled(true);
-        SetVoice(false);
-        //The system by default is open
+        voiceUI = voiceUser;
+        voiceUI.micButton.onClick.AddListener(ToggleMic);
+        voiceUI.SetUser(player);
+
+        if (!photonView.IsMine)
+            voiceUI.SetMicStatus(speaker.IsPlaying);
     }
 
     public void EnabelSoundSystem(bool value)
     {
-        isSoundOpen = value;
-        audioSource.volume = value ? 1.0f : 0.0f;
-        SetVoice(value);
-
-        voiceUI.SetSoundEnabled(value);
-
-        photonView.RPC(nameof(UpdateSoundSystem), RpcTarget.Others, isSoundOpen);
+        SetSoundSystem(value);
+        photonView.RPC(nameof(UpdateSoundSystem), RpcTarget.Others, value);
     }
 
     [PunRPC]
     private void UpdateSoundSystem(bool isOpen)
     {
         if (PhotonNetwork.IsMasterClient) return;
-        EnabelSoundSystem(isOpen);
+        SetSoundSystem(isOpen);
     }
 
+    private void SetSoundSystem(bool value)
+    {
+        if (!hasVoiceUser) return;
+        isSoundOpen = value;
+        audioSource.enabled = value;
+        voiceUI.SetSoundEnabled(value);
+
+        if (photonView.IsMine) 
+        {
+            if (value)
+                voiceUI.SetMicStatus(lastMicStatusWasOpen);
+            else
+                lastMicStatusWasOpen = isUsingMic;
+        }
+        else
+        {
+            voiceUI.SetMicStatus(speaker.IsPlaying);
+        }
+
+        print($"{photonView.Owner.NickName} was called, set sound system to set sound to: " + value);
+    }
 
     private void OnDestroy()
     {
+        if (PhotonNetwork.IsMasterClient && MasterVoiceManager.Instance != null)
+            MasterVoiceManager.Instance.RemoveSoundReference(this, photonView.Owner);
+
         if (hasVoiceUser)
         {
             if (voiceUI == null) return;
-            voiceUI.micButton.onClick.RemoveListener(ToggleVoice);
+            voiceUI.micButton.onClick.RemoveListener(ToggleMic);
             Destroy(voiceUI.gameObject);
         }
     }

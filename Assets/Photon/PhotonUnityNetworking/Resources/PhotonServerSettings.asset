@@ -49,12 +49,8 @@ MonoBehaviour:
   - UpdateSoundSystem
   - AddPlayerToColorList
   - RemovePlayerFromColorList
-  - RequestCards
+  - ReferenceSound
   - RequestSelect
-  - RequestText
-  - UpdateCards
-  - UpdateText
-  - UpdatePoints
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 1

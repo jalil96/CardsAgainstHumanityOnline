@@ -32,6 +32,7 @@ public class CharacterHandUI : MonoBehaviour
         {
             card.Activate();
         }
+        _selector.SetActive(true);
     }
 
     private void HideWhiteCards()
@@ -40,6 +41,7 @@ public class CharacterHandUI : MonoBehaviour
         {
             card.Deactivate();
         }
+        _selector.SetActive(false);
     }
 
     private void SetNewCards()

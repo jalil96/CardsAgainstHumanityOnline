@@ -14,13 +14,17 @@ public class CardModel : MonoBehaviourPun
 {
 
     public Action<string> OnTextUpdated = delegate(string s) {  };
+    public Action<bool> OnHovered = delegate(bool b) {  };
 
     [SerializeField] private string _text;
     [SerializeField] private CardType _type;
 
     private bool _isActive = true;
-    public bool IsActive => _isActive;
+    private bool _isHovered = false;
 
+    public bool IsActive => _isActive;
+    public bool IsHovered => _isHovered;
+    
     public string Text
     {
         get
@@ -58,6 +62,12 @@ public class CardModel : MonoBehaviourPun
         gameObject.SetActive(true);
         _isActive = true;
         photonView.RPC(nameof(UpdateIsActive), RpcTarget.Others, _isActive);
+    }
+
+    public void SetHovered(bool hovered)
+    {
+        _isHovered = hovered;
+        OnHovered.Invoke(_isHovered);
     }
 
     [PunRPC]

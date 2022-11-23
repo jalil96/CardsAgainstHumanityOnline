@@ -22,10 +22,13 @@ public class SelectWinnerCardRoundAction : RoundAction
         Debug.Log($"Showing judge {MasterManager.Instance.GetPlayerFromCharacter(_judge).NickName} cards");
 
         _selectedCards = _gameManager.SelectedCards.Keys.ToList();
+        _judge.ShowWhiteCards();
         _judge.Hand.SetCards(_selectedCards.Select(c => c.Text).ToList());
         
         _characters.ForEach(character => character.HideWhiteCards());
-
+        
+        
+        
         _judge.OnSelectedCard += JudgeSelectedWinnerCard;
     }
 

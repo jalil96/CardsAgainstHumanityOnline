@@ -75,20 +75,23 @@ public class CharacterHand : MonoBehaviourPun
     
     public void MoveSelectorRight()
     {
-        _selectorIndex = Math.Min(_cards.Count-1, _selectorIndex+1);
-        photonView.RPC(nameof(UpdateSelectorIndex), RpcTarget.Others, _selectorIndex);
+        photonView.RPC(nameof(UpdateSelectorIndex), RpcTarget.All, Math.Min(_cards.Count-1, _selectorIndex+1));
     }
 
     public void MoveSelectorLeft()
     {
-        _selectorIndex = Math.Max(0, _selectorIndex-1);
-        photonView.RPC(nameof(UpdateSelectorIndex), RpcTarget.Others, _selectorIndex);
+        photonView.RPC(nameof(UpdateSelectorIndex), RpcTarget.All, Math.Max(0, _selectorIndex-1));
     }
 
     [PunRPC]
     private void UpdateSelectorIndex(int index)
     {
         _selectorIndex = index;
+        if (PhotonNetwork.IsMasterClient)
+        {
+            _cards.ForEach(c => c.SetHovered(false));
+        }
+        _cards[_selectorIndex].SetHovered(true);
     }
 
     public void SelectCard()

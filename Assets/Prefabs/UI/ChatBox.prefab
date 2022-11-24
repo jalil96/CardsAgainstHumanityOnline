@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 8190067891864379528}
   - component: {fileID: 2773971987693397889}
   m_Layer: 5
-  m_Name: ChatBox_Scroll View
+  m_Name: ChatButtons_Scroll View
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -950,6 +950,7 @@ MonoBehaviour:
   inputField: {fileID: 2226245802546228500}
   mainChatButton: {fileID: 4799601677054599302}
   chatPrivateButtonsContainer: {fileID: 6483532313351476888}
+  chatScrollRect: {fileID: 2226245803990122228}
   minimizedChat: {fileID: 4445222418778818807}
   sendButton: {fileID: 5702463103261245782}
   colorNameList:
@@ -1627,8 +1628,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0.20245361, y: 0.15570068}
-  m_SizeDelta: {x: -0.40503, y: -0.30945}
+  m_AnchoredPosition: {x: -4.1738, y: 7.157715}
+  m_SizeDelta: {x: -9.1575, y: -14.3134}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &2226245803990122218
 CanvasRenderer:

@@ -43,7 +43,15 @@ public class CommandManager : MonoBehaviour
             {
                 if(target == privateMessage)
                 {
-                    currentMessage = words[1];
+                    if (words.Length > 1)
+                    {
+                        currentMessage = words[1];
+                    }
+                    else
+                    {
+                        ErrorCommand($"Forgot to add nickname");
+                        return true;
+                    }
                 }
 
                 value();

@@ -11,6 +11,9 @@ using Photon.Voice;
 using JetBrains.Annotations;
 using System.Linq;
 using UnityEngine.SocialPlatforms;
+using UnityEngine.UIElements;
+using Button = UnityEngine.UI.Button;
+using System.ComponentModel;
 
 public class ChatManager : MonoBehaviour, IChatClientListener
 {
@@ -23,6 +26,7 @@ public class ChatManager : MonoBehaviour, IChatClientListener
     public TMP_InputField inputField;
     public PrivateChatButton mainChatButton;
     public GameObject chatPrivateButtonsContainer;
+    public ScrollRect chatScrollRect;
 
     [Header("Buttons")]
     public Button minimizedChat;
@@ -42,6 +46,7 @@ public class ChatManager : MonoBehaviour, IChatClientListener
     private string errorHexColor;
 
     //private variables
+    private RectTransform scrollContainer;
     private ChatClient _chatClient;
     private string _channel;
     private Dictionary<string, int> playersColorDictionary = new Dictionary<string, int>();
@@ -143,6 +148,11 @@ public class ChatManager : MonoBehaviour, IChatClientListener
         }
 
         inputField.text = "";
+        SelectInputField();
+    }
+
+    private void SelectInputField()
+    {
         inputField.ActivateInputField();
         inputField.Select();
     }
@@ -150,6 +160,7 @@ public class ChatManager : MonoBehaviour, IChatClientListener
     private void OpenAPrivateChat(string nickname)
     {
         string text = "";
+
         if (!IsInUserList(nickname))
         {
             text = $"{ColorfyWords($"ERROR: User '{nickname}' was not found", errorHexColor)} \n";
@@ -157,8 +168,16 @@ public class ChatManager : MonoBehaviour, IChatClientListener
             return;
         }
 
+        if(nickname == PhotonNetwork.LocalPlayer.NickName)
+        {
+            text = $"{ColorfyWords($"ERROR: can't open a chat with yourself", errorHexColor)} \n";
+            UpdateText(text);
+            return;
+        }
+
         text = $"{ColorfyWords($"A private chat with {nickname}' was open, say 'Hi'", serverHexColor)} \n";
         UpdateChats(nickname, text, true);
+        SelectInputField();
     }
 
     public void SendPrivateChatMessage(string message)
@@ -241,6 +260,7 @@ public class ChatManager : MonoBehaviour, IChatClientListener
         PrivateChatButton chatButton = GetPrivateChat(nickname, forceShow);
 
         chatButton.UpdateText(newText);
+        StartCoroutine(ScrollToBottom());
     }
 
     private PrivateChatButton GetPrivateChat(string nickname, bool forceShow = false)
@@ -268,6 +288,14 @@ public class ChatManager : MonoBehaviour, IChatClientListener
         privateChatsButtons[nickname] = newButton;
         privateUserButtons[newButton] = nickname;
         return newButton;
+    }
+
+    public IEnumerator ScrollToBottom()
+    {
+        LayoutRebuilder.ForceRebuildLayoutImmediate(scrollContainer);
+        yield return new WaitForEndOfFrame();
+        yield return new WaitForEndOfFrame();
+        chatScrollRect.verticalNormalizedPosition = 1f;
     }
 
     private void CloseChat(PrivateChatButton chatbutton)
@@ -300,6 +328,7 @@ public class ChatManager : MonoBehaviour, IChatClientListener
         ChatMinimized = false;
         currentNumberOfNewMessages = 0;
         RefreshCurrentView();
+        SelectInputField();
     }
 
     private void MinimizedChat()

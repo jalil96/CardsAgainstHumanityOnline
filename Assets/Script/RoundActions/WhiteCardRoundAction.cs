@@ -45,6 +45,7 @@ public class WhiteCardRoundAction : RoundAction
 
         Debug.Log($"Player: {MasterManager.Instance.GetPlayerFromCharacter(character).NickName} selected a card");
         
+        character.HideWhiteCards();
         if (_selectedCardCharacters.Count != _characters.Count) return;
 
         Debug.Log($"All players players selected their cards");

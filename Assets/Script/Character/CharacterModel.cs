@@ -38,6 +38,7 @@ public class CharacterModel : MonoBehaviourPun
 
     public void Move(bool dir)
     {
+        if (_selectedCard) return;
         if (dir) 
             _hand.MoveSelectorRight();
         else

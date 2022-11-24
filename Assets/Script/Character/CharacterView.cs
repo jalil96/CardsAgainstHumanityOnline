@@ -26,6 +26,7 @@ public class CharacterView : MonoBehaviour
     {
         _playerName.text = _model.NickName;
         _playerName.transform.rotation = Quaternion.identity;
+        _points.transform.rotation = Quaternion.identity;
     }
 
     private void Update()

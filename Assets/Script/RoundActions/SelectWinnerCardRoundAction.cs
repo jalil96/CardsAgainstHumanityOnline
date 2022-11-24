@@ -6,7 +6,9 @@ using UnityEngine;
 public class SelectWinnerCardRoundAction : RoundAction
 {
     [SerializeField] private GameManager _gameManager;
-
+    [SerializeField] private ChronometerController _chronometer;
+    [Range(1, 1000)] [SerializeField] private float _chronometerTime = 30f;
+    
     private List<CharacterModel> _characters;
     private CharacterModel _judge;
     private List<CardModel> _selectedCards;
@@ -27,7 +29,8 @@ public class SelectWinnerCardRoundAction : RoundAction
         
         _characters.ForEach(character => character.HideWhiteCards());
         
-        
+        _chronometer.StartChronometer(_chronometerTime);
+        _chronometer.OnChronometerTimeElapsed += ChronometerTimeEnded;
         
         _judge.OnSelectedCard += JudgeSelectedWinnerCard;
     }
@@ -51,8 +54,17 @@ public class SelectWinnerCardRoundAction : RoundAction
         }
         
         _judge.OnSelectedCard = delegate(CharacterModel model) {  };
+        _chronometer.OnChronometerTimeElapsed = delegate {};
+        _chronometer.StopChronometer();
 
         OnEndRoundAction.Invoke();
+    }
+    
+    private void ChronometerTimeEnded()
+    {
+        _chronometer.StopChronometer();
+        _chronometer.OnChronometerTimeElapsed = delegate {};
+        _judge.SelectCard();
     }
 
     public override void EndRoundAction()

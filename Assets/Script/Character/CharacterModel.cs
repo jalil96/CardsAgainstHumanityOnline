@@ -13,14 +13,15 @@ public class CharacterModel : MonoBehaviourPun
 
     [SerializeField] private CharacterHand _hand;
     [SerializeField] private int _points;
-    
 
+    private bool _selectedCard;
     private bool _isMine = false;
     private bool _hidenCards = false;
     
     public bool IsMine => _isMine;
     public bool HidenCards => _hidenCards;
-
+    public bool SelectedCard => _selectedCard;
+    
     public int Points
     {
         get => _points;
@@ -47,8 +48,14 @@ public class CharacterModel : MonoBehaviourPun
     {
         if (_hidenCards) return;
         _hand.SelectCard();
+        _selectedCard = true;
         if (_hand.GetSelectedCard() != null) OnSelectedCard.Invoke(this);
         else OnUnselectedCard.Invoke(this);
+    }
+
+    public void SetSelectedCard(bool selected)
+    {
+        _selectedCard = selected;
     }
 
     public void SetIsMine(bool isMine)
@@ -65,7 +72,7 @@ public class CharacterModel : MonoBehaviourPun
     {
         photonView.RPC(nameof(UpdateHideWhiteCards), RpcTarget.All);
     }
-    
+
     [PunRPC]
     private void UpdateShowWhiteCards()
     {

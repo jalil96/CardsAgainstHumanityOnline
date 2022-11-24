@@ -7,7 +7,9 @@ using UnityEngine;
 public class WhiteCardRoundAction : RoundAction
 {
     [SerializeField] private GameManager _gameManager;
-
+    [SerializeField] private ChronometerController _chronometer;
+    [Range(1, 1000)] [SerializeField] private float _chronometerTime = 30f;
+    
     private List<CharacterModel> _characters;
     private CharacterModel _judge;
 
@@ -28,8 +30,12 @@ public class WhiteCardRoundAction : RoundAction
         {
             character.OnSelectedCard += CharacterSelectedCard;
             character.OnUnselectedCard += CharacterUnselectedCard;
+            character.SetSelectedCard(false);
             character.ShowWhiteCards();
         });
+        
+        _chronometer.StartChronometer(_chronometerTime);
+        _chronometer.OnChronometerTimeElapsed += ChronometerTimeEnded;
     }
 
     private void CharacterSelectedCard(CharacterModel character)
@@ -58,6 +64,10 @@ public class WhiteCardRoundAction : RoundAction
 
         _gameManager.SelectedCards = _selectedCards;
         _selectedCardCharacters.Clear();
+        
+        _chronometer.OnChronometerTimeElapsed = delegate {};
+        _chronometer.StopChronometer();
+        
         OnEndRoundAction.Invoke();
     }
     
@@ -66,9 +76,16 @@ public class WhiteCardRoundAction : RoundAction
         if (!_selectedCardCharacters.Contains(character)) return;
         _selectedCardCharacters.Remove(character);
     }
-    
-    private void Update()
+
+    private void ChronometerTimeEnded()
     {
-        
+        _characters.ForEach(c =>
+        {
+            if (!c.SelectedCard)
+            {
+                c.SelectCard();    
+            }
+        });
     }
+    
 }

@@ -53,6 +53,7 @@ public class CharacterHand : MonoBehaviourPun
         }
         Debug.Log(debug);
         // end debug
+        _activeCards = cards.Length;
         for (var i = 0; i < _cards.Count; i++)
         {
             if (cards.Length > i)
@@ -75,7 +76,7 @@ public class CharacterHand : MonoBehaviourPun
     
     public void MoveSelectorRight()
     {
-        photonView.RPC(nameof(UpdateSelectorIndex), RpcTarget.All, Math.Min(_cards.Count-1, _selectorIndex+1));
+        photonView.RPC(nameof(UpdateSelectorIndex), RpcTarget.All, Math.Min(_activeCards-1, _selectorIndex+1));
     }
 
     public void MoveSelectorLeft()

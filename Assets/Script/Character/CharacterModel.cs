@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Runtime.InteropServices;
 using Photon.Pun;
+using Photon.Realtime;
 using UnityEngine;
+using UnityEngine.PlayerLoop;
 
 public class CharacterModel : MonoBehaviourPun
 {
@@ -9,7 +11,8 @@ public class CharacterModel : MonoBehaviourPun
     public Action<CharacterModel> OnUnselectedCard = delegate(CharacterModel model) {  };
     public Action OnHideCards = delegate {};
     public Action OnShowCards = delegate {};
-
+    public Action OnNickNameUpdated = delegate {};
+    public Action OnPointsUpdated = delegate {};
 
     [SerializeField] private CharacterHand _hand;
     [SerializeField] private int _points;
@@ -17,10 +20,12 @@ public class CharacterModel : MonoBehaviourPun
     private bool _selectedCard;
     private bool _isMine = false;
     private bool _hidenCards = false;
+    private string _nickName;
     
     public bool IsMine => _isMine;
     public bool HidenCards => _hidenCards;
     public bool SelectedCard => _selectedCard;
+    public string NickName => _nickName; 
     
     public int Points
     {
@@ -34,7 +39,6 @@ public class CharacterModel : MonoBehaviourPun
 
     public CharacterHand Hand => _hand;
     public int HandSelectorIndex => _hand.SelectorIndex;
-    
 
     public void Move(bool dir)
     {
@@ -62,6 +66,12 @@ public class CharacterModel : MonoBehaviourPun
     public void SetIsMine(bool isMine)
     {
         _isMine = isMine;
+    }
+
+    public void SetNickName(string nickName)
+    {
+        _nickName = nickName;
+        photonView.RPC(nameof(UpdateNickName), RpcTarget.Others, _nickName);
     }
         
     public void ShowWhiteCards()
@@ -94,5 +104,13 @@ public class CharacterModel : MonoBehaviourPun
     private void UpdatePoints(int points)
     {
         _points = points;
+        OnPointsUpdated.Invoke();
+    }
+
+    [PunRPC]
+    private void UpdateNickName(string nickName)
+    {
+        _nickName = nickName;
+        OnNickNameUpdated.Invoke();
     }
 }

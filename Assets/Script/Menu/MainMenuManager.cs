@@ -103,6 +103,11 @@ public class MainMenuManager : MonoBehaviourPunCallbacks
         RestartMenu();
     }
 
+    public void Start()
+    {
+        CommunicationsManager.Instance.commandManager.IsGameplay(false);
+    }
+
     public void RestartMenu()
     {
         if (PhotonNetwork.IsConnectedAndReady)

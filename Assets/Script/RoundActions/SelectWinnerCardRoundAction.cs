@@ -8,6 +8,7 @@ public class SelectWinnerCardRoundAction : RoundAction
     [SerializeField] private GameManager _gameManager;
     [SerializeField] private ChronometerController _chronometer;
     [Range(1, 1000)] [SerializeField] private float _chronometerTime = 30f;
+    [SerializeField] private TempCardsController _tempCardsController;
     
     private List<CharacterModel> _characters;
     private CharacterModel _judge;
@@ -23,10 +24,14 @@ public class SelectWinnerCardRoundAction : RoundAction
         
         Debug.Log($"Showing judge {MasterManager.Instance.GetPlayerFromCharacter(_judge).NickName} cards");
 
+        
+        
         _selectedCards = _gameManager.SelectedCards.Keys.ToList();
         _judge.ShowWhiteCards();
         _judge.SetSelectedCard(false);
         _judge.Hand.SetCards(_selectedCards.Select(c => c.Text).ToList());
+        
+        _tempCardsController.SendCardsToCharacter(_judge.transform);
         
         _characters.ForEach(character => character.HideWhiteCards());
         

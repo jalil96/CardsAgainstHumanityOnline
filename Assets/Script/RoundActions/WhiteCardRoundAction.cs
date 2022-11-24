@@ -9,6 +9,7 @@ public class WhiteCardRoundAction : RoundAction
     [SerializeField] private GameManager _gameManager;
     [SerializeField] private ChronometerController _chronometer;
     [Range(1, 1000)] [SerializeField] private float _chronometerTime = 30f;
+    [SerializeField] private TempCardsController _tempCardsController;
     
     private List<CharacterModel> _characters;
     private CharacterModel _judge;
@@ -46,6 +47,7 @@ public class WhiteCardRoundAction : RoundAction
         Debug.Log($"Player: {MasterManager.Instance.GetPlayerFromCharacter(character).NickName} selected a card");
         
         character.HideWhiteCards();
+        _tempCardsController.SpawnTempCard(character.transform.position, character.transform.rotation, true);
         if (_selectedCardCharacters.Count != _characters.Count) return;
 
         Debug.Log($"All players players selected their cards");

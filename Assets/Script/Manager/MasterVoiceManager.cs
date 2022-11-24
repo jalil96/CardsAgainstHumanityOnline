@@ -76,5 +76,6 @@ public class MasterVoiceManager : MonoBehaviourPun
             _soundReference[client].EnabelSoundSystem(isSoundOpen);
         }
     }
+
     #endregion
 }

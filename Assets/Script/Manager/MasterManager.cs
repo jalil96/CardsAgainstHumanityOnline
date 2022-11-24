@@ -12,17 +12,21 @@ public class MasterManager : MonoBehaviourPun
     private Dictionary<Player, CharacterModel> _characterModelReferences = new Dictionary<Player, CharacterModel>();
     private Dictionary<CharacterModel, Player> _playerReferences = new Dictionary<CharacterModel, Player>();
 
+    [SerializeField] private GameObject _winScreen;
+    [SerializeField] private GameObject _loseScreen;
     private void Awake()
     {
         if (_instance != null) Destroy(gameObject);
         else _instance = this;
+        _winScreen.SetActive(false);
+        _loseScreen.SetActive(false);
     }
 
     public void RPCMaster(string methodName, params object[] p)
     {
         RPC(methodName, PhotonNetwork.MasterClient, p);
     }
-    private void RPC(string methodName, Player target, params object[] p)
+    public void RPC(string methodName, Player target, params object[] p)
     {
         photonView.RPC(methodName, target, p);
     }
@@ -59,5 +63,12 @@ public class MasterManager : MonoBehaviourPun
         {
             _characterModelReferences[client].SelectCard();
         }
+    }
+
+    [PunRPC]
+    public void WinConditionMet(bool winner)
+    {
+        if (winner) _winScreen.SetActive(true);
+        else _loseScreen.SetActive(true);
     }
 }

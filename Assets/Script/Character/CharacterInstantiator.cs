@@ -31,8 +31,11 @@ public class CharacterInstantiator : MonoBehaviourPunCallbacks
         
             var character = PhotonNetwork.Instantiate("Character", spawnPointT.position, spawnPointT.localRotation);
             var characterModel = character.GetComponent<CharacterModel>();
-            _characters.Add(characterModel);
+
+            characterModel.SetNickName(player.NickName);
             
+            _characters.Add(characterModel);
+
             photonView.RPC(nameof(ReferenceCharacter), player, characterModel.photonView.ViewID);
             
             MasterManager.Instance.AddCharacterModelReference(characterModel, player);
@@ -49,8 +52,9 @@ public class CharacterInstantiator : MonoBehaviourPunCallbacks
 
         if (character != null)
         {
+            character.SetIsMine(true);
+            character.Hand.SetIsMine(true);
             var handUI = FindObjectOfType<CharacterHandUI>();
-            
             handUI.SetCharacterHand(character.Hand);
         }
     }

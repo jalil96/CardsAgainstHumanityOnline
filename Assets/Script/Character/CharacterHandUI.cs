@@ -9,11 +9,6 @@ public class CharacterHandUI : MonoBehaviour
     [SerializeField] private List<Transform> _selectorPositions;
     [SerializeField] private List<UICard> _cards;
 
-    private void Start()
-    {
-        _hand.OnSetNewCards += OnSetCards;
-    }
-
     private void Update()
     {
         if (_hand == null) return;
@@ -21,26 +16,14 @@ public class CharacterHandUI : MonoBehaviour
         _selector.transform.position = new Vector2(pos.x, pos.y);
     }
 
-    private void OnSetCards()
-    {
-        for (int i = 0; i < _cards.Count; i++)
-        {
-            if (i < _hand.Cards.Count)
-            {
-                _cards[i].text.text = _hand.Cards[i].Text;
-            }
-            else
-            {
-                _cards[i].Deactivate();
-            }
-        }
-    }
-
     public void SetCharacterHand(CharacterHand characterHand)
     {
         _hand = characterHand;
         _hand.OnShowWhiteCards += ShowWhiteCards;
         _hand.OnHideWhiteCards += HideWhiteCards;
+        _hand.OnSetNewCards += SetNewCards;
+        
+        SetNewCards();
     }
 
     private void ShowWhiteCards()
@@ -49,6 +32,7 @@ public class CharacterHandUI : MonoBehaviour
         {
             card.Activate();
         }
+        _selector.SetActive(true);
     }
 
     private void HideWhiteCards()
@@ -56,6 +40,23 @@ public class CharacterHandUI : MonoBehaviour
         foreach (var card in _cards)
         {
             card.Deactivate();
+        }
+        _selector.SetActive(false);
+    }
+
+    private void SetNewCards()
+    {
+        for (var i = 0; i < _cards.Count; i++)
+        {
+            if (_hand.Cards[i].IsActive)
+            {
+                _cards[i].text.text = _hand.Cards[i].Text;
+                _cards[i].Activate();
+            }
+            else
+            {
+                _cards[i].Deactivate();
+            }
         }
     }
 }

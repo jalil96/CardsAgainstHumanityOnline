@@ -8,7 +8,6 @@ using UnityEngine.UI;
 public class RoomSelectionPanel : MonoBehaviourPunCallbacks
 {
     public GameObject roomListContainer;
-    public Button goBackButton;
     public RoomDisplay roomPrefab;
     public Text availableRoomsNumber;
     public GameObject loadingAnimation;
@@ -36,8 +35,6 @@ public class RoomSelectionPanel : MonoBehaviourPunCallbacks
         mainMenu.chooseRoomPanel.OnOpen += OnOpen;
         mainMenu.chooseRoomPanel.OnClose += OnClose;
 
-        goBackButton.onClick.AddListener(GoBack);
-
         roomPrefab.gameObject.SetActive(false);
         loadingAnimation.SetActive(false);
 
@@ -61,7 +58,7 @@ public class RoomSelectionPanel : MonoBehaviourPunCallbacks
         else
             mainMenu.SetStatus("No rooms found");
 
-        mainMenu.ChangePanel(mainMenu.choosePanels);
+        mainMenu.ChangePanel(mainMenu.ChoosePanel);
     }
 
     public override void OnRoomListUpdate(List<RoomInfo> roomList)
@@ -178,7 +175,7 @@ public class RoomSelectionPanel : MonoBehaviourPunCallbacks
     {
         RoomDisplay currentDisplay = currentRoomButtons[index];
         currentDisplay.nameTxt.text = room.Name;
-        currentDisplay.numberTxt.text = $"{room.PlayerCount} / {room.MaxPlayers} ";
+        currentDisplay.numberTxt.text = $"{room.PlayerCount - 1} / {room.MaxPlayers - 1} "; //We erase one number as that one is the server
         currentDisplay.RoomInfo = room;
         currentDisplay.joinButton.onClick.AddListener(() => OnClickRoom(currentDisplay));
     }

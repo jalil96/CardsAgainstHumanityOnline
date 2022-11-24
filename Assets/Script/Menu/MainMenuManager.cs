@@ -3,16 +3,24 @@ using Photon.Realtime;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class MainMenuManager : MonoBehaviourPunCallbacks
 {
+    private const string DEFAULT_SERVER_NAME = "Server";
     private const string DEFAULT_ROOM_NAME = "TestRoom";
-    private const string DEFAULT_NICK_NAME = "TestUser";
-    private const int DEFAULT_MAX_PLAYERS = 4;
-    private const int MINIMUM_PLAYERS_FOR_GAME = 2;
+    private const string DEFAULT_NICK_NAME = "Player";
+    private const int DEFAULT_MAX_PLAYERS = 7; //max default is 7 instead of 6 because we have an extra that is the server 
+    private const int MINIMUM_PLAYERS_FOR_GAME = 3; //minimum default is 4 instead of 3 for the same reason
+    
+    [Header("Config")]
+    public bool isServer;
+    [Tooltip("To skip login if the build is server, this has to be false")]
+    public bool serverHasToLog;
+    public GameObject cheats;
 
     [Header("Main Settings")]
     [SerializeField] private Text txtNickname;
@@ -23,7 +31,6 @@ public class MainMenuManager : MonoBehaviourPunCallbacks
 
     [Header("All Panels")]
     public Panel loggingPanel;
-    public Panel choosePanels;
     public Panel roomSettingPanel;
     public Panel kickedPanel;
     public Panel loadingSymbolPanel;
@@ -38,10 +45,6 @@ public class MainMenuManager : MonoBehaviourPunCallbacks
     [SerializeField] private TMP_InputField nickNameInput;
     [SerializeField] private Button logInButton;
 
-    [Header("Choose")]
-    [SerializeField] private Button newRoomButton;
-    [SerializeField] private Button joinRoomButton;
-
     [Header("Prompts")]
     [SerializeField] private Button kickedOutConfirmButton;
 
@@ -53,9 +56,13 @@ public class MainMenuManager : MonoBehaviourPunCallbacks
     public MainMenuView PlayerView { get; private set; }
     public bool Kicked { get; set; }
     public int MaxPlayers { get; private set; }
+    public int RealMaxPlayers => MaxPlayers - 1;
     public int MinPlayers => MINIMUM_PLAYERS_FOR_GAME;
     public string DefaultRoom => DEFAULT_ROOM_NAME;
     public string DefaultNickname => DEFAULT_NICK_NAME;
+    public Panel ChoosePanel => isServer ? roomSettingPanel : chooseRoomPanel;
+
+    public bool ChatBoxEnabled { get; set; }
 
     //EVENTS 
     public Action<RoomInfo> OnBannedRoom = delegate { };
@@ -64,22 +71,28 @@ public class MainMenuManager : MonoBehaviourPunCallbacks
 
     public void Awake()
     {
+#if UNITY_EDITOR 
+        isServer = !ParrelSync.ClonesManager.IsClone();
+        cheats.SetActive(true);
+#else
+        cheats.gameObject.SetActive(false);
+#endif
+
         PlayerView = GetComponent<MainMenuView>();
         MaxPlayers = DEFAULT_MAX_PLAYERS;
 
         PhotonNetwork.AutomaticallySyncScene = true;
 
         //GeneratePanels
-        GenerateChoosingPanel();
         GenerateWaitJoinningRoomPanel();
         txtNickname.gameObject.SetActive(false);
         quitButton.onClick.AddListener(OnQuitButton);
         logInButton.onClick.AddListener(LogInUser);
-        kickedOutConfirmButton.onClick.AddListener(() => { ChangePanel(choosePanels); Kicked = false; });
+        kickedOutConfirmButton.onClick.AddListener(() => { ChangePanel(ChoosePanel); Kicked = false; });
+        nickNameInput.onEndEdit.AddListener(LogInUser);
 
         //Set all panels
         allPanels.Add(loggingPanel);
-        allPanels.Add(choosePanels);
         allPanels.Add(roomSettingPanel);
         allPanels.Add(roomLobbyPanel);
         allPanels.Add(kickedPanel);
@@ -94,23 +107,23 @@ public class MainMenuManager : MonoBehaviourPunCallbacks
     {
         if (PhotonNetwork.IsConnectedAndReady)
         {
-            ChangePanel(choosePanels);
+            ChangePanel(ChoosePanel);
             SetStatus("Connected to Lobby");
         }
         else
         {
+            if (isServer && !serverHasToLog)
+            {
+                ServerLogIn();
+                return;
+            } 
+
             ChangePanel(loggingPanel);
             SetStatus("Please Log In");
         }
     }
 
     #region GeneratingPanels
-    private void GenerateChoosingPanel()
-    {
-        joinRoomButton.onClick.AddListener(() => ChangePanel(chooseRoomPanel));
-        newRoomButton.onClick.AddListener(() => ChangePanel(roomSettingPanel));
-    }
-
     private void GenerateWaitJoinningRoomPanel()
     {
         joiningRoomsWaitPanel.OnOpen += OnOpen;
@@ -130,10 +143,16 @@ public class MainMenuManager : MonoBehaviourPunCallbacks
     private void Update()
     {
         if (Input.GetKeyDown(KeyCode.F1))
-            QuickMatchCheat();
+            ForceServerLog();
 
         if (Input.GetKeyDown(KeyCode.F2))
-            ForceStart();
+            ForceQuickStartAsPlayer("Jess");
+
+        if (Input.GetKeyDown(KeyCode.F3))
+            ForceQuickStartAsPlayer("Jalil");
+
+        if (Input.GetKeyDown(KeyCode.F4))
+            ForceQuickStartAsPlayer("Sebas");
     }
 
     private IEnumerator JoinRandomRoomTimer(float timer)
@@ -144,16 +163,18 @@ public class MainMenuManager : MonoBehaviourPunCallbacks
 
         if (!PhotonNetwork.InRoom)
         {
-            ChangePanel(choosePanels);
+            ChangePanel(ChoosePanel);
             SetStatus("No rooms found");
         }
     }
 
-    private void QuickMatchCheat()
+    private void ForceQuickStartAsPlayer(string nickname)
     {
         ChangePanel(loadingSymbolPanel);
-        
-        PhotonNetwork.NickName = DEFAULT_NICK_NAME;
+
+        isServer = false;
+
+        PhotonNetwork.NickName = nickname;
         txtNickname.gameObject.SetActive(true);
         txtNickname.text = PhotonNetwork.NickName;
 
@@ -162,10 +183,21 @@ public class MainMenuManager : MonoBehaviourPunCallbacks
         skipEverything = true;
     }
 
-    private void ForceStart()
+    private void ForceServerLog()
     {
-        forceStart = true;
-        QuickMatchCheat();
+        isServer = true;
+        ServerLogIn();
+    }
+
+    private void ServerLogIn()
+    {
+        ChangePanel(loadingSymbolPanel);
+        PhotonNetwork.NickName = DEFAULT_SERVER_NAME; //TODO ADD A RANDOM NUMBER TO THE NAME?
+        txtNickname.gameObject.SetActive(true);
+        txtNickname.text = PhotonNetwork.NickName;
+        PhotonNetwork.ConnectUsingSettings();
+        skipEverything = true;
+
     }
 
     public void ChangePanel(Panel panelToOpen)
@@ -186,10 +218,14 @@ public class MainMenuManager : MonoBehaviourPunCallbacks
 
     public void LogInUser()
     {
-        if (string.IsNullOrEmpty(nickNameInput.text) || string.IsNullOrWhiteSpace(nickNameInput.text)) return;
+        LogInUser(nickNameInput.text);
+    }
 
-        PhotonNetwork.NickName = nickNameInput.text;
-        txtNickname.text = nickNameInput.text;
+    public void LogInUser(string nickname)
+    {
+        if (string.IsNullOrEmpty(nickname) || string.IsNullOrWhiteSpace(nickname)) return;
+        PhotonNetwork.NickName = nickname;
+        txtNickname.text = nickname;
 
         txtNickname.gameObject.SetActive(true);
         PhotonNetwork.ConnectUsingSettings();
@@ -215,13 +251,21 @@ public class MainMenuManager : MonoBehaviourPunCallbacks
     {
         if (skipEverything)
         {
-            OnBaseCreateRoom.Invoke("", DEFAULT_MAX_PLAYERS);
-            SetStatus("Getting Room");
+            if (isServer)
+            {
+                SetStatus("Force creating room");
+                OnBaseCreateRoom.Invoke("", DEFAULT_MAX_PLAYERS);
+                return;
+            }
+
+            ChangePanel(loadingSymbolPanel);
+            PhotonNetwork.JoinRandomRoom();
+            SetStatus("Searching for a random room");
             return;
         }
 
         if (!Kicked)
-            ChangePanel(choosePanels);
+            ChangePanel(ChoosePanel);
 
         SetStatus("Connected to Lobby");
     }
@@ -233,7 +277,7 @@ public class MainMenuManager : MonoBehaviourPunCallbacks
 
     public override void OnCreateRoomFailed(short returnCode, string message)
     {
-        SetStatus("Created Room failed");
+        SetStatus($"Created Room failed: {message}");
     }
 
     public override void OnJoinedRoom()
@@ -243,15 +287,16 @@ public class MainMenuManager : MonoBehaviourPunCallbacks
             PhotonNetwork.LoadLevel(Level);
             return;
         }
-
-        SetStatus("Joined Room");
+        
+        var message = isServer ? "Server created room" : "Joined Room";
+        SetStatus(message);
         ChangePanel(roomLobbyPanel);
     }
 
     public override void OnJoinRoomFailed(short returnCode, string message)
     {
         SetStatus("Joined Room failed");
-        ChangePanel(choosePanels);
+        ChangePanel(ChoosePanel);
     }
 
     public override void OnLeftRoom()
@@ -264,9 +309,11 @@ public class MainMenuManager : MonoBehaviourPunCallbacks
         }
         else
         {
-            ChangePanel(choosePanels);
+            ChangePanel(ChoosePanel);
             SetStatus("Left Room");
         }
+
+        ClearData();
     }
 
     public void KickedPlayer()

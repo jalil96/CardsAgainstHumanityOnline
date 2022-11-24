@@ -1756,8 +1756,70 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 747bba4789a3dac43a48f7f264db1dfc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  privateMessage: whisper
-  help: help
+  commandPrefix: /
+  privateMessage:
+    name: whisper
+    description: Write '/whisper Nickname' to open a private chat
+    errorMessage: 
+    isEnabled: 1
+    isGameplayOnly: 0
+    hasValidation: 0
+  help:
+    name: help
+    description: Prints a list of all available commands with a description
+    errorMessage: 
+    isEnabled: 1
+    isGameplayOnly: 0
+    hasValidation: 0
+  partypopper:
+    name: partyPooper
+    description: Make an explocion confetti and streamers as 'celebration'
+    errorMessage: 
+    isEnabled: 1
+    isGameplayOnly: 1
+    hasValidation: 0
+  mutePlayer:
+    name: mute
+    description: '''/mute Nickname'' to mute that user''s mic'
+    errorMessage: That user name is not valid
+    isEnabled: 1
+    isGameplayOnly: 0
+    hasValidation: 0
+  quitChat:
+    name: closeChat
+    description: Close tje current private chat or minimize the main one
+    errorMessage: 
+    isEnabled: 1
+    isGameplayOnly: 0
+    hasValidation: 0
+  addTime:
+    name: addTime
+    description: '''addTime [int] to add seconds to the timer'
+    errorMessage: 
+    isEnabled: 0
+    isGameplayOnly: 1
+    hasValidation: 0
+  switchMyHand:
+    name: switchHand
+    description: Changes all your cards
+    errorMessage: 
+    isEnabled: 0
+    isGameplayOnly: 1
+    hasValidation: 0
+  switchAllHands:
+    name: switchWhites
+    description: Changes white cards from all players
+    errorMessage: 
+    isEnabled: 0
+    isGameplayOnly: 1
+    hasValidation: 0
+  switchBlackCard:
+    name: swithBlack
+    description: Changes the current black card and restarts the timer
+    errorMessage: 
+    isEnabled: 0
+    isGameplayOnly: 1
+    hasValidation: 0
   helpDescriptionColor: {r: 0.6132076, g: 0.6132076, b: 0.6132076, a: 1}
 --- !u!1 &1561858679171338154
 GameObject:

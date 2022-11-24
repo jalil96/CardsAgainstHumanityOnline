@@ -3,6 +3,7 @@ using Photon.Realtime;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -39,6 +40,12 @@ public class CommunicationsManager : MonoBehaviourPunCallbacks
         commandManager.gameObject.SetActive(true);
 
         SetColorListIndex(6); //Six because it's the maximum of players
+    }
+
+
+    public List<Player> GetCurrentUserList()
+    {
+        return PhotonNetwork.PlayerList.ToList();
     }
 
     #region Colors

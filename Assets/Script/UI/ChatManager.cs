@@ -1,5 +1,4 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
@@ -7,10 +6,8 @@ using Photon.Pun;
 using Photon.Chat;
 using UnityEngine.UI;
 using ExitGames.Client.Photon;
-using Photon.Voice;
 using JetBrains.Annotations;
 using System.Linq;
-using UnityEngine.SocialPlatforms;
 
 public class ChatManager : MonoBehaviour, IChatClientListener
 {
@@ -149,21 +146,12 @@ public class ChatManager : MonoBehaviour, IChatClientListener
 
     private void OpenAPrivateChat(string nickname)
     {
-        string text = "";
-        if (!IsInUserList(nickname))
-        {
-            text = $"{ColorfyWords($"ERROR: User '{nickname}' was not found", errorHexColor)} \n";
-            UpdateText(text);
-            return;
-        }
-
-        text = $"{ColorfyWords($"A private chat with {nickname}' was open, say 'Hi'", serverHexColor)} \n";
+        string text = $"{ColorfyWords($"A private chat with {nickname}' was open, say 'Hi'", serverHexColor)} \n";
         UpdateChats(nickname, text, true);
     }
 
     public void SendPrivateChatMessage(string message)
     {
-        //UpdateChats(currentChat.nickname, message);
         _chatClient.SendPrivateMessage(currentChat.nickname, message);
     }
 
@@ -252,7 +240,6 @@ public class ChatManager : MonoBehaviour, IChatClientListener
             print("Opening a new chat");
             chatButton = CreateNewPrivateChat(nickname);
         }
-
 
         if (forceShow)
             SetPrivateChatInFocus(chatButton);
@@ -370,18 +357,6 @@ public class ChatManager : MonoBehaviour, IChatClientListener
         return $"<color=#{hex}>{wordsToColor}</color>";
     }
 
-    private bool IsInUserList(string nickname)
-    {
-        var playerList = PhotonNetwork.PlayerList.ToList();
-
-        for (int i = 0; i < playerList.Count; i++)
-        {
-            if (nickname == playerList[i].NickName)
-                return true;
-        }
-        return false;
-    }
-
     #endregion
 
     #region Callbacks
@@ -492,10 +467,6 @@ public class ChatManager : MonoBehaviour, IChatClientListener
 
     public void OnUserSubscribed(string channel, string user)
     {
-        if (!IsInUserList(user))
-        {
-
-        }
         string[] friends = new string[] { user };
         _chatClient.AddFriends(friends);
 

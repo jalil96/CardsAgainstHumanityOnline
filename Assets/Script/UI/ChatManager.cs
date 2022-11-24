@@ -26,6 +26,8 @@ public class ChatManager : MonoBehaviour, IChatClientListener
     public TMP_InputField inputField;
     public PrivateChatButton mainChatButton;
     public GameObject chatPrivateButtonsContainer;
+
+    [Header("ScrollView Chat")]
     public ScrollRect chatScrollRect;
 
     [Header("Buttons")]
@@ -46,7 +48,6 @@ public class ChatManager : MonoBehaviour, IChatClientListener
     private string errorHexColor;
 
     //private variables
-    private RectTransform scrollContainer;
     private ChatClient _chatClient;
     private string _channel;
     private Dictionary<string, int> playersColorDictionary = new Dictionary<string, int>();
@@ -233,9 +234,20 @@ public class ChatManager : MonoBehaviour, IChatClientListener
     public void UpdateText(string message)
     {
         currentTextChat.text += message;
+
+        StartCoroutine(ScrollToBottom());
     }
 
     #region Private
+
+    public IEnumerator ScrollToBottom()
+    {
+        //LayoutRebuilder.ForceRebuildLayoutImmediate(scrollContainer);
+        yield return new WaitForEndOfFrame();
+        yield return new WaitForEndOfFrame();
+        chatScrollRect.verticalScrollbar.value = 0f;
+        chatScrollRect.verticalNormalizedPosition = 0f;
+    }
 
     private void SwitchTextBox(TextMeshProUGUI newText)
     {
@@ -260,7 +272,6 @@ public class ChatManager : MonoBehaviour, IChatClientListener
         PrivateChatButton chatButton = GetPrivateChat(nickname, forceShow);
 
         chatButton.UpdateText(newText);
-        StartCoroutine(ScrollToBottom());
     }
 
     private PrivateChatButton GetPrivateChat(string nickname, bool forceShow = false)
@@ -288,14 +299,6 @@ public class ChatManager : MonoBehaviour, IChatClientListener
         privateChatsButtons[nickname] = newButton;
         privateUserButtons[newButton] = nickname;
         return newButton;
-    }
-
-    public IEnumerator ScrollToBottom()
-    {
-        LayoutRebuilder.ForceRebuildLayoutImmediate(scrollContainer);
-        yield return new WaitForEndOfFrame();
-        yield return new WaitForEndOfFrame();
-        chatScrollRect.verticalNormalizedPosition = 1f;
     }
 
     private void CloseChat(PrivateChatButton chatbutton)

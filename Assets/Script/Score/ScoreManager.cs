@@ -5,6 +5,7 @@ using UnityEngine.UI;
 using Photon.Pun;
 using Photon.Realtime;
 using System.Linq;
+using Photon.Pun.UtilityScripts;
 
 
 public class PlayerData
@@ -35,9 +36,12 @@ public class ScoreManager : MonoBehaviour
     {
         mainMenuButton.onClick.AddListener(BackToMainMenu);
         playerScorePrefab.gameObject.SetActive(false);
-        SetTitle(PersistScoreData.Instance.win);
+
+        Debug.Log(PhotonNetwork.CurrentRoom.CustomProperties["WinCondition"]);
+        
+        SetTitle(PhotonNetwork.LocalPlayer.GetScore() >= (int)PhotonNetwork.CurrentRoom.CustomProperties["WinCondition"]);
         // SetPlayersPrefab(PersistScoreData.Instance.playersData.Count);
-        SetScores(PersistScoreData.Instance.playersData);
+        SetScores();
     }
 
     public void SetTitle(bool win)
@@ -59,8 +63,19 @@ public class ScoreManager : MonoBehaviour
         }
     }
 
-    public void SetScores(List<PlayerData> playerList)
+    public void SetScores()
     {
+
+        var players = PhotonNetwork.PlayerList;
+
+        List<PlayerData> playerList = new List<PlayerData>();
+        
+        foreach (var player in players)
+        {
+            if(player.IsMasterClient) continue;
+            playerList.Add(new PlayerData(player.GetScore(), player.NickName));
+        }
+        
         IEnumerable orderedList =  playerList.OrderBy(o => o.score).Reverse();
 
         List<PlayerData> auxList =  new List<PlayerData>();
@@ -93,7 +108,7 @@ public class ScoreManager : MonoBehaviour
     public void BackToMainMenu()
     {
         // PhotonNetwork.LeaveRoom();
-        PhotonNetwork.LoadLevel("MainMenu_v2");
+        PhotonNetwork.LoadLevel("MainMenu");
     }
     
 }

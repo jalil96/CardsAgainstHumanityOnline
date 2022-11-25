@@ -13,6 +13,7 @@ public class CharacterView : MonoBehaviour
     [SerializeField] private TextMeshProUGUI _points;
     
     private CharacterHandUI _handUI;
+    //private int currentIndex;
 
     private void Awake()
     {
@@ -33,6 +34,13 @@ public class CharacterView : MonoBehaviour
     {
         _selector.transform.position = _selectorPositions[_model.HandSelectorIndex].position;
     }
+
+    //private void Update() //jess: what could have been
+    //{
+    //    if (currentIndex == _model.HandSelectorIndex) return;
+    //    currentIndex = _model.HandSelectorIndex;
+    //    _selector.transform.position = _selectorPositions[currentIndex].position;
+    //}
 
     private void ShowSelector()
     {

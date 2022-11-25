@@ -11,9 +11,8 @@ public class Command
 {
     public string name;
     public string description;
-    public string errorMessage;
-    public bool isEnabled;
-    public bool isGameplayOnly;
+    public bool enabled;
+    public bool gameplayOnly;
     [HideInInspector] public Action eventToCall; //this is for when they don't need to pass information
     [HideInInspector] public Action<string> eventToCallWithString; //and some events need to call for and events that pass information
     [HideInInspector] public bool hasValidation; //some might need to validate something
@@ -24,20 +23,18 @@ public class CommandManager : MonoBehaviour
 {
     public string commandPrefix = "/";
 
-    [Header("Commands")]
+    [Header("All Time Up Commands")]
     public Command privateMessage;
     public Command help;
+    public Command mutePlayer; //local command
+    public Command quitChat; //local command
 
-    //local commands
-    public Command partypopper;
-    public Command mutePlayer;
-    public Command quitChat;
-
-    //master commands
-    public Command addTime;
-    public Command switchMyHand;
-    public Command switchAllHands;
-    public Command switchBlackCard;
+    [Header("GameOnly Commands")]
+    public Command partypopper; //local command
+    public Command addTime; //master commands
+    public Command switchMyHand; //master commands
+    public Command switchAllHands; //master commands
+    public Command switchBlackCard; //master commands
 
     [Header("Color")]
     public Color helpDescriptionColor;
@@ -108,9 +105,9 @@ public class CommandManager : MonoBehaviour
 
             if(commandsList.TryGetValue(target, out Command command))
             {
-                if (!command.isEnabled) return false;
+                if (!command.enabled) return false;
 
-                if (command.isGameplayOnly && !inGameplayScene)
+                if (command.gameplayOnly && !inGameplayScene)
                 {
                     ErrorCommand($"'{commandPrefix}{words[0]}' command can only be used during gameplay");
                     return true;
@@ -146,8 +143,8 @@ public class CommandManager : MonoBehaviour
         
         foreach (var command in commandsList)
         {
-            if (!command.Value.isEnabled) continue; //if the command is disabled, we skip it.
-            if (command.Value.isGameplayOnly && !inGameplayScene) continue; //if the command is only for gameplay and we are not there, we do not list it. 
+            if (!command.Value.enabled) continue; //if the command is disabled, we skip it.
+            if (command.Value.gameplayOnly && !inGameplayScene) continue; //if the command is only for gameplay and we are not there, we do not list it. 
 
             allCommands += $"<b>{commandPrefix}{command.Key}</b>: <color=#{helpDesHex}>{command.Value.description} </color> \n";
         }

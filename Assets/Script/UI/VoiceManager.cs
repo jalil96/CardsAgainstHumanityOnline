@@ -78,6 +78,11 @@ public class VoiceManager : MonoBehaviour
         ClearData();
     }
 
+    public void MuteAnotherPlayer(Player player)
+    {
+        voiceController.MuteAnotherPlayer(player);
+    }
+
     private void ToggleVoiceSettingsMenu()
     {
         SetVoiceSettingsVisible(!voiceSettingsActive);

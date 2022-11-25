@@ -21,23 +21,24 @@ public class Command
 
 public class CommandManager : MonoBehaviour
 {
-    public string commandPrefix = "/";
+    [SerializeField] private string commandPrefix = "/";
 
     [Header("All Time Up Commands")]
-    public Command privateMessage;
-    public Command help;
-    public Command mutePlayer; //local command
-    public Command quitChat; //local command
+    [SerializeField] private Command privateMessage; //change it to a local command, letting the other player know that a new chat was opened BEFORE we write in it?
+    [SerializeField] private Command help;
+    [SerializeField] private Command quitChat;
+    [SerializeField] private Command mutePlayer; //local command
+    //TODO add at least one more local command ??
 
     [Header("GameOnly Commands")]
-    public Command partypopper; //local command
-    public Command addTime; //master commands
-    public Command switchMyHand; //master commands
-    public Command switchAllHands; //master commands
-    public Command switchBlackCard; //master commands
+    [SerializeField] private Command partypopper; //local command
+    [SerializeField] private Command addTime; //master commands
+    [SerializeField] private Command switchMyHand; //master commands
+    [SerializeField] private Command switchAllHands; //master commands
+    [SerializeField] private Command switchBlackCard; //master commands
 
     [Header("Color")]
-    public Color helpDescriptionColor;
+    [SerializeField] private Color helpDescriptionColor;
     private string helpDesHex;
 
     private Dictionary<string, Command> commandsList = new Dictionary<string, Command>();
@@ -105,7 +106,11 @@ public class CommandManager : MonoBehaviour
 
             if(commandsList.TryGetValue(target, out Command command))
             {
-                if (!command.enabled) return false;
+                if (!command.enabled)
+                {
+                    NotACommand(words[0]);
+                    return true;
+                };
 
                 if (command.gameplayOnly && !inGameplayScene)
                 {
@@ -120,7 +125,7 @@ public class CommandManager : MonoBehaviour
                 return true;
             }
 
-            ErrorCommand($"'{words[0]}' is not a command. Get full list in {commandPrefix}{help.name}");
+            NotACommand(words[0]);
             return true;
         }
 
@@ -135,6 +140,12 @@ public class CommandManager : MonoBehaviour
     private void AddACommand(Command command)
     {
         commandsList.Add(command.name, command);
+    }
+
+
+    private void NotACommand(string word)
+    {
+        ErrorCommand($"'{word}' is not a command. Get full list in {commandPrefix}{help.name}");
     }
 
     private void HelpList()

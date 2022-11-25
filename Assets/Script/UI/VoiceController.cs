@@ -6,6 +6,7 @@ using Photon.Voice.PUN;
 using System.Data.SqlTypes;
 using Photon.Voice.Unity;
 using Photon.Realtime;
+using Newtonsoft.Json.Linq;
 
 public class VoiceController : MonoBehaviourPun
 {
@@ -90,6 +91,17 @@ public class VoiceController : MonoBehaviourPun
     {
         SetSoundSystem(value);
         photonView.RPC(nameof(UpdateSoundSystem), RpcTarget.Others, value);
+    }
+
+    public void MuteAnotherPlayer(Player player)
+    {
+        photonView.RPC(nameof(MuteMyself), player);
+    }
+
+    [PunRPC]
+    private void MuteMyself()
+    {
+        SetMic(false);
     }
 
     [PunRPC]

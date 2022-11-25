@@ -10,6 +10,8 @@ using JetBrains.Annotations;
 using System.Linq;
 using Button = UnityEngine.UI.Button;
 using System.Collections;
+using UnityEditor.VersionControl;
+using Newtonsoft.Json.Linq;
 
 public class ChatManager : MonoBehaviour, IChatClientListener
 {
@@ -52,8 +54,12 @@ public class ChatManager : MonoBehaviour, IChatClientListener
     private string[] colorHex;
     private List<string> currentUsers = new List<string>();
     private int currentNumberOfNewMessages = 0;
-    private PrivateChatButton currentChat;
+    private PrivateChatButton currentChatButton;
     private TextMeshProUGUI currentTextChat;
+
+    //Special Message in chat 
+    private string mutedCode = "654a21dasd654";
+    private string mutedPrefix = "@";
 
     //PROPIEDADES
     public bool ChatEnabled { get; set; }
@@ -82,7 +88,7 @@ public class ChatManager : MonoBehaviour, IChatClientListener
         privateChatContent.text = "";
         mainChatContent.text = "";
         currentTextChat = mainChatContent;
-        currentChat = mainChatButton;
+        currentChatButton = mainChatButton;
 
         SetColors();
         DisableChat();
@@ -93,8 +99,11 @@ public class ChatManager : MonoBehaviour, IChatClientListener
 		CommunicationsManager.Instance.commandManager.PrivateMessageCommand += OpenAPrivateChat;
         CommunicationsManager.Instance.commandManager.ErrorCommand += ErrorCommandMessage;
         CommunicationsManager.Instance.commandManager.HelpCommand += HelpCommandMessage;
+        CommunicationsManager.Instance.commandManager.MuteChat += OnMuteChat;
         CommunicationsManager.Instance.OnColorsUpdate += UpdateColorDictionary;
+        CommunicationsManager.Instance.commandManager.QuitChat += OnQuitCommand;
     }
+
 
     private void OnDestroy()
     {
@@ -105,20 +114,6 @@ public class ChatManager : MonoBehaviour, IChatClientListener
         CommunicationsManager.Instance.OnColorsUpdate -= UpdateColorDictionary;
     }
 
-    public void ConnectChat()
-    {
-		SuscribeEvents();
-		
-        _chatClient = new ChatClient(this);
-
-        AuthenticationValues auth = new AuthenticationValues(PhotonNetwork.NickName);
-        _chatClient.Connect(PhotonNetwork.PhotonServerSettings.AppSettings.AppIdChat, PhotonNetwork.PhotonServerSettings.AppSettings.AppVersion, auth);
-
-        EnableChat();
-        SetMainChatInFocus();
-    }
-
-
     private void Update()
     {
         if (!ChatEnabled) return;
@@ -126,6 +121,7 @@ public class ChatManager : MonoBehaviour, IChatClientListener
         _chatClient.Service();
     }
 
+    #region Send Messages
     public void SendChatMessage()
     {
         var message = inputField.text;
@@ -138,7 +134,7 @@ public class ChatManager : MonoBehaviour, IChatClientListener
 
         if (!CommunicationsManager.Instance.commandManager.IsCommand(message))
         {
-            if (currentChat == mainChatButton) //we check which chat is open, depending if it's the main chat or one of the privat chats is HOW we send the message
+            if (currentChatButton == mainChatButton) //we check which chat is open, depending if it's the main chat or one of the privat chats is HOW we send the message
                 _chatClient.PublishMessage(_channel, message);
             else
                 SendPrivateChatMessage(message);
@@ -148,10 +144,24 @@ public class ChatManager : MonoBehaviour, IChatClientListener
         SelectInputField();
     }
 
-    private void SelectInputField()
+
+    public void SendPrivateChatMessage(string message)
     {
-        inputField.ActivateInputField();
-        inputField.Select();
+        _chatClient.SendPrivateMessage(currentChatButton.nickname, message);
+    }
+
+    #endregion
+
+    #region Commands
+    private void HelpCommandMessage(string help)
+    {
+        UpdateText(help);
+    }
+
+    private void ErrorCommandMessage(string error)
+    {
+        var text = $"{ColorfyWords($"ERROR: {error}", errorHexColor)} \n";
+        UpdateText(text);
     }
 
     private void OpenAPrivateChat(string nickname)
@@ -161,120 +171,32 @@ public class ChatManager : MonoBehaviour, IChatClientListener
         SelectInputField();
     }
 
-    public void SendPrivateChatMessage(string message)
+    private void OnMuteChat(string nickname)
     {
-        _chatClient.SendPrivateMessage(currentChat.nickname, message);
-    }
-
-    public void UnsuscribeFromRoom(string roomName)
-    {
-        string[] roomsList = new string[] { roomName };
-
-        _chatClient.Unsubscribe(roomsList);
-
-    }
-
-    public void DisableChat()
-    {
-        ChatEnabled = false;
-
-        if(_channel != null)
+        if (CommunicationsManager.Instance.MutePlayer(nickname))
         {
-            UnsuscribeFromRoom(_channel);
-            _channel = null;
+            string message = $"@{mutedCode} {PhotonNetwork.LocalPlayer.NickName} has muted {nickname}";
+            _chatClient.PublishMessage(_channel, message);
+            return;
         }
-
-        chatBox.gameObject.SetActive(false);
-        minimizedChat.gameObject.SetActive(false);
-        currentNumberOfNewMessages = 0;
+        
+        ErrorCommandMessage("Something went wrong somehow");
     }
 
-    public void EnableChat()
+    private bool ValidateIsMutedCode(string message)
     {
-        ChatEnabled = true;
-        minimizedChat.gameObject.SetActive(true);
-        MinimizedChat();
+        if (!message.StartsWith(mutedPrefix)) return false;
+        string[] words = message.Split(' ');
+        var target = words[0].Remove(0, mutedPrefix.Length);
+        return target == mutedCode;
     }
 
-    public void SetMainChatInFocus()
+    private void OnQuitCommand()
     {
-        if (currentTextChat == mainChatContent) return;
-
-        SwitchCurrentChat(mainChatButton);
-        SwitchTextBox(mainChatContent);
-    }
-
-    public void SetPrivateChatInFocus(PrivateChatButton chat)
-    {
-        SwitchTextBox(privateChatContent);
-        SwitchCurrentChat(chat);
-    }
-
-    public void UpdateText(string message)
-    {
-        currentTextChat.text += message;
-
-        StartCoroutine(ScrollToBottom());
-    }
-
-    #region Private
-
-    public IEnumerator ScrollToBottom()
-    {
-        yield return new WaitForEndOfFrame();
-        chatScrollRect.verticalScrollbar.value = 0f;
-        chatScrollRect.verticalNormalizedPosition = 0f;
-    }
-
-    private void SwitchTextBox(TextMeshProUGUI newText)
-    {
-        if(currentTextChat == newText) return;
-
-        currentTextChat.gameObject.SetActive(false);
-        currentTextChat = newText;
-        currentTextChat.gameObject.SetActive(true);
-    }
-
-    private void SwitchCurrentChat(PrivateChatButton chat)
-    {
-        if (currentChat == chat) return;
-
-        currentChat.HideChat();
-        currentChat = chat;
-        currentChat.ShowChat();
-    }
-
-    private void UpdateChats(string nickname, string newText, bool forceShow = false)
-    {
-        PrivateChatButton chatButton = GetPrivateChat(nickname, forceShow);
-
-        chatButton.UpdateText(newText);
-    }
-
-    private PrivateChatButton GetPrivateChat(string nickname, bool forceShow = false)
-    {
-        PrivateChatButton chatButton = null;
-
-        if (!privateChatsButtons.TryGetValue(nickname, out chatButton))
-        {
-            print("Opening a new chat");
-            chatButton = CreateNewPrivateChat(nickname);
-        }
-
-        if (forceShow)
-            SetPrivateChatInFocus(chatButton);
-
-        return chatButton;
-    }
-
-    private PrivateChatButton CreateNewPrivateChat(string nickname)
-    {
-        PrivateChatButton newButton = Instantiate(mainChatButton, chatPrivateButtonsContainer.transform);
-        newButton.chatText = "";
-        newButton.AssignUser(nickname, privateChatContent);
-        privateChatsButtons[nickname] = newButton;
-        privateUserButtons[newButton] = nickname;
-        return newButton;
+        if(currentChatButton == mainChatButton) //if it's the main chat, we just minimize it. Else we close the chat
+            MinimizedChat();
+        else
+            CloseChat(currentChatButton);
     }
 
     private void CloseChat(PrivateChatButton chatbutton)
@@ -297,9 +219,73 @@ public class ChatManager : MonoBehaviour, IChatClientListener
         }
     }
 
-    private void UpdateColorDictionary(Dictionary<string, int> newDictionary)
+    #endregion
+
+    #region Public
+
+    public void ConnectChat()
     {
-        playersColorDictionary = newDictionary;
+        SuscribeEvents();
+
+        _chatClient = new ChatClient(this);
+
+        AuthenticationValues auth = new AuthenticationValues(PhotonNetwork.NickName);
+        _chatClient.Connect(PhotonNetwork.PhotonServerSettings.AppSettings.AppIdChat, PhotonNetwork.PhotonServerSettings.AppSettings.AppVersion, auth);
+
+        EnableChat();
+        SetMainChatInFocus();
+    }
+
+    public void EnableChat()
+    {
+        ChatEnabled = true;
+        minimizedChat.gameObject.SetActive(true);
+        MinimizedChat();
+    }
+
+    public void DisableChat()
+    {
+        ChatEnabled = false;
+
+        if(_channel != null)
+        {
+            UnsuscribeFromRoom(_channel);
+            _channel = null;
+        }
+
+        chatBox.gameObject.SetActive(false);
+        minimizedChat.gameObject.SetActive(false);
+        currentNumberOfNewMessages = 0;
+    }
+
+    public void SetMainChatInFocus()
+    {
+        if (currentTextChat == mainChatContent) return;
+
+        SwitchCurrentChat(mainChatButton);
+        SwitchTextBox(mainChatContent);
+    }
+
+    public void SetPrivateChatInFocus(PrivateChatButton chat)
+    {
+        SwitchTextBox(privateChatContent);
+        SwitchCurrentChat(chat);
+    }
+
+    #endregion
+
+    #region Minimize / Open, Input Field and Refresh View
+    private void SelectInputField()
+    {
+        inputField.ActivateInputField();
+        inputField.Select();
+    }
+
+    private IEnumerator ScrollToBottom()
+    {
+        yield return new WaitForEndOfFrame();
+        chatScrollRect.verticalScrollbar.value = 0f;
+        chatScrollRect.verticalNormalizedPosition = 0f;
     }
 
     private void OpenChat()
@@ -315,15 +301,15 @@ public class ChatManager : MonoBehaviour, IChatClientListener
         ChatMinimized = true;
         RefreshCurrentView();
     }
-	
-	private void ToggleChat()
-	{
-		if(ChatMinimized)
-			OpenChat();
-		else
-			MinimizedChat();
-	}
-	
+
+    private void ToggleChat()
+    {
+        if (ChatMinimized)
+            OpenChat();
+        else
+            MinimizedChat();
+    }
+
     private void RefreshCurrentView()
     {
         chatBox.SetActive(!ChatMinimized);
@@ -334,17 +320,82 @@ public class ChatManager : MonoBehaviour, IChatClientListener
         chatMinimizedNotification.gameObject.SetActive(hasNewMessages);
     }
 
-    private void ErrorCommandMessage(string error)
+
+
+
+    #endregion
+
+    #region Private
+    private void UpdateText(string message)
     {
-        var text = $"{ColorfyWords($"ERROR: {error}", errorHexColor)} \n";
-        UpdateText(text);
+        currentTextChat.text += message;
+
+        StartCoroutine(ScrollToBottom());
     }
 
-    private void HelpCommandMessage(string help)
+    private void UpdateChats(string nickname, string newText, bool forceShow = false)
     {
-        //var text = $"{ColorfyWords($"{help}", serverHexColor)} \n";
-        UpdateText(help);
+        PrivateChatButton chatButton = GetPrivateChat(nickname, forceShow);
+
+        chatButton.UpdateText(newText);
     }
+
+    private void SwitchTextBox(TextMeshProUGUI newText)
+    {
+        if(currentTextChat == newText) return;
+
+        currentTextChat.gameObject.SetActive(false);
+        currentTextChat = newText;
+        currentTextChat.gameObject.SetActive(true);
+    }
+
+    private void SwitchCurrentChat(PrivateChatButton chat)
+    {
+        if (currentChatButton == chat) return;
+
+        currentChatButton.HideChat();
+        currentChatButton = chat;
+        currentChatButton.ShowChat();
+    }
+
+    private PrivateChatButton GetPrivateChat(string nickname, bool forceShow = false) //Will return a private chat for the user, if there is no existing chat, will create a new one
+    {
+        PrivateChatButton chatButton = null;
+
+        if (!privateChatsButtons.TryGetValue(nickname, out chatButton))
+            chatButton = CreateNewPrivateChat(nickname);
+
+        if (forceShow)
+            SetPrivateChatInFocus(chatButton);
+
+        return chatButton;
+    }
+
+    private PrivateChatButton CreateNewPrivateChat(string nickname)
+    {
+        PrivateChatButton newButton = Instantiate(mainChatButton, chatPrivateButtonsContainer.transform);
+        newButton.chatText = "";
+        newButton.AssignUser(nickname, privateChatContent);
+        privateChatsButtons[nickname] = newButton;
+        privateUserButtons[newButton] = nickname;
+        return newButton;
+    }
+
+
+    private void UnsuscribeFromRoom(string roomName)
+    {
+        string[] roomsList = new string[] { roomName };
+
+        _chatClient.Unsubscribe(roomsList);
+
+    }
+
+
+    private void UpdateColorDictionary(Dictionary<string, int> newDictionary)
+    {
+        playersColorDictionary = newDictionary;
+    }
+
 
     private int GetUserIndexColor(string nickname)
     {
@@ -431,8 +482,17 @@ public class ChatManager : MonoBehaviour, IChatClientListener
     {
         for (int i = 0; i < senders.Length; i++)
         {
-            int playerIndex = GetUserIndexColor(senders[i]);
-            var message = $"{ColorfyWords($"{senders[i]}:", colorHex[playerIndex])} {messages[i]} \n";
+            string message = "";
+            if (ValidateIsMutedCode(messages[i].ToString()))
+            {
+                message = $"<align=\"right\">{messages[i]}</align> \n";
+            }
+            else
+            {
+                int playerIndex = GetUserIndexColor(senders[i]);
+                message = $"{ColorfyWords($"{senders[i]}:", colorHex[playerIndex])} {messages[i]} \n";
+            }
+
             mainChatButton.UpdateText(message);
 
             if (ChatMinimized)

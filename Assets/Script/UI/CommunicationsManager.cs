@@ -48,6 +48,30 @@ public class CommunicationsManager : MonoBehaviourPunCallbacks
         return PhotonNetwork.PlayerList.ToList();
     }
 
+    public Player GetPlayerByNickname(string nickname)
+    {
+        var currentPlayers = PhotonNetwork.PlayerList.ToList();
+
+        for (int i = 0; i < currentPlayers.Count; i++)
+        {
+            if (currentPlayers[i].NickName == nickname)
+                return currentPlayers[i];
+        }
+        return null;
+    }
+
+    public bool MutePlayer(string nickname)
+    {
+        var player = GetPlayerByNickname(nickname);
+        if(player != null)
+        {
+            voiceManager.MuteAnotherPlayer(player);
+            return true;
+        }
+
+        return false;
+    }
+
     #region Colors
     private void SetColorListIndex(int maxColorAvailable)
     {
@@ -64,8 +88,8 @@ public class CommunicationsManager : MonoBehaviourPunCallbacks
 
     public void RequestAddToColorList(string nickname)
     {
-        //Verify there is a color available and that the player is not already there
-        Debug.Assert(!_playersColors.ContainsKey(nickname), "Player already is on the lsit");
+        //Verify there is a color available and that the player is not already
+        if (_playersColors.ContainsKey(nickname)) return;
         Debug.Assert(_availableColors.Count > 0, "No colors are available");
 
         //Get the color index to the new player
@@ -89,10 +113,6 @@ public class CommunicationsManager : MonoBehaviourPunCallbacks
             _availableColors.Add(colorIndex);
             _playersColors.Remove(nickname);
         }
-        else
-        {
-            Debug.LogError("Player is not on the list");
-        }
 
         //send all current players in room the updated list
         RefreshColorList();
@@ -109,31 +129,31 @@ public class CommunicationsManager : MonoBehaviourPunCallbacks
     }
     #endregion
 
-    #region ColorRPC
+    //#region ColorRPC
 
-    public void RemoveFromColorList(Player player)
-    {
-        photonView.RPC(nameof(RemovePlayerFromColorList), RpcTarget.Others, player.NickName);
-    }
+    //public void RemoveFromColorList(Player player)
+    //{
+    //    photonView.RPC(nameof(RemovePlayerFromColorList), RpcTarget.Others, player.NickName);
+    //}
 
-    [PunRPC]
-    public void RemovePlayerFromColorList(string player)
-    {
+    //[PunRPC]
+    //public void RemovePlayerFromColorList(string player)
+    //{
 
-    }
+    //}
 
-    public void AddToColorList(Player player)
-    {
-        photonView.RPC(nameof(AddPlayerToColorList), RpcTarget.Others, player.NickName);
-    }
+    //public void AddToColorList(Player player)
+    //{
+    //    photonView.RPC(nameof(AddPlayerToColorList), RpcTarget.Others, player.NickName);
+    //}
 
-    [PunRPC]
-    public void AddPlayerToColorList(string player)
-    {
+    //[PunRPC]
+    //public void AddPlayerToColorList(string player)
+    //{
 
-    }
+    //}
 
-    #endregion
+    //#endregion
 
     #region Callbacks
     public override void OnPlayerEnteredRoom(Player newPlayer)

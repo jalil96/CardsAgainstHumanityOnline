@@ -1769,23 +1769,23 @@ MonoBehaviour:
     enabled: 1
     gameplayOnly: 0
     hasValidation: 0
+  quitChat:
+    name: closeChat
+    description: Close the current private chat or minimize the main one
+    enabled: 1
+    gameplayOnly: 0
+    hasValidation: 0
+  mutePlayer:
+    name: mute
+    description: mute [nickname] to mute that user's mic
+    enabled: 1
+    gameplayOnly: 0
+    hasValidation: 0
   partypopper:
     name: partyPopper
     description: Make an explocion confetti and streamers as 'celebration'
     enabled: 0
     gameplayOnly: 1
-    hasValidation: 0
-  mutePlayer:
-    name: mute
-    description: mute [nickname] to mute that user's mic
-    enabled: 0
-    gameplayOnly: 0
-    hasValidation: 0
-  quitChat:
-    name: closeChat
-    description: Close the current private chat or minimize the main one
-    enabled: 0
-    gameplayOnly: 0
     hasValidation: 0
   addTime:
     name: addTime

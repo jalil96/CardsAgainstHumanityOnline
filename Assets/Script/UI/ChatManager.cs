@@ -8,6 +8,10 @@ using UnityEngine.UI;
 using ExitGames.Client.Photon;
 using JetBrains.Annotations;
 using System.Linq;
+using UnityEngine.SocialPlatforms;
+using UnityEngine.UIElements;
+using Button = UnityEngine.UI.Button;
+using System.ComponentModel;
 
 public class ChatManager : MonoBehaviour, IChatClientListener
 {
@@ -20,6 +24,9 @@ public class ChatManager : MonoBehaviour, IChatClientListener
     public TMP_InputField inputField;
     public PrivateChatButton mainChatButton;
     public GameObject chatPrivateButtonsContainer;
+
+    [Header("ScrollView Chat")]
+    public ScrollRect chatScrollRect;
 
     [Header("Buttons")]
     public Button minimizedChat;
@@ -140,14 +147,27 @@ public class ChatManager : MonoBehaviour, IChatClientListener
         }
 
         inputField.text = "";
+        SelectInputField();
+    }
+
+    private void SelectInputField()
+    {
         inputField.ActivateInputField();
         inputField.Select();
     }
 
     private void OpenAPrivateChat(string nickname)
     {
+        if(nickname == PhotonNetwork.LocalPlayer.NickName)
+        {
+            string text = $"{ColorfyWords($"ERROR: can't open a chat with yourself", errorHexColor)} \n";
+            UpdateText(text);
+            return;
+        }
+
         string text = $"{ColorfyWords($"A private chat with {nickname}' was open, say 'Hi'", serverHexColor)} \n";
         UpdateChats(nickname, text, true);
+        SelectInputField();
     }
 
     public void SendPrivateChatMessage(string message)
@@ -202,9 +222,20 @@ public class ChatManager : MonoBehaviour, IChatClientListener
     public void UpdateText(string message)
     {
         currentTextChat.text += message;
+
+        StartCoroutine(ScrollToBottom());
     }
 
     #region Private
+
+    public IEnumerator ScrollToBottom()
+    {
+        //LayoutRebuilder.ForceRebuildLayoutImmediate(scrollContainer);
+        yield return new WaitForEndOfFrame();
+        yield return new WaitForEndOfFrame();
+        chatScrollRect.verticalScrollbar.value = 0f;
+        chatScrollRect.verticalNormalizedPosition = 0f;
+    }
 
     private void SwitchTextBox(TextMeshProUGUI newText)
     {
@@ -287,6 +318,7 @@ public class ChatManager : MonoBehaviour, IChatClientListener
         ChatMinimized = false;
         currentNumberOfNewMessages = 0;
         RefreshCurrentView();
+        SelectInputField();
     }
 
     private void MinimizedChat()

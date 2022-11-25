@@ -8,7 +8,7 @@ public class UICard : MonoBehaviour
 {
     public Image bg;
     public TextMeshProUGUI text;
-
+    
     public void Activate()
     {
         gameObject.SetActive(true);

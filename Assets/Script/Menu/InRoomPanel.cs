@@ -163,11 +163,16 @@ public class InRoomPanel : MonoBehaviourPunCallbacks
         mainMenu.SetStatus("Being kicked");
     }
 
-    private void LeaveTheRoom()
+    public void LeaveTheRoom()
+    {
+        LeaveTheRoom(false);
+    }
+
+    public void LeaveTheRoom(bool skipKick = false)
     {
         if (!PhotonNetwork.InRoom) return;
 
-        if (PhotonNetwork.IsMasterClient)
+        if (PhotonNetwork.IsMasterClient && !skipKick)
         {
             currentPlayerList = PhotonNetwork.PlayerList.ToList();
 
@@ -183,6 +188,11 @@ public class InRoomPanel : MonoBehaviourPunCallbacks
         PhotonNetwork.LeaveRoom(false);
 
         mainMenu.OnLeftRoom();
+    }
+
+    public override void OnMasterClientSwitched(Player newMasterClient)
+    {
+        LeaveTheRoom(true);
     }
 
     public override void OnPlayerEnteredRoom(Player newPlayer)

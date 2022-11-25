@@ -1,8 +1,10 @@
+using Newtonsoft.Json.Linq;
 using Photon.Pun;
 using Photon.Realtime;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using System.Runtime.CompilerServices;
 using TMPro;
 using UnityEngine;
@@ -51,6 +53,7 @@ public class MainMenuManager : MonoBehaviourPunCallbacks
     private List<Panel> allPanels = new List<Panel>();
     private bool skipEverything; //for cheating the login
     private bool forceStart;
+    private InRoomPanel inRoomPanel;
 
     //PROPIERTIES
     public MainMenuView PlayerView { get; private set; }
@@ -90,6 +93,8 @@ public class MainMenuManager : MonoBehaviourPunCallbacks
         logInButton.onClick.AddListener(LogInUser);
         kickedOutConfirmButton.onClick.AddListener(() => { ChangePanel(ChoosePanel); Kicked = false; });
         nickNameInput.onEndEdit.AddListener(LogInUser);
+
+        inRoomPanel = GetComponent<InRoomPanel>();
 
         //Set all panels
         allPanels.Add(loggingPanel);
@@ -331,6 +336,11 @@ public class MainMenuManager : MonoBehaviourPunCallbacks
 
     private void OnQuitButton()
     {
+        if(PhotonNetwork.InRoom && PhotonNetwork.IsMasterClient)
+        {
+            inRoomPanel.LeaveTheRoom();
+        }
+
         SetStatus("Disconnecting");
         PhotonNetwork.Disconnect();
         Application.Quit();

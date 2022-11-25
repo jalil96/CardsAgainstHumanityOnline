@@ -115,9 +115,15 @@ public class CommandManager : MonoBehaviour
                     ErrorCommand($"'{commandPrefix}{words[0]}' command can only be used during gameplay");
                     return true;
                 }
-
+				
                 if (command.hasValidation)
                 {
+					if (words.Length <= 1)
+                    {
+                        ErrorCommand($"Forgot to add nickname");
+                        return true;
+                    }
+					
                     string nickname = words[1].Trim();
                     if (!command.IsValid(nickname))
                     {

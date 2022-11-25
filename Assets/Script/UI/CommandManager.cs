@@ -117,27 +117,7 @@ public class CommandManager : MonoBehaviour
                 }
 				
                 if (command.hasValidation)
-                {
-					if (words.Length <= 1)
-                    {
-                        ErrorCommand($"Forgot to add nickname");
-                        return true;
-                    }
-					
-                    string nickname = words[1].Trim();
-                    if (!command.IsValid(nickname))
-                    {
-                        if(command == addTime)
-                            ErrorCommand($"'{commandPrefix}{words[0]}' needs to follow with a number. Check {commandPrefix}{help.name} for more information");
-                        else
-                            ErrorCommand($"ERROR: User '{nickname}' was not found");
-                    }
-                    else
-                    {
-                        command.eventToCallWithString(nickname);
-                    }
-                    return true;
-                }
+                    return CommandWithValidation(command, words);
 
                 command.eventToCall();
                 return true;
@@ -155,7 +135,6 @@ public class CommandManager : MonoBehaviour
         inGameplayScene = value;
     }
 
-    //set command name, event to call and a short description of what it does;
     private void AddACommand(Command command)
     {
         commandsList.Add(command.name, command);
@@ -174,6 +153,36 @@ public class CommandManager : MonoBehaviour
         }
 
         HelpCommand.Invoke(allCommands);
+    }
+
+    private bool CommandWithValidation(Command command, string[] words)
+    {
+        if (words.Length <= 1)
+        {
+            ErrorCommand($"Forgot to add nickname");
+            return true;
+        }
+
+        string nickname = words[1].Trim();
+        if (!command.IsValid(nickname))
+        {
+            if (command == addTime)
+                ErrorCommand($"'{commandPrefix}{words[0]}' needs to follow with a number. Check {commandPrefix}{help.name} for more information");
+            else
+                ErrorCommand($"User '{nickname}' was not found");
+        }
+        else
+        {
+
+            if (nickname == PhotonNetwork.LocalPlayer.NickName)
+            {
+                ErrorCommand($"Can't use this command on yourself \n");
+                return true;
+            }
+
+            command.eventToCallWithString(nickname);
+        }
+        return true;
     }
 
 

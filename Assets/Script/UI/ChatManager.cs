@@ -8,10 +8,8 @@ using UnityEngine.UI;
 using ExitGames.Client.Photon;
 using JetBrains.Annotations;
 using System.Linq;
-using UnityEngine.SocialPlatforms;
-using UnityEngine.UIElements;
 using Button = UnityEngine.UI.Button;
-using System.ComponentModel;
+using System.Collections;
 
 public class ChatManager : MonoBehaviour, IChatClientListener
 {
@@ -158,13 +156,6 @@ public class ChatManager : MonoBehaviour, IChatClientListener
 
     private void OpenAPrivateChat(string nickname)
     {
-        if(nickname == PhotonNetwork.LocalPlayer.NickName)
-        {
-            string text = $"{ColorfyWords($"ERROR: can't open a chat with yourself", errorHexColor)} \n";
-            UpdateText(text);
-            return;
-        }
-
         string text = $"{ColorfyWords($"A private chat with {nickname}' was open, say 'Hi'", serverHexColor)} \n";
         UpdateChats(nickname, text, true);
         SelectInputField();
@@ -230,8 +221,6 @@ public class ChatManager : MonoBehaviour, IChatClientListener
 
     public IEnumerator ScrollToBottom()
     {
-        //LayoutRebuilder.ForceRebuildLayoutImmediate(scrollContainer);
-        yield return new WaitForEndOfFrame();
         yield return new WaitForEndOfFrame();
         chatScrollRect.verticalScrollbar.value = 0f;
         chatScrollRect.verticalNormalizedPosition = 0f;

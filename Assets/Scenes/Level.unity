@@ -3178,7 +3178,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _gameManager: {fileID: 1350496045}
   _chronometer: {fileID: 539250289}
-  _chronometerTime: 10
+  _chronometerTime: 120
   _tempCardsController: {fileID: 1167888521}
 --- !u!1 &1634138699
 GameObject:
@@ -4270,7 +4270,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _gameManager: {fileID: 1350496045}
   _chronometer: {fileID: 539250289}
-  _chronometerTime: 10
+  _chronometerTime: 120
   _tempCardsController: {fileID: 1167888521}
 --- !u!1 &2110428424
 GameObject:

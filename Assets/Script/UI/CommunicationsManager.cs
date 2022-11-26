@@ -74,22 +74,17 @@ public class CommunicationsManager : MonoBehaviourPunCallbacks
         return false;
     }
 
-    public bool OpenAChat(string nickname)
+    public bool SentMessageOpenAChat(string nickname)
     {
         var player = GetPlayerByNickname(nickname);
+        
         if(player != null)
         {
-            photonView.RPC(nameof(ToldToOpenAChat), player, player);
+            voiceManager.MyVoiceController.OderToOpenPrivateChat(player);
             return true;
         }
 
         return false;
-    }
-
-    [PunRPC]
-    public void ToldToOpenAChat(Player player)
-    {
-        chatManager.OpenAPrivateChat(player.NickName);
     }
 
     #region Colors

@@ -95,7 +95,7 @@ public class ChatManager : MonoBehaviour, IChatClientListener
 
     private void SuscribeEvents()
     {
-		CommunicationsManager.Instance.commandManager.PrivateMessageCommand += OpenAPrivateChat;
+		CommunicationsManager.Instance.commandManager.PrivateMessageCommand += OpenPrivateChatCommand;
         CommunicationsManager.Instance.commandManager.ErrorCommand += ErrorCommandMessage;
         CommunicationsManager.Instance.commandManager.HelpCommand += HelpCommandMessage;
         CommunicationsManager.Instance.commandManager.MutePlayer += OnMuteChat;
@@ -108,7 +108,7 @@ public class ChatManager : MonoBehaviour, IChatClientListener
     {
         if (!CommunicationsManager.HasInstance) return;
 
-        CommunicationsManager.Instance.commandManager.PrivateMessageCommand -= OpenAPrivateChat;
+        CommunicationsManager.Instance.commandManager.PrivateMessageCommand -= OpenPrivateChatCommand;
         CommunicationsManager.Instance.commandManager.ErrorCommand -= ErrorCommandMessage;
         CommunicationsManager.Instance.OnColorsUpdate -= UpdateColorDictionary;
     }
@@ -161,6 +161,14 @@ public class ChatManager : MonoBehaviour, IChatClientListener
     {
         var text = $"{ColorfyWords($"ERROR: {error}", errorHexColor)} \n";
         UpdateText(text);
+    }
+
+    public void OpenPrivateChatCommand(string nickname)
+    {
+        if (CommunicationsManager.Instance.SentMessageOpenAChat(nickname))
+            OpenAPrivateChat(nickname);
+        else
+            ErrorCommandMessage("Something went wrong, coulnd't open a private chat");
     }
 
     public void OpenAPrivateChat(string nickname)
@@ -485,7 +493,7 @@ public class ChatManager : MonoBehaviour, IChatClientListener
             string message = "";
             if (ValidateIsMutedCode(currentMessage))
             {
-                currentMessage.Remove(0, (mutedPrefix.Length + mutedCode.Length)); //we remove the secret code we use to identify the mute info
+                currentMessage = currentMessage.Remove(0, (mutedPrefix.Length + mutedCode.Length)); //we remove the secret code we use to identify the mute info
                 message = $"<align=\"right\">{currentMessage}</align> \n";
             }
             else

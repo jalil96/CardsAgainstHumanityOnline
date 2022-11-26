@@ -106,6 +106,18 @@ public class VoiceController : MonoBehaviourPun
         SetSoundSystem(isOpen);
     }
 
+    public void OderToOpenPrivateChat(Player player)
+    {
+        photonView.RPC(nameof(ToldToOpenAChat), player, player);
+    }
+
+    [PunRPC]
+    public void ToldToOpenAChat(Player player) //this is here... because i need someone to have photon view
+    {
+        CommunicationsManager.Instance.chatManager.OpenAPrivateChat(player.NickName);
+    }
+
+
     private void SetSoundSystem(bool value)
     {
         if (!hasVoiceUser) return;

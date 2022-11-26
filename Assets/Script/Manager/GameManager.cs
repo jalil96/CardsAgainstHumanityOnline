@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using ExitGames.Client.Photon;
 using Newtonsoft.Json;
 using Photon.Pun;
 using Photon.Pun.UtilityScripts;
@@ -15,6 +16,7 @@ public class GameManager : MonoBehaviourPun
     
     [SerializeField] private List<RoundAction> _roundActions;
     [SerializeField] private BlackCardModel _blackCard;
+    [Range(1, 10)] [SerializeField] private int _winCondition = 3;
     
     private Queue<RoundAction> _roundActionsQueue = new Queue<RoundAction>();
     private RoundAction _currentRoundAction;
@@ -67,7 +69,7 @@ public class GameManager : MonoBehaviourPun
 
         foreach (var character in _characters)
         {
-            if (character.Points >= 3) // Parametrize win condition value
+            if (character.Points >= _winCondition) // Parametrize win condition value
             {
                 Debug.Log($"Win condition met, winner is: {MasterManager.Instance.GetPlayerFromCharacter(character).NickName}");
                 WinConditionMet(character);
@@ -89,12 +91,21 @@ public class GameManager : MonoBehaviourPun
 
     private void WinConditionMet(CharacterModel winner)
     {
+        var winCondition = new Hashtable();
+        winCondition.Add("WinCondition", _winCondition);
+        PhotonNetwork.CurrentRoom.SetCustomProperties(winCondition);
         foreach (var characterModel in _characters)
         {
             var player = MasterManager.Instance.GetPlayerFromCharacter(characterModel);
             player.SetScore(characterModel.Points);
             MasterManager.Instance.RPC(nameof(MasterManager.Instance.WinConditionMet) ,player,characterModel == winner);
         }
+        Invoke(nameof(ChangeScene), 2f);
+    }
+
+    private void ChangeScene()
+    {
+        PhotonNetwork.LoadLevel("ScoreScreen");
     }
 
     private void LoadCards()
@@ -166,14 +177,13 @@ public class GameManager : MonoBehaviourPun
             c.Hand.SetCards(newCards);
         });
     }
-
+    
     private void Update()
     {
         if (Input.GetKeyDown(KeyCode.F4))
         {
             _blackCard.SetShowCard();
         }
-        
     }
 
     public CharacterModel GetCurrentJudge()

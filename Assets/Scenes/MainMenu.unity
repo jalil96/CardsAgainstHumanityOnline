@@ -2139,7 +2139,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: 0.0009257671}
+  m_AnchoredPosition: {x: 0, y: 0.00007156323}
   m_SizeDelta: {x: 0, y: 452.3974}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &460153498
@@ -3208,7 +3208,7 @@ MonoBehaviour:
   m_HandleRect: {fileID: 1571545364}
   m_Direction: 2
   m_Value: 0
-  m_Size: 1
+  m_Size: 0.99999785
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
@@ -7994,8 +7994,8 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1674487477}
   m_HandleRect: {fileID: 1674487476}
   m_Direction: 0
-  m_Value: 0
-  m_Size: 1
+  m_Value: 1
+  m_Size: 0.99999994
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
@@ -9373,10 +9373,6 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 324187126499975833, guid: 9a73e9fce4973434fb96003326f8257d, type: 3}
-      propertyPath: quitChat.gameplayOnly
-      value: 0
-      objectReference: {fileID: 0}
     - target: {fileID: 324187126736675408, guid: 9a73e9fce4973434fb96003326f8257d, type: 3}
       propertyPath: m_SizeDelta.y
       value: 0
@@ -9387,7 +9383,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 324187126736675408, guid: 9a73e9fce4973434fb96003326f8257d, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -0.000030517578
+      value: -0.000029776062
       objectReference: {fileID: 0}
     - target: {fileID: 324187126784928947, guid: 9a73e9fce4973434fb96003326f8257d, type: 3}
       propertyPath: m_AnchorMax.x
@@ -9427,7 +9423,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 956566654049257018, guid: 9a73e9fce4973434fb96003326f8257d, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 0.000061035156
+      value: -0.000014781952
       objectReference: {fileID: 0}
     - target: {fileID: 2395046818929502897, guid: 9a73e9fce4973434fb96003326f8257d, type: 3}
       propertyPath: sceneViewId

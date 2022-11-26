@@ -98,7 +98,7 @@ public class ChatManager : MonoBehaviour, IChatClientListener
 		CommunicationsManager.Instance.commandManager.PrivateMessageCommand += OpenPrivateChatCommand;
         CommunicationsManager.Instance.commandManager.ErrorCommand += ErrorCommandMessage;
         CommunicationsManager.Instance.commandManager.HelpCommand += HelpCommandMessage;
-        CommunicationsManager.Instance.commandManager.MutePlayer += OnMuteChat;
+        CommunicationsManager.Instance.commandManager.MutePlayer += OnMuteCommand;
         CommunicationsManager.Instance.OnColorsUpdate += UpdateColorDictionary;
         CommunicationsManager.Instance.commandManager.QuitChat += OnQuitCommand;
     }
@@ -178,7 +178,7 @@ public class ChatManager : MonoBehaviour, IChatClientListener
         SelectInputField();
     }
 
-    private void OnMuteChat(string nickname)
+    private void OnMuteCommand(string nickname)
     {
         if (CommunicationsManager.Instance.MutePlayer(nickname))
         {
@@ -303,7 +303,7 @@ public class ChatManager : MonoBehaviour, IChatClientListener
         SelectInputField();
     }
 
-    private void MinimizedChat()
+    public void MinimizedChat()
     {
         ChatMinimized = true;
         RefreshCurrentView();

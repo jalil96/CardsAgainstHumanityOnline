@@ -48,17 +48,18 @@ public class InputManager : MonoBehaviour
 
     void Update()
     {
-
-        if (chat.ChatMinimized)
+        if (Input.GetKeyDown(escKey))
         {
-            if(Input.GetKeyDown(muteKey))
-                    voiceManager.MyVoiceController.ToggleMic();
+            if (voiceManager.VoiceSettingsIsOpen)
+                voiceManager.ToggleVoiceSettingsMenu();
+            else if (!chat.ChatMinimized)
+                chat.MinimizedChat();
         }
 
-        if (voiceManager.VoiceSettingsIsOpen)
+        if (Input.GetKeyDown(muteKey))
         {
-            if (Input.GetKeyDown(escKey))
-                voiceManager.ToggleVoiceSettingsMenu();
+            if (!chat.inputField.isFocused)
+                voiceManager.MyVoiceController.ToggleMic();
         }
 
         if (isMainMenu)

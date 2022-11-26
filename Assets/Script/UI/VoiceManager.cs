@@ -12,11 +12,6 @@ using Recorder = Photon.Voice.Unity.Recorder;
 using Photon.Pun;
 using Photon.Realtime;
 
-//Create Game Object with Pun Voice Client to connect 
-//Use PUN App Settings, Use Pun Auth Values. Auto Connect and Join. Auto Leave and Disconnect, all true;
-//it will automatically connect and disconnect from rooms
-//Add Recorder too
-
 public class VoiceManager : MonoBehaviour
 {
     public GameObject voiceSettingsPanel;
@@ -43,6 +38,9 @@ public class VoiceManager : MonoBehaviour
     private bool voiceSettingsActive;
     private List<VoiceController> voiceObjects = new List<VoiceController>();
     private List<VoiceUI> users = new List<VoiceUI>();
+
+    public VoiceController MyVoiceController => voiceController;
+    public bool VoiceSettingsIsOpen => voiceSettingsActive;
 
     public void Awake()
     {
@@ -83,7 +81,7 @@ public class VoiceManager : MonoBehaviour
         voiceController.MuteAnotherPlayer(player);
     }
 
-    private void ToggleVoiceSettingsMenu()
+    public void ToggleVoiceSettingsMenu()
     {
         SetVoiceSettingsVisible(!voiceSettingsActive);
     }

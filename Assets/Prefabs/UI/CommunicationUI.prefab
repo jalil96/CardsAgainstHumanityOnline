@@ -1607,6 +1607,7 @@ GameObject:
   - component: {fileID: 324187125981193698}
   - component: {fileID: 324187125981193699}
   - component: {fileID: 1989681731175015483}
+  - component: {fileID: 7034866446352439389}
   m_Layer: 5
   m_Name: CommunicationUI
   m_TagString: Untagged
@@ -1713,6 +1714,21 @@ MonoBehaviour:
   chatManager: {fileID: 324187125149485867}
   voiceManager: {fileID: 324187125328882867}
   commandManager: {fileID: 324187126499975833}
+  inputManager: {fileID: 7034866446352439389}
+--- !u!114 &7034866446352439389
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 324187125981193697}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ccd236f00717e134a8f8cad77e6c6e22, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  muteKey: 109
+  escKey: 27
 --- !u!1 &324187126499975830
 GameObject:
   m_ObjectHideFlags: 0
@@ -1759,7 +1775,7 @@ MonoBehaviour:
   commandPrefix: /
   privateMessage:
     name: whisper
-    description: Write '/whisper Nickname' to open a private chat
+    description: '''/whisper [nickname] '' to open a private chat with another player'
     enabled: 1
     gameplayOnly: 0
     hasValidation: 0
@@ -1770,26 +1786,26 @@ MonoBehaviour:
     gameplayOnly: 0
     hasValidation: 0
   quitChat:
-    name: closeChat
+    name: close
     description: Close the current private chat or minimize the main one
     enabled: 1
     gameplayOnly: 0
     hasValidation: 0
   mutePlayer:
     name: mute
-    description: mute [nickname] to mute that user's mic
+    description: '''/mute [nickname]'' to mute that user''s mic'
     enabled: 1
     gameplayOnly: 0
     hasValidation: 0
   partypopper:
-    name: partyPopper
+    name: party
     description: Make an explocion confetti and streamers as 'celebration'
     enabled: 0
     gameplayOnly: 1
     hasValidation: 0
   addTime:
     name: addTime
-    description: addTime [int] to add seconds to the timer
+    description: '''/addTime [int]'' to add seconds to the timer'
     enabled: 0
     gameplayOnly: 1
     hasValidation: 0
@@ -2486,7 +2502,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1719496513182420912, guid: d8bbfa45b6883524cae9c2ab4198f54f, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: -0.000059127808
+      value: -0.000014781952
       objectReference: {fileID: 0}
     - target: {fileID: 2226245802438693425, guid: d8bbfa45b6883524cae9c2ab4198f54f, type: 3}
       propertyPath: m_AnchorMax.x
@@ -2618,7 +2634,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2226245803288112090, guid: d8bbfa45b6883524cae9c2ab4198f54f, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -0.0010200877
+      value: -0.000024795532
+      objectReference: {fileID: 0}
+    - target: {fileID: 2226245803442401513, guid: d8bbfa45b6883524cae9c2ab4198f54f, type: 3}
+      propertyPath: m_Value
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2226245803442401514, guid: d8bbfa45b6883524cae9c2ab4198f54f, type: 3}
       propertyPath: m_AnchorMax.y
@@ -2646,6 +2666,38 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5183359234687550872, guid: d8bbfa45b6883524cae9c2ab4198f54f, type: 3}
       propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6019610450041053333, guid: d8bbfa45b6883524cae9c2ab4198f54f, type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6019610450041053333, guid: d8bbfa45b6883524cae9c2ab4198f54f, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6019610450041053333, guid: d8bbfa45b6883524cae9c2ab4198f54f, type: 3}
+      propertyPath: m_AnchorMin.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6019610450041053333, guid: d8bbfa45b6883524cae9c2ab4198f54f, type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6019610450041053333, guid: d8bbfa45b6883524cae9c2ab4198f54f, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6019610450041053333, guid: d8bbfa45b6883524cae9c2ab4198f54f, type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6019610450041053333, guid: d8bbfa45b6883524cae9c2ab4198f54f, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6019610450041053333, guid: d8bbfa45b6883524cae9c2ab4198f54f, type: 3}
+      propertyPath: m_AnchoredPosition.y
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7966903761141070115, guid: d8bbfa45b6883524cae9c2ab4198f54f, type: 3}
@@ -2682,3 +2734,34 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f1a111a7de0d2d947a8824ac4175e109, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!1 &324187126736675409 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 2226245803288112091, guid: d8bbfa45b6883524cae9c2ab4198f54f, type: 3}
+  m_PrefabInstance: {fileID: 1916994924622236042}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &189871679
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 324187126736675409}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 59f8146938fff824cb5fd77236b75775, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Padding:
+    m_Left: 0
+    m_Right: 0
+    m_Top: 0
+    m_Bottom: 0
+  m_ChildAlignment: 0
+  m_Spacing: 0
+  m_ChildForceExpandWidth: 1
+  m_ChildForceExpandHeight: 1
+  m_ChildControlWidth: 1
+  m_ChildControlHeight: 1
+  m_ChildScaleWidth: 0
+  m_ChildScaleHeight: 0
+  m_ReverseArrangement: 0

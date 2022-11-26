@@ -110,7 +110,18 @@ public class MainMenuManager : MonoBehaviourPunCallbacks
 
     public void Start()
     {
-        CommunicationsManager.Instance.commandManager.IsGameplay(false);
+        CommunicationsManager.Instance.inputManager.SetSceneAsMenu();
+        CommunicationsManager.Instance.inputManager.InputPlayer += LogAsPlayer;
+        CommunicationsManager.Instance.inputManager.InputServer += ForceServerLog;
+    }
+
+    public void OnDestroy()
+    {
+        if (CommunicationsManager.HasInstance)
+        {
+            CommunicationsManager.Instance.inputManager.InputPlayer -= LogAsPlayer;
+            CommunicationsManager.Instance.inputManager.InputServer -= ForceServerLog;
+        }
     }
 
     public void RestartMenu()
@@ -150,20 +161,11 @@ public class MainMenuManager : MonoBehaviourPunCallbacks
     }
     #endregion
 
-    private void Update()
+    private void LogAsPlayer(string nickname)
     {
-        if (Input.GetKeyDown(KeyCode.F1))
-            ForceServerLog();
-
-        if (Input.GetKeyDown(KeyCode.F2))
-            ForceQuickStartAsPlayer("Jess");
-
-        if (Input.GetKeyDown(KeyCode.F3))
-            ForceQuickStartAsPlayer("Jalil");
-
-        if (Input.GetKeyDown(KeyCode.F4))
-            ForceQuickStartAsPlayer("Sebas");
+        ForceQuickStartAsPlayer(nickname);
     }
+
 
     private IEnumerator JoinRandomRoomTimer(float timer)
     {

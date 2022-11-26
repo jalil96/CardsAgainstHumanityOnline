@@ -48,8 +48,8 @@ public class CommandManager : MonoBehaviour
     public Action<string> ErrorCommand = delegate { };
     public Action<string> PrivateMessageCommand =  delegate { };
     public Action<string> HelpCommand = delegate { };
-    public Action<string> MuteChat = delegate { };
-    public Action<string> AddSecondsToTimer = delegate { };
+    public Action<string> MutePlayer = delegate { };
+    public Action<int> AddSecondsToTimer = delegate { };
 
     public Action PartyPopper = delegate { };
     public Action QuitChat = delegate { };
@@ -74,15 +74,15 @@ public class CommandManager : MonoBehaviour
         //Adding Events with Validation
         privateMessage.hasValidation = true;
         privateMessage.IsValid = ValidateIsUser;
-        privateMessage.eventToCallWithString = PrivateMessageCommand;
+        privateMessage.eventToCallWithString = PrivateMessage;
 
         mutePlayer.hasValidation = true;
         mutePlayer.IsValid = ValidateIsUser;
-        mutePlayer.eventToCallWithString = MuteChat;
+        mutePlayer.eventToCallWithString = MuteSomeone;
 
         addTime.hasValidation = true;
         addTime.IsValid = ValidateTime;
-        addTime.eventToCallWithString = AddSecondsToTimer;
+        addTime.eventToCallWithString = AddTimer;
 
         //Adding Commands
         AddACommand(privateMessage);
@@ -121,7 +121,7 @@ public class CommandManager : MonoBehaviour
                 if (command.hasValidation)
                     return CommandWithValidation(command, words);
 
-                command.eventToCall();
+                command.eventToCall.Invoke();
                 return true;
             }
 
@@ -143,10 +143,28 @@ public class CommandManager : MonoBehaviour
     }
 
 
+    #region Events
     private void NotACommand(string word)
     {
         ErrorCommand($"'{word}' is not a command. Get full list in {commandPrefix}{help.name}");
     }
+
+    private void PrivateMessage(string nickname)
+    {
+        PrivateMessageCommand.Invoke(nickname);
+    }
+
+    private void MuteSomeone(string nickname)
+    {
+        MutePlayer.Invoke(nickname);
+    }
+
+    private void AddTimer(string time)
+    {
+        Int32.TryParse(time, out int result);
+        AddSecondsToTimer(result);
+    }
+
 
     private void HelpList()
     {
@@ -162,7 +180,9 @@ public class CommandManager : MonoBehaviour
 
         HelpCommand.Invoke(allCommands);
     }
+    #endregion
 
+    #region Validation
     private bool CommandWithValidation(Command command, string[] words)
     {
         if (words.Length <= 1)
@@ -178,6 +198,8 @@ public class CommandManager : MonoBehaviour
                 ErrorCommand($"'{commandPrefix}{words[0]}' needs to follow with a number. Check {commandPrefix}{help.name} for more information");
             else
                 ErrorCommand($"User '{nickname}' was not found");
+
+            return false;
         }
         else
         {
@@ -188,19 +210,19 @@ public class CommandManager : MonoBehaviour
                 return true;
             }
 
-            command.eventToCallWithString(nickname);
+            command.eventToCallWithString.Invoke(nickname);
+            return true;
         }
-        return true;
     }
 
-
-    #region Validation
     private bool ValidateIsUser(string nickname)
     {
         var playerList = CommunicationsManager.Instance.GetCurrentUserList();
 
         for (int i = 0; i < playerList.Count; i++)
         {
+            if (playerList[i].IsMasterClient) continue;
+
             if (nickname == playerList[i].NickName)
                 return true;
         }
@@ -211,6 +233,5 @@ public class CommandManager : MonoBehaviour
     {
         return Int32.TryParse(time, out int result);
     }
-
     #endregion
 }

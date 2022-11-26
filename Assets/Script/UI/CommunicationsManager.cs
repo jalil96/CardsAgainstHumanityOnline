@@ -1,3 +1,4 @@
+using Newtonsoft.Json.Linq;
 using Photon.Pun;
 using Photon.Realtime;
 using System;
@@ -15,6 +16,7 @@ public class CommunicationsManager : MonoBehaviourPunCallbacks
     public ChatManager chatManager;
     public VoiceManager voiceManager;
     public CommandManager commandManager;
+    public InputManager inputManager;
 
     //COLOR MANAGMENT
     private Dictionary<string, int> _playersColors = new Dictionary<string, int>();
@@ -70,6 +72,24 @@ public class CommunicationsManager : MonoBehaviourPunCallbacks
         }
 
         return false;
+    }
+
+    public bool OpenAChat(string nickname)
+    {
+        var player = GetPlayerByNickname(nickname);
+        if(player != null)
+        {
+            photonView.RPC(nameof(ToldToOpenAChat), player, player);
+            return true;
+        }
+
+        return false;
+    }
+
+    [PunRPC]
+    public void ToldToOpenAChat(Player player)
+    {
+        chatManager.OpenAPrivateChat(player.NickName);
     }
 
     #region Colors

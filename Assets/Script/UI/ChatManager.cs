@@ -10,7 +10,6 @@ using JetBrains.Annotations;
 using System.Linq;
 using Button = UnityEngine.UI.Button;
 using System.Collections;
-using UnityEditor.VersionControl;
 using Newtonsoft.Json.Linq;
 
 public class ChatManager : MonoBehaviour, IChatClientListener
@@ -99,7 +98,7 @@ public class ChatManager : MonoBehaviour, IChatClientListener
 		CommunicationsManager.Instance.commandManager.PrivateMessageCommand += OpenAPrivateChat;
         CommunicationsManager.Instance.commandManager.ErrorCommand += ErrorCommandMessage;
         CommunicationsManager.Instance.commandManager.HelpCommand += HelpCommandMessage;
-        CommunicationsManager.Instance.commandManager.MuteChat += OnMuteChat;
+        CommunicationsManager.Instance.commandManager.MutePlayer += OnMuteChat;
         CommunicationsManager.Instance.OnColorsUpdate += UpdateColorDictionary;
         CommunicationsManager.Instance.commandManager.QuitChat += OnQuitCommand;
     }
@@ -164,7 +163,7 @@ public class ChatManager : MonoBehaviour, IChatClientListener
         UpdateText(text);
     }
 
-    private void OpenAPrivateChat(string nickname)
+    public void OpenAPrivateChat(string nickname)
     {
         string text = $"{ColorfyWords($"A private chat with {nickname}' was open, say 'Hi'", serverHexColor)} \n";
         UpdateChats(nickname, text, true);
@@ -482,10 +481,12 @@ public class ChatManager : MonoBehaviour, IChatClientListener
     {
         for (int i = 0; i < senders.Length; i++)
         {
+            string currentMessage = messages[i].ToString();
             string message = "";
-            if (ValidateIsMutedCode(messages[i].ToString()))
+            if (ValidateIsMutedCode(currentMessage))
             {
-                message = $"<align=\"right\">{messages[i]}</align> \n";
+                currentMessage.Remove(0, (mutedPrefix.Length + mutedCode.Length)); //we remove the secret code we use to identify the mute info
+                message = $"<align=\"right\">{currentMessage}</align> \n";
             }
             else
             {

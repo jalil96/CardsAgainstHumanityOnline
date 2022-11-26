@@ -51,12 +51,7 @@ public class VoiceController : MonoBehaviourPun
         if (!hasVoiceUser) return;
         if (!isSoundOpen) return;
 
-        if (photonView.IsMine)
-        {
-            if (Input.GetKeyDown(KeyCode.M))
-                ToggleMic();
-        }
-        else
+        if (!photonView.IsMine)
         {
             voiceUI.SetMicStatus(speaker.IsPlaying);
         }
@@ -95,11 +90,11 @@ public class VoiceController : MonoBehaviourPun
 
     public void MuteAnotherPlayer(Player player)
     {
-        photonView.RPC(nameof(MuteMyself), player);
+        photonView.RPC(nameof(MuteYourself), player);
     }
 
     [PunRPC]
-    private void MuteMyself()
+    private void MuteYourself()
     {
         SetMic(false);
     }

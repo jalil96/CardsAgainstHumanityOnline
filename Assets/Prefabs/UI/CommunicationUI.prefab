@@ -1800,7 +1800,7 @@ MonoBehaviour:
   partypopper:
     name: party
     description: Make an explocion confetti and streamers as 'celebration'
-    enabled: 0
+    enabled: 1
     gameplayOnly: 1
     hasValidation: 0
   addTime:

@@ -65,20 +65,20 @@ public class CommandManager : MonoBehaviour
         //Adding Events
         help.eventToCall = HelpList;
 
-        partypopper.eventToCall = () => PartyPopper();
+        partypopper.eventToCall = StartParty;
         quitChat.eventToCall = () => QuitChat();
         switchAllHands.eventToCall = () => SwitchAllWhites();
         switchMyHand.eventToCall = () => SwitchMyHand();
         switchBlackCard.eventToCall = () => SwitchBlacks();
 
-        //Adding Events with Validation
+        //Adding Events with Validation (and that they send something on the invoke)
         privateMessage.hasValidation = true;
         privateMessage.IsValid = ValidateIsUser;
         privateMessage.eventToCallWithString = PrivateMessage;
 
         mutePlayer.hasValidation = true;
         mutePlayer.IsValid = ValidateIsUser;
-        mutePlayer.eventToCallWithString = MuteSomeone;
+        mutePlayer.eventToCallWithString = Mute;
 
         addTime.hasValidation = true;
         addTime.IsValid = ValidateTime;
@@ -149,14 +149,15 @@ public class CommandManager : MonoBehaviour
         ErrorCommand($"'{word}' is not a command. Get full list in {commandPrefix}{help.name}");
     }
 
+    private void ShowCommandMessageInChat(string message)
+    {
+        CommunicationsManager.Instance.chatManager.SendCommandMessage(message);
+    }
+
+
     private void PrivateMessage(string nickname)
     {
         PrivateMessageCommand.Invoke(nickname);
-    }
-
-    private void MuteSomeone(string nickname)
-    {
-        MutePlayer.Invoke(nickname);
     }
 
     private void AddTimer(string time)
@@ -165,6 +166,22 @@ public class CommandManager : MonoBehaviour
         AddSecondsToTimer(result);
     }
 
+    private void StartParty()
+    {
+        ShowCommandMessageInChat($"{PhotonNetwork.LocalPlayer} has started a Party");
+        PartyPopper.Invoke();
+    }
+
+    private void Mute(string nickname)
+    {
+        if (CommunicationsManager.Instance.MutePlayer(nickname))
+        {
+            ShowCommandMessageInChat($"{PhotonNetwork.LocalPlayer.NickName} has muted {nickname}");
+            return;
+        }
+
+        NotACommand("Something went wrong somehow");
+    }
 
     private void HelpList()
     {

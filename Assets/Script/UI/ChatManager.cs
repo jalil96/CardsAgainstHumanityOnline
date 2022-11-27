@@ -57,7 +57,7 @@ public class ChatManager : MonoBehaviour, IChatClientListener
     private TextMeshProUGUI currentTextChat;
 
     //Special Message in chat 
-    private string mutedCode = "654a21dasd654";
+    private string commandCode = "654a21dasd654";
     private string mutedPrefix = "@";
 
     //PROPIEDADES
@@ -98,7 +98,6 @@ public class ChatManager : MonoBehaviour, IChatClientListener
 		CommunicationsManager.Instance.commandManager.PrivateMessageCommand += OpenPrivateChatCommand;
         CommunicationsManager.Instance.commandManager.ErrorCommand += ErrorCommandMessage;
         CommunicationsManager.Instance.commandManager.HelpCommand += HelpCommandMessage;
-        CommunicationsManager.Instance.commandManager.MutePlayer += OnMuteCommand;
         CommunicationsManager.Instance.OnColorsUpdate += UpdateColorDictionary;
         CommunicationsManager.Instance.commandManager.QuitChat += OnQuitCommand;
     }
@@ -110,7 +109,9 @@ public class ChatManager : MonoBehaviour, IChatClientListener
 
         CommunicationsManager.Instance.commandManager.PrivateMessageCommand -= OpenPrivateChatCommand;
         CommunicationsManager.Instance.commandManager.ErrorCommand -= ErrorCommandMessage;
+        CommunicationsManager.Instance.commandManager.HelpCommand -= HelpCommandMessage;
         CommunicationsManager.Instance.OnColorsUpdate -= UpdateColorDictionary;
+        CommunicationsManager.Instance.commandManager.QuitChat -= OnQuitCommand;
     }
 
     private void Update()
@@ -178,16 +179,10 @@ public class ChatManager : MonoBehaviour, IChatClientListener
         SelectInputField();
     }
 
-    private void OnMuteCommand(string nickname)
+    public void SendCommandMessage(string message)
     {
-        if (CommunicationsManager.Instance.MutePlayer(nickname))
-        {
-            string message = $"@{mutedCode} {PhotonNetwork.LocalPlayer.NickName} has muted {nickname}";
-            _chatClient.PublishMessage(_channel, message);
-            return;
-        }
-        
-        ErrorCommandMessage("Something went wrong somehow");
+        string newMessage = $"@{commandCode} {message}";
+        _chatClient.PublishMessage(_channel, newMessage);
     }
 
     private bool ValidateIsMutedCode(string message)
@@ -195,7 +190,7 @@ public class ChatManager : MonoBehaviour, IChatClientListener
         if (!message.StartsWith(mutedPrefix)) return false;
         string[] words = message.Split(' ');
         var target = words[0].Remove(0, mutedPrefix.Length);
-        return target == mutedCode;
+        return target == commandCode;
     }
 
     private void OnQuitCommand()
@@ -493,7 +488,7 @@ public class ChatManager : MonoBehaviour, IChatClientListener
             string message = "";
             if (ValidateIsMutedCode(currentMessage))
             {
-                currentMessage = currentMessage.Remove(0, (mutedPrefix.Length + mutedCode.Length)); //we remove the secret code we use to identify the mute info
+                currentMessage = currentMessage.Remove(0, (mutedPrefix.Length + commandCode.Length)); //we remove the secret code we use to identify the mute info
                 message = $"<align=\"right\">{currentMessage}</align> \n";
             }
             else

@@ -64,6 +64,7 @@ MonoBehaviour:
   - MuteMyself
   - MuteYourself
   - ToldToOpenAChat
+  - SetOffFireworks
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 1

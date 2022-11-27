@@ -49,7 +49,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fc9564882ae87e14fb07bd4fd11b053f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  partyEffect: []
+  partyEffect:
+  - {fileID: 8301990935811837744}
   timer: 2
 --- !u!210 &7434470751925584606
 SortingGroup:
@@ -229,7 +230,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 100000, guid: 876cb26c7c6ab42e49a9cace28b90b8b, type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 400000, guid: 876cb26c7c6ab42e49a9cace28b90b8b, type: 3}
       propertyPath: m_RootOrder
@@ -277,6 +278,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 876cb26c7c6ab42e49a9cace28b90b8b, type: 3}
+--- !u!1 &8301990935811837744 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 100000, guid: 876cb26c7c6ab42e49a9cace28b90b8b, type: 3}
+  m_PrefabInstance: {fileID: 8301990935811738000}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &8301990935811871504 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 400000, guid: 876cb26c7c6ab42e49a9cace28b90b8b, type: 3}

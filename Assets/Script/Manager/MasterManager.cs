@@ -22,6 +22,12 @@ public class MasterManager : MonoBehaviourPun
         _loseScreen.SetActive(false);
     }
 
+    private void Start()
+    {
+        if (!PhotonNetwork.IsMasterClient) return;
+        PhotonNetwork.Instantiate("PartyEffectsManager", Vector3.zero, Quaternion.identity);
+    }
+
     public void RPCMaster(string methodName, params object[] p)
     {
         RPC(methodName, PhotonNetwork.MasterClient, p);

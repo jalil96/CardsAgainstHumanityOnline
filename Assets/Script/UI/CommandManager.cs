@@ -24,18 +24,18 @@ public class CommandManager : MonoBehaviour
     [SerializeField] private string commandPrefix = "/";
 
     [Header("All Time Up Commands")]
-    [SerializeField] private Command privateMessage; //change it to a local command, letting the other player know that a new chat was opened BEFORE we write in it?
+    [SerializeField] private Command privateMessage; //changed to a local command, sending and rpc that opens the private tab to the other player
     [SerializeField] private Command help;
     [SerializeField] private Command quitChat;
-    [SerializeField] private Command mutePlayer; //local command
-    //TODO add at least one more local command ??
+    [SerializeField] private Command mutePlayer; //local command that mutes the othe rplayer
 
     [Header("GameOnly Commands")]
     [SerializeField] private Command partypopper; //local command
-    [SerializeField] private Command addTime; //master commands
-    [SerializeField] private Command switchMyHand; //master commands
-    [SerializeField] private Command switchAllHands; //master commands
-    [SerializeField] private Command switchBlackCard; //master commands
+    [SerializeField] private Command addTime; //master command
+    [SerializeField] private Command switchMyHand; //master command
+    [SerializeField] private Command switchAllHands; //master command
+    [SerializeField] private Command switchBlackCard; //master command
+    [SerializeField] private Command soundHorn; //master command
 
     [Header("Color")]
     [SerializeField] private Color helpDescriptionColor;
@@ -46,16 +46,18 @@ public class CommandManager : MonoBehaviour
 
     //EVENTS FOR COMMANDS
     public Action<string> ErrorCommand = delegate { };
+    public Action<string> InfoCommand = delegate { };
     public Action<string> PrivateMessageCommand =  delegate { };
     public Action<string> HelpCommand = delegate { };
     public Action<string> MutePlayer = delegate { };
     public Action<int> AddSecondsToTimer = delegate { };
 
+    public Action SoundHorn =  delegate { };
     public Action PartyPopper = delegate { };
     public Action QuitChat = delegate { };
     public Action SwitchMyHand = delegate { };
     public Action SwitchAllWhites = delegate { };
-    public Action SwitchBlacks = delegate { };
+    public Action SwitchBlack = delegate { };
 
     private void Awake()
     {
@@ -67,9 +69,10 @@ public class CommandManager : MonoBehaviour
 
         partypopper.eventToCall = StartParty;
         quitChat.eventToCall = () => QuitChat();
-        switchAllHands.eventToCall = () => SwitchAllWhites();
-        switchMyHand.eventToCall = () => SwitchMyHand();
-        switchBlackCard.eventToCall = () => SwitchBlacks();
+        switchAllHands.eventToCall = SwitchTheWhites;
+        switchMyHand.eventToCall = SwitchMyCards;
+        switchBlackCard.eventToCall = SwitchBlackCard;
+        soundHorn.eventToCall = SoundTheHorn;
 
         //Adding Events with Validation (and that they send something on the invoke)
         privateMessage.hasValidation = true;
@@ -85,15 +88,16 @@ public class CommandManager : MonoBehaviour
         addTime.eventToCallWithString = AddTimer;
 
         //Adding Commands
-        AddACommand(privateMessage);
         AddACommand(help);
-        AddACommand(partypopper);
+        AddACommand(privateMessage);
         AddACommand(mutePlayer);
         AddACommand(quitChat);
+        AddACommand(partypopper);
         AddACommand(addTime);
         AddACommand(switchMyHand);
         AddACommand(switchAllHands);
         AddACommand(switchBlackCard);
+        AddACommand(soundHorn);
     }
 
     //if it's a command will return true and invoke the command
@@ -132,10 +136,6 @@ public class CommandManager : MonoBehaviour
         return false;
     }
 
-    public void IsGameplay(bool value)
-    {
-        inGameplayScene = value;
-    }
 
     private void AddACommand(Command command)
     {
@@ -151,9 +151,34 @@ public class CommandManager : MonoBehaviour
 
     private void ShowCommandMessageInChat(string message)
     {
-        CommunicationsManager.Instance.chatManager.SendCommandMessage(message);
+        InfoCommand(message);
+    }
+    #endregion
+
+    #region Command Methods
+    private void SwitchTheWhites()
+    {
+        ShowCommandMessageInChat($"{PhotonNetwork.LocalPlayer} has changed all the white cards");
+        SwitchAllWhites.Invoke();
     }
 
+    private void SwitchMyCards()
+    {
+        ShowCommandMessageInChat($"{PhotonNetwork.LocalPlayer} has changed their hand");
+        SwitchMyHand.Invoke();
+    }
+
+    private void SwitchBlackCard()
+    {
+        ShowCommandMessageInChat($"{PhotonNetwork.LocalPlayer} has changed the black card");
+        SwitchBlack.Invoke();
+    }
+
+    private void SoundTheHorn()
+    {
+        ShowCommandMessageInChat($"{PhotonNetwork.LocalPlayer} has blared a horn");
+        SoundHorn.Invoke();
+    }
 
     private void PrivateMessage(string nickname)
     {
@@ -163,12 +188,13 @@ public class CommandManager : MonoBehaviour
     private void AddTimer(string time)
     {
         Int32.TryParse(time, out int result);
+        ShowCommandMessageInChat($"{PhotonNetwork.LocalPlayer} added {time} seconds to the timer");
         AddSecondsToTimer(result);
     }
 
     private void StartParty()
     {
-        ShowCommandMessageInChat($"{PhotonNetwork.LocalPlayer} has started a Party");
+        ShowCommandMessageInChat($"{PhotonNetwork.LocalPlayer} is partying");
         PartyPopper.Invoke();
     }
 
@@ -200,6 +226,11 @@ public class CommandManager : MonoBehaviour
     #endregion
 
     #region Validation
+    public void IsGameplay(bool value)
+    {
+        inGameplayScene = value;
+    }
+
     private bool CommandWithValidation(Command command, string[] words)
     {
         if (words.Length <= 1)

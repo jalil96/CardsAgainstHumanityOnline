@@ -14,18 +14,26 @@ public class MasterManager : MonoBehaviourPun
 
     [SerializeField] private GameObject _winScreen;
     [SerializeField] private GameObject _loseScreen;
+
+    private SoundEffectManager _soundEffectManager;
+
+    public Action<float> AddTimeEvent = delegate { };
+
     private void Awake()
     {
         if (_instance != null) Destroy(gameObject);
         else _instance = this;
         _winScreen.SetActive(false);
         _loseScreen.SetActive(false);
+
     }
 
     private void Start()
     {
         if (!PhotonNetwork.IsMasterClient) return;
         PhotonNetwork.Instantiate("PartyEffectsManager", Vector3.zero, Quaternion.identity);
+
+        _soundEffectManager = PhotonNetwork.Instantiate("SoundEffectsManager", Vector3.zero, Quaternion.identity).GetComponent<SoundEffectManager>();
     }
 
     public void RPCMaster(string methodName, params object[] p)
@@ -76,5 +84,18 @@ public class MasterManager : MonoBehaviourPun
     {
         if (winner) _winScreen.SetActive(true);
         else _loseScreen.SetActive(true);
+    }
+
+    [PunRPC]
+    public void RequestSoundHorn(Player player)
+    {
+        _soundEffectManager.SendPlaySoundHorn();
+    }
+
+    [PunRPC]
+    public void RequestAddTime(Player client, string time)
+    {
+        float.TryParse(time, out float result);
+        AddTimeEvent.Invoke(result);
     }
 }

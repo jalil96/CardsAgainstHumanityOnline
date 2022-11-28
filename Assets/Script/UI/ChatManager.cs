@@ -1,16 +1,14 @@
-using System;
-using System.Collections.Generic;
-using UnityEngine;
-using TMPro;
-using Photon.Pun;
-using Photon.Chat;
-using UnityEngine.UI;
 using ExitGames.Client.Photon;
-using JetBrains.Annotations;
-using System.Linq;
-using Button = UnityEngine.UI.Button;
+using Photon.Chat;
+using Photon.Pun;
+using System;
 using System.Collections;
-using Newtonsoft.Json.Linq;
+using System.Collections.Generic;
+using System.Linq;
+using TMPro;
+using UnityEngine;
+using UnityEngine.UI;
+using Button = UnityEngine.UI.Button;
 
 public class ChatManager : MonoBehaviour, IChatClientListener
 {
@@ -57,8 +55,9 @@ public class ChatManager : MonoBehaviour, IChatClientListener
     private TextMeshProUGUI currentTextChat;
 
     //Special Message in chat 
-    private string commandCode = "654a21dasd654";
-    private string mutedPrefix = "@";
+    private string secretCommandCode = "654a21dasd654";
+    private string secretCommandPrefix = "#";
+    private string FullSecretCommandCode => secretCommandPrefix+secretCommandCode;
 
     //PROPIEDADES
     public bool ChatEnabled { get; set; }
@@ -98,6 +97,7 @@ public class ChatManager : MonoBehaviour, IChatClientListener
 		CommunicationsManager.Instance.commandManager.PrivateMessageCommand += OpenPrivateChatCommand;
         CommunicationsManager.Instance.commandManager.ErrorCommand += ErrorCommandMessage;
         CommunicationsManager.Instance.commandManager.HelpCommand += HelpCommandMessage;
+        CommunicationsManager.Instance.commandManager.InfoCommand += SendCommandMessage;
         CommunicationsManager.Instance.OnColorsUpdate += UpdateColorDictionary;
         CommunicationsManager.Instance.commandManager.QuitChat += OnQuitCommand;
     }
@@ -110,6 +110,7 @@ public class ChatManager : MonoBehaviour, IChatClientListener
         CommunicationsManager.Instance.commandManager.PrivateMessageCommand -= OpenPrivateChatCommand;
         CommunicationsManager.Instance.commandManager.ErrorCommand -= ErrorCommandMessage;
         CommunicationsManager.Instance.commandManager.HelpCommand -= HelpCommandMessage;
+        CommunicationsManager.Instance.commandManager.InfoCommand -= SendCommandMessage;
         CommunicationsManager.Instance.OnColorsUpdate -= UpdateColorDictionary;
         CommunicationsManager.Instance.commandManager.QuitChat -= OnQuitCommand;
     }
@@ -181,16 +182,15 @@ public class ChatManager : MonoBehaviour, IChatClientListener
 
     public void SendCommandMessage(string message)
     {
-        string newMessage = $"@{commandCode} {message}";
+        string newMessage = $"{FullSecretCommandCode} {message}";
         _chatClient.PublishMessage(_channel, newMessage);
     }
 
-    private bool ValidateIsMutedCode(string message)
+    private bool ValidateIsACommandMessage(string message)
     {
-        if (!message.StartsWith(mutedPrefix)) return false;
+        if (!message.StartsWith(secretCommandPrefix)) return false;
         string[] words = message.Split(' ');
-        var target = words[0].Remove(0, mutedPrefix.Length);
-        return target == commandCode;
+        return words[0] == FullSecretCommandCode;
     }
 
     private void OnQuitCommand()
@@ -486,9 +486,9 @@ public class ChatManager : MonoBehaviour, IChatClientListener
         {
             string currentMessage = messages[i].ToString();
             string message = "";
-            if (ValidateIsMutedCode(currentMessage))
+            if (ValidateIsACommandMessage(currentMessage))
             {
-                currentMessage = currentMessage.Remove(0, (mutedPrefix.Length + commandCode.Length)); //we remove the secret code we use to identify the mute info
+                currentMessage = currentMessage.Remove(0, (secretCommandPrefix.Length + secretCommandCode.Length)); //we remove the secret code we use to identify the mute info
                 message = $"<align=\"right\">{currentMessage}</align> \n";
             }
             else

@@ -14,6 +14,8 @@ public class ChronometerController : MonoBehaviourPun
         if (!PhotonNetwork.IsMasterClient) Destroy(this);
         // _model.RestartChronometer(0f);
         _model.OnTimeElapsed += ChronometerTimeElapsed;
+
+        MasterManager.Instance.AddTimeEvent += AddTime;
     }
 
     private void ChronometerTimeElapsed()

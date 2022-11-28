@@ -20,7 +20,7 @@ public class PlayerData
     }
 }
 
-public class ScoreManager : MonoBehaviour
+public class ScoreManager : MonoBehaviourPunCallbacks
 {
     private const string victoryMessage = "Victory";
     private const string gameOverMessage = "Game Over";
@@ -42,6 +42,11 @@ public class ScoreManager : MonoBehaviour
         SetTitle(PhotonNetwork.LocalPlayer.GetScore() >= (int)PhotonNetwork.CurrentRoom.CustomProperties["WinCondition"]);
         // SetPlayersPrefab(PersistScoreData.Instance.playersData.Count);
         SetScores();
+    }
+
+    private void Start()
+    {
+        CommunicationsManager.Instance.inputManager.SetSceneAsScore();
     }
 
     public void SetTitle(bool win)
@@ -105,10 +110,22 @@ public class ScoreManager : MonoBehaviour
         }
     }
 
+
+    public override void OnMasterClientSwitched(Player newMasterClient)
+    {
+        BackToMainMenu();
+    }
+
+
     public void BackToMainMenu()
     {
-        // PhotonNetwork.LeaveRoom();
+        StartCoroutine(Leave());
+    }
+
+    public IEnumerator Leave()
+    {
+        PhotonNetwork.LeaveRoom();
+        yield return new WaitForSeconds(1);
         PhotonNetwork.LoadLevel("MainMenu");
     }
-    
 }

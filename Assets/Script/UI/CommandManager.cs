@@ -55,7 +55,7 @@ public class CommandManager : MonoBehaviour
     public Action QuitChat = delegate { };
     public Action SwitchMyHand = delegate { };
     public Action SwitchAllWhites = delegate { };
-    public Action SwitchBlacks = delegate { };
+    public Action SwitchBlack = delegate { };
 
     private void Awake()
     {
@@ -69,7 +69,7 @@ public class CommandManager : MonoBehaviour
         quitChat.eventToCall = () => QuitChat();
         switchAllHands.eventToCall = () => SwitchAllWhites();
         switchMyHand.eventToCall = () => SwitchMyHand();
-        switchBlackCard.eventToCall = () => SwitchBlacks();
+        switchBlackCard.eventToCall = () => SwitchBlack();
 
         //Adding Events with Validation (and that they send something on the invoke)
         privateMessage.hasValidation = true;

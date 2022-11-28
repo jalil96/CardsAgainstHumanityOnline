@@ -187,14 +187,14 @@ public class CommandManager : MonoBehaviour
 
     private void AddTimer(string time)
     {
-        Int32.TryParse(time, out int result);
-        ShowCommandMessageInChat($"{PhotonNetwork.LocalPlayer} added {time} seconds to the timer");
-        AddSecondsToTimer(result);
+        //Int32.TryParse(time, out int result);
+        ShowCommandMessageInChat($"{PhotonNetwork.LocalPlayer.NickName} added {time} seconds to the timer");
+        MasterManager.Instance.RPCMaster(nameof(MasterManager.Instance.RequestAddTime), PhotonNetwork.LocalPlayer, time);
     }
 
     private void StartParty()
     {
-        ShowCommandMessageInChat($"{PhotonNetwork.LocalPlayer} is partying");
+        ShowCommandMessageInChat($"{PhotonNetwork.LocalPlayer.NickName} is partying");
         PartyPopper.Invoke();
     }
 

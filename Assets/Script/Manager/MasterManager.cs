@@ -16,12 +16,16 @@ public class MasterManager : MonoBehaviourPun
     [SerializeField] private GameObject _loseScreen;
 
     private SoundEffectManager _soundEffectManager;
+
+    public Action<float> AddTimeEvent = delegate { };
+
     private void Awake()
     {
         if (_instance != null) Destroy(gameObject);
         else _instance = this;
         _winScreen.SetActive(false);
         _loseScreen.SetActive(false);
+
     }
 
     private void Start()
@@ -86,5 +90,12 @@ public class MasterManager : MonoBehaviourPun
     public void RequestSoundHorn(Player player)
     {
         _soundEffectManager.SendPlaySoundHorn();
+    }
+
+    [PunRPC]
+    public void RequestAddTime(Player client, string time)
+    {
+        float.TryParse(time, out float result);
+        AddTimeEvent.Invoke(result);
     }
 }

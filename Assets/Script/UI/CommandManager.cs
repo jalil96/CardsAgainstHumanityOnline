@@ -143,7 +143,7 @@ public class CommandManager : MonoBehaviour
     }
 
 
-    #region Events
+    #region Message Events
     private void NotACommand(string word)
     {
         ErrorCommand($"'{word}' is not a command. Get full list in {commandPrefix}{help.name}");
@@ -177,7 +177,7 @@ public class CommandManager : MonoBehaviour
     private void SoundTheHorn()
     {
         ShowCommandMessageInChat($"{PhotonNetwork.LocalPlayer} has blared a horn");
-        SoundHorn.Invoke();
+        MasterManager.Instance.RPCMaster(nameof(MasterManager.Instance.RequestSoundHorn), PhotonNetwork.LocalPlayer);
     }
 
     private void PrivateMessage(string nickname)

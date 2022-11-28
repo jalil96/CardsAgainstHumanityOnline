@@ -1799,7 +1799,7 @@ MonoBehaviour:
     hasValidation: 0
   partypopper:
     name: party
-    description: Make an explocion confetti and streamers as 'celebration'
+    description: Show some fireworks to celebrate
     enabled: 1
     gameplayOnly: 1
     hasValidation: 0
@@ -1811,7 +1811,7 @@ MonoBehaviour:
     hasValidation: 0
   switchMyHand:
     name: switchHand
-    description: Changes all your cards
+    description: Changes all your white cards
     enabled: 0
     gameplayOnly: 1
     hasValidation: 0
@@ -1825,6 +1825,12 @@ MonoBehaviour:
     name: swithBlack
     description: Changes the current black card and restarts the timer
     enabled: 0
+    gameplayOnly: 1
+    hasValidation: 0
+  soundHorn:
+    name: horn
+    description: Blares a horn
+    enabled: 1
     gameplayOnly: 1
     hasValidation: 0
   helpDescriptionColor: {r: 0.6132076, g: 0.6132076, b: 0.6132076, a: 1}
@@ -2629,6 +2635,10 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2226245803202110777, guid: d8bbfa45b6883524cae9c2ab4198f54f, type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2226245803288112090, guid: d8bbfa45b6883524cae9c2ab4198f54f, type: 3}
       propertyPath: m_SizeDelta.y
       value: 0
       objectReference: {fileID: 0}

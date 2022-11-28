@@ -158,25 +158,25 @@ public class CommandManager : MonoBehaviour
     #region Command Methods
     private void SwitchTheWhites()
     {
-        ShowCommandMessageInChat($"{PhotonNetwork.LocalPlayer} has changed all the white cards");
+        ShowCommandMessageInChat($"{PhotonNetwork.LocalPlayer.NickName} has changed all the white cards");
         SwitchAllWhites.Invoke();
     }
 
     private void SwitchMyCards()
     {
-        ShowCommandMessageInChat($"{PhotonNetwork.LocalPlayer} has changed their hand");
+        ShowCommandMessageInChat($"{PhotonNetwork.LocalPlayer.NickName} has changed their hand");
         SwitchMyHand.Invoke();
     }
 
     private void SwitchBlackCard()
     {
-        ShowCommandMessageInChat($"{PhotonNetwork.LocalPlayer} has changed the black card");
+        ShowCommandMessageInChat($"{PhotonNetwork.LocalPlayer.NickName} has changed the black card");
         SwitchBlack.Invoke();
     }
 
     private void SoundTheHorn()
     {
-        ShowCommandMessageInChat($"{PhotonNetwork.LocalPlayer} has blared a horn");
+        ShowCommandMessageInChat($"{PhotonNetwork.LocalPlayer.NickName} has blared a horn");
         MasterManager.Instance.RPCMaster(nameof(MasterManager.Instance.RequestSoundHorn), PhotonNetwork.LocalPlayer);
     }
 

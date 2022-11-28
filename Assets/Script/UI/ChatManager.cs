@@ -186,7 +186,7 @@ public class ChatManager : MonoBehaviour, IChatClientListener
         _chatClient.PublishMessage(_channel, newMessage);
     }
 
-    private bool ValidateIsMutedCode(string message)
+    private bool ValidateIsACommandMessage(string message)
     {
         if (!message.StartsWith(secretCommandPrefix)) return false;
         string[] words = message.Split(' ');
@@ -486,7 +486,7 @@ public class ChatManager : MonoBehaviour, IChatClientListener
         {
             string currentMessage = messages[i].ToString();
             string message = "";
-            if (ValidateIsMutedCode(currentMessage))
+            if (ValidateIsACommandMessage(currentMessage))
             {
                 currentMessage = currentMessage.Remove(0, (secretCommandPrefix.Length + secretCommandCode.Length)); //we remove the secret code we use to identify the mute info
                 message = $"<align=\"right\">{currentMessage}</align> \n";

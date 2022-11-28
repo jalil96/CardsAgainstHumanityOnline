@@ -187,7 +187,6 @@ public class CommandManager : MonoBehaviour
 
     private void AddTimer(string time)
     {
-        //Int32.TryParse(time, out int result);
         ShowCommandMessageInChat($"{PhotonNetwork.LocalPlayer.NickName} added {time} seconds to the timer");
         MasterManager.Instance.RPCMaster(nameof(MasterManager.Instance.RequestAddTime), PhotonNetwork.LocalPlayer, time);
     }
@@ -279,7 +278,7 @@ public class CommandManager : MonoBehaviour
 
     private bool ValidateTime(string time)
     {
-        return Int32.TryParse(time, out int result);
+        return float.TryParse(time, out float result);
     }
     #endregion
 }

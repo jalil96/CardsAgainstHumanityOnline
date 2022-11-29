@@ -27,14 +27,8 @@ public class CardModel : MonoBehaviourPun
     
     public string Text
     {
-        get
-        {
-            return _text;
-        }
-        set
-        {
-            photonView.RPC(nameof(UpdateText), RpcTarget.All, value);
-        }
+        get => _text;
+        set => photonView.RPC(nameof(UpdateText), RpcTarget.All, value);
     }
 
     private void Awake()

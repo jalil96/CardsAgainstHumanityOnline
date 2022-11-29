@@ -1812,19 +1812,19 @@ MonoBehaviour:
   switchMyHand:
     name: switchHand
     description: Changes all your white cards
-    enabled: 0
+    enabled: 1
     gameplayOnly: 1
     hasValidation: 0
   switchAllHands:
     name: switchWhites
     description: Changes white cards from all players
-    enabled: 0
+    enabled: 1
     gameplayOnly: 1
     hasValidation: 0
   switchBlackCard:
-    name: swithBlack
+    name: switchBlack
     description: Changes the current black card and restarts the timer
-    enabled: 0
+    enabled: 1
     gameplayOnly: 1
     hasValidation: 0
   soundHorn:
@@ -2644,7 +2644,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2226245803288112090, guid: d8bbfa45b6883524cae9c2ab4198f54f, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -0.000024795532
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2226245803442401513, guid: d8bbfa45b6883524cae9c2ab4198f54f, type: 3}
       propertyPath: m_Value
@@ -2728,11 +2728,6 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: d8bbfa45b6883524cae9c2ab4198f54f, type: 3}
---- !u!224 &324187125149485864 stripped
-RectTransform:
-  m_CorrespondingSourceObject: {fileID: 2226245802708140706, guid: d8bbfa45b6883524cae9c2ab4198f54f, type: 3}
-  m_PrefabInstance: {fileID: 1916994924622236042}
-  m_PrefabAsset: {fileID: 0}
 --- !u!114 &324187125149485867 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 2226245802708140705, guid: d8bbfa45b6883524cae9c2ab4198f54f, type: 3}
@@ -2744,12 +2739,43 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f1a111a7de0d2d947a8824ac4175e109, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!224 &324187125149485864 stripped
+RectTransform:
+  m_CorrespondingSourceObject: {fileID: 2226245802708140706, guid: d8bbfa45b6883524cae9c2ab4198f54f, type: 3}
+  m_PrefabInstance: {fileID: 1916994924622236042}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &324187126736675409 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 2226245803288112091, guid: d8bbfa45b6883524cae9c2ab4198f54f, type: 3}
   m_PrefabInstance: {fileID: 1916994924622236042}
   m_PrefabAsset: {fileID: 0}
 --- !u!114 &189871679
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 324187126736675409}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 59f8146938fff824cb5fd77236b75775, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Padding:
+    m_Left: 0
+    m_Right: 0
+    m_Top: 0
+    m_Bottom: 0
+  m_ChildAlignment: 0
+  m_Spacing: 0
+  m_ChildForceExpandWidth: 1
+  m_ChildForceExpandHeight: 1
+  m_ChildControlWidth: 1
+  m_ChildControlHeight: 1
+  m_ChildScaleWidth: 0
+  m_ChildScaleHeight: 0
+  m_ReverseArrangement: 0
+--- !u!114 &4727817361110964911
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}

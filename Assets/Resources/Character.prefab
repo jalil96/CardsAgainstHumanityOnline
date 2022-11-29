@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 1675806160662853732}
   - component: {fileID: 1675806160662853735}
   - component: {fileID: 4955319938073688317}
+  - component: {fileID: 6939419323670896767}
   - component: {fileID: 1377458745076574291}
   m_Layer: 0
   m_Name: Character
@@ -74,6 +75,19 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _hand: {fileID: 5097848564148250405}
   _points: 0
+--- !u!114 &6939419323670896767
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1675806160662853734}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1dff082eea204e22b4d5c8bb70d1188a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _characterModel: {fileID: 4955319938073688317}
 --- !u!114 &1377458745076574291
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -476,6 +490,7 @@ MonoBehaviour:
   - {fileID: 8216045441577247356}
   - {fileID: 87970766199940193}
   _selectorIndex: 0
+  _activeCards: 5
 --- !u!114 &8999993176522416473
 MonoBehaviour:
   m_ObjectHideFlags: 0

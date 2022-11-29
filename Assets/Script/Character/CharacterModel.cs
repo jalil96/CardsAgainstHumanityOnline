@@ -54,13 +54,17 @@ public class CharacterModel : MonoBehaviourPun
         if (_hidenCards) return;
         _hand.SelectCard();
         _selectedCard = true;
-        if (_hand.GetSelectedCard() != null) OnSelectedCard.Invoke(this);
+        if (_hand.GetSelectedCard() != null)
+        {
+            // OnSelectedCard.Invoke(this);
+            photonView.RPC(nameof(UpdateSelectCard), RpcTarget.All);
+        }
         else OnUnselectedCard.Invoke(this);
     }
 
     public void SetSelectedCard(bool selected)
     {
-        _selectedCard = selected;
+        photonView.RPC(nameof(UpdateSelectedCard), RpcTarget.All, selected);
     }
 
     public void SetIsMine(bool isMine)
@@ -113,4 +117,17 @@ public class CharacterModel : MonoBehaviourPun
         _nickName = nickName;
         OnNickNameUpdated.Invoke();
     }
+
+    [PunRPC]
+    private void UpdateSelectCard()
+    {
+        OnSelectedCard.Invoke(this);
+    }
+
+    [PunRPC]
+    private void UpdateSelectedCard(bool selected)
+    {
+        _selectedCard = selected;
+    }
+    
 }

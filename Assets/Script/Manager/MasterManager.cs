@@ -18,6 +18,9 @@ public class MasterManager : MonoBehaviourPun
     private SoundEffectManager _soundEffectManager;
 
     public Action<float> AddTimeEvent = delegate { };
+    public Action<Player> OnChangeMyWhiteCards = delegate(Player player) { };
+    public Action OnChangeAllWhiteCards = delegate { };
+    public Action OnChangeBlackCard = delegate { };
 
     private void Awake()
     {
@@ -61,7 +64,7 @@ public class MasterManager : MonoBehaviourPun
         _playerReferences[characterModel] = client;
     }
 
-    [PunRPC]
+    /*[PunRPC]
     public void RequestMove(Player client, bool dir)
     {
         if (_characterModelReferences.ContainsKey(client))
@@ -77,7 +80,7 @@ public class MasterManager : MonoBehaviourPun
         {
             _characterModelReferences[client].SelectCard();
         }
-    }
+    }*/
 
     [PunRPC]
     public void WinConditionMet(bool winner)
@@ -97,5 +100,23 @@ public class MasterManager : MonoBehaviourPun
     {
         float.TryParse(time, out float result);
         AddTimeEvent.Invoke(result);
+    }
+
+    [PunRPC]
+    public void RequestChangeMyWhiteCards(Player client)
+    {
+        OnChangeMyWhiteCards.Invoke(client);
+    }
+
+    [PunRPC]
+    public void RequestChangeAllWhiteCards(Player client)
+    {
+        OnChangeAllWhiteCards.Invoke();
+    }
+
+    [PunRPC]
+    public void RequestChangeBlackCard(Player client)
+    {
+        OnChangeBlackCard.Invoke();
     }
 }

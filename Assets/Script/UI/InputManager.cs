@@ -16,6 +16,10 @@ public class InputManager : MonoBehaviour
 
     public Action InputServer = delegate { };
     public Action<string> InputPlayer = delegate { };
+    
+    public Action OnLeftArrowPressed = delegate { };
+    public Action OnRightArrowPressed = delegate { };
+    public Action OnReturnPressed = delegate { };
 
 
     void Start()
@@ -60,6 +64,24 @@ public class InputManager : MonoBehaviour
         {
             if (!chat.inputField.isFocused)
                 voiceManager.MyVoiceController.ToggleMic();
+        }
+
+        if (Input.GetKeyDown(KeyCode.LeftArrow))
+        {
+            if (!chat.inputField.isFocused)
+                OnLeftArrowPressed.Invoke();
+        }
+
+        if (Input.GetKeyDown(KeyCode.RightArrow))
+        {
+            if (!chat.inputField.isFocused)
+                OnRightArrowPressed.Invoke();
+        }
+
+        if (Input.GetKeyDown(KeyCode.Return))
+        {
+            if (!chat.inputField.isFocused)
+                OnReturnPressed.Invoke();
         }
 
         if (isMainMenu)

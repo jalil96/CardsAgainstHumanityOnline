@@ -22,6 +22,11 @@ public class CharacterHandUI : MonoBehaviour
         _hand.OnShowWhiteCards += ShowWhiteCards;
         _hand.OnHideWhiteCards += HideWhiteCards;
         _hand.OnSetNewCards += SetNewCards;
+
+        for (int i = 0; i < _cards.Count; i++)
+        {
+            _hand.Cards[i].OnTextUpdated += _cards[i].UpdateText;
+        }
         
         SetNewCards();
     }
@@ -46,6 +51,15 @@ public class CharacterHandUI : MonoBehaviour
 
     private void SetNewCards()
     {
+        Debug.Log("Updating hand UI cards!!!!!!!!!");
+        // debug
+        string debug = "";
+        foreach (var card in _cards)
+        {
+            debug += $"{card}, ";
+        }
+        Debug.Log(debug);
+        // end debug
         for (var i = 0; i < _cards.Count; i++)
         {
             if (_hand.Cards[i].IsActive)

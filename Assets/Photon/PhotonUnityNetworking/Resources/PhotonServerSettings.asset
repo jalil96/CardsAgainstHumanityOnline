@@ -68,6 +68,12 @@ MonoBehaviour:
   - PlayTheSoundHorn
   - RequestSoundHorn
   - RequestAddTime
+  - RequestChangeAllWhiteCards
+  - RequestChangeMyWhiteCards
+  - UpdateSelectCard
+  - UpdateSelectedCard
+  - RequestSelectedCard
+  - DeleteOtherControllers
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 1

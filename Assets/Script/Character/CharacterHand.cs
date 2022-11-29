@@ -14,9 +14,10 @@ public class CharacterHand : MonoBehaviourPun
     [SerializeField] private List<CardModel> _cards;
     [SerializeField] private List<Transform> _cardsPositions;
     [SerializeField] private int _selectorIndex;
-
+    [SerializeField] private int _activeCards = 5;
+    
     private int _selectedCard;
-    private int _activeCards = 5;
+    
     private bool _isMine;
     
     public int SelectorIndex => _selectorIndex;
@@ -97,7 +98,19 @@ public class CharacterHand : MonoBehaviourPun
 
     public void SelectCard()
     {
-        _selectedCard = _selectorIndex;
+        photonView.RPC(nameof(UpdateSelectedCard), RpcTarget.All, _selectorIndex);
+    }
+
+    [PunRPC]
+    private void UpdateSelectedCard(int selectedCard)
+    {
+        _selectedCard = selectedCard;
+    }
+
+    [PunRPC]
+    private void RequestSelectedCard(Player player)
+    {
+        photonView.RPC(nameof(UpdateSelectedCard), player, _selectedCard);
     }
 
     public CardModel GetSelectedCard()
@@ -121,7 +134,7 @@ public class CharacterHand : MonoBehaviourPun
     public void SetCards(List<string> newCards)
     {
         Debug.Log($"_cards array length: {_cards.Count}, newCards array length: {newCards.Count}");
-        for (var i = 0; i < _cards.Count; i++)
+        /*for (var i = 0; i < _cards.Count; i++)
         {
             if (newCards.Count > i)
             {
@@ -132,13 +145,13 @@ public class CharacterHand : MonoBehaviourPun
             {
                 _cards[i].Deactivate();
             }
-        }
+        }*/
 
-        _activeCards = newCards.Count;
-        _selectorIndex = 0;
+        // _activeCards = newCards.Count;
+        // _selectorIndex = 0;
         
-        photonView.RPC(nameof(UpdateCards), RpcTarget.Others, (object)newCards.ToArray());
-        photonView.RPC(nameof(UpdateSelectorIndex), RpcTarget.Others, _selectorIndex);
-        OnSetNewCards.Invoke();
+        photonView.RPC(nameof(UpdateCards), RpcTarget.All, (object)newCards.ToArray());
+        photonView.RPC(nameof(UpdateSelectorIndex), RpcTarget.All, 0);
+        // OnSetNewCards.Invoke();
     }
 }

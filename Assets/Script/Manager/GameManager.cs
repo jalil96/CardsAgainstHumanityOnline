@@ -5,6 +5,7 @@ using ExitGames.Client.Photon;
 using Newtonsoft.Json;
 using Photon.Pun;
 using Photon.Pun.UtilityScripts;
+using Photon.Realtime;
 using UnityEditor;
 using UnityEngine;
 using Random = UnityEngine.Random;
@@ -16,6 +17,7 @@ public class GameManager : MonoBehaviourPun
     
     [SerializeField] private List<RoundAction> _roundActions;
     [SerializeField] private BlackCardModel _blackCard;
+    
     [Range(1, 10)] [SerializeField] private int _winCondition = 3;
     
     private Queue<RoundAction> _roundActionsQueue = new Queue<RoundAction>();
@@ -37,7 +39,11 @@ public class GameManager : MonoBehaviourPun
 
     private void Awake()
     {
-        if (!PhotonNetwork.IsMasterClient) Destroy(gameObject);
+        if (!PhotonNetwork.IsMasterClient)
+        {
+            Destroy(gameObject);
+            return;
+        }
         
         _blackCardsStrings = JsonUtility.FromJson<Cards>(_blackCardsJson.text).cards;
         _whiteCardsStrings = JsonUtility.FromJson<Cards>(_whiteCardsJson.text).cards;
@@ -48,6 +54,11 @@ public class GameManager : MonoBehaviourPun
 
     private void Start()
     {
+        if (!PhotonNetwork.IsMasterClient) return;
+
+        MasterManager.Instance.OnChangeBlackCard += SetNewBlackCard;
+        MasterManager.Instance.OnChangeMyWhiteCards += SetNewWhiteCards;
+        MasterManager.Instance.OnChangeAllWhiteCards += SetNewWhiteCards;
         
         EnqueueRoundActions();
         RoundActionEnded();
@@ -65,8 +76,6 @@ public class GameManager : MonoBehaviourPun
 
     private void RoundEnded()
     {
-        // TODO: If win condition met, show Win/Lose screen on respective players and move to the scoreboard scene
-
         foreach (var character in _characters)
         {
             if (character.Points >= _winCondition) // Parametrize win condition value
@@ -77,15 +86,9 @@ public class GameManager : MonoBehaviourPun
             }
         }
         
-        SetCharacters(_characters);
+        SetNewWhiteCards();
 
-        if (_blackCards.Count <= 0)
-        {
-            LoadBlackCards();
-        }
-        
-        _blackCard.SetText(_blackCards.Pop());
-        _blackCard.SetShowCard();
+        SetNewBlackCard();
         EnqueueRoundActions();
     }
 
@@ -166,6 +169,10 @@ public class GameManager : MonoBehaviourPun
     public void SetCharacters(List<CharacterModel> characters)
     {
         _characters = characters;
+    }
+
+    public void SetNewWhiteCards()
+    {
         if (_whiteCards.Count <= 5)
         {
             LoadWhiteCards();
@@ -177,13 +184,28 @@ public class GameManager : MonoBehaviourPun
             c.Hand.SetCards(newCards);
         });
     }
-    
-    private void Update()
+
+    public void SetNewWhiteCards(Player client)
     {
-        if (Input.GetKeyDown(KeyCode.F4))
+        SetNewWhiteCards(MasterManager.Instance.GetCharacterModelFromPlayer(client));
+    }
+    
+    public void SetNewWhiteCards(CharacterModel character)
+    {
+        List<string> newCards = new List<string>();
+        for (int i = 0; i < 5; i++) newCards.Add(_whiteCards.Pop());
+        character.Hand.SetCards(newCards);
+    }
+
+    public void SetNewBlackCard()
+    {
+        if (_blackCards.Count <= 0)
         {
-            _blackCard.SetShowCard();
+            LoadBlackCards();
         }
+        
+        _blackCard.SetText(_blackCards.Pop());
+        _blackCard.SetShowCard();
     }
 
     public CharacterModel GetCurrentJudge()

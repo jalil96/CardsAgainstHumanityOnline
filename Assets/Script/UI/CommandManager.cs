@@ -3,6 +3,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using Photon.Realtime;
 using UnityEditor;
 using UnityEngine;
 
@@ -159,18 +160,21 @@ public class CommandManager : MonoBehaviour
     private void SwitchTheWhites()
     {
         ShowCommandMessageInChat($"{PhotonNetwork.LocalPlayer.NickName} has changed all the white cards");
+        MasterManager.Instance.RPCMaster(nameof(MasterManager.Instance.RequestChangeAllWhiteCards), PhotonNetwork.LocalPlayer);
         SwitchAllWhites.Invoke();
     }
 
     private void SwitchMyCards()
     {
         ShowCommandMessageInChat($"{PhotonNetwork.LocalPlayer.NickName} has changed their hand");
+        MasterManager.Instance.RPCMaster(nameof(MasterManager.Instance.RequestChangeMyWhiteCards), PhotonNetwork.LocalPlayer);
         SwitchMyHand.Invoke();
     }
 
     private void SwitchBlackCard()
     {
         ShowCommandMessageInChat($"{PhotonNetwork.LocalPlayer.NickName} has changed the black card");
+        MasterManager.Instance.RPCMaster(nameof(MasterManager.Instance.RequestChangeBlackCard), PhotonNetwork.LocalPlayer);
         SwitchBlack.Invoke();
     }
 

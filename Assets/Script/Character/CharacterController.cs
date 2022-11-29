@@ -4,16 +4,38 @@ using UnityEngine;
 
 public class CharacterController : MonoBehaviour
 {
-    private void Awake()
+    [SerializeField] private CharacterModel _characterModel;
+    
+    // private InputManager _inputManager;
+
+    public void Destroy()
     {
-        if (PhotonNetwork.IsMasterClient)
-        {
-            Destroy(Camera.main.gameObject);
-            Destroy(this);
-        }
+        Destroy(this);
     }
 
-    private void Update()
+    private void Start()
+    {
+        CommunicationsManager.Instance.inputManager.OnReturnPressed += ReturnPressed;
+        CommunicationsManager.Instance.inputManager.OnRightArrowPressed += RightArrowPressed;
+        CommunicationsManager.Instance.inputManager.OnLeftArrowPressed += LeftArrowPressed;
+    }
+
+    private void LeftArrowPressed()
+    {
+        _characterModel.Move(false);
+    }
+    
+    private void RightArrowPressed()
+    {
+        _characterModel.Move(true);
+    }
+    
+    private void ReturnPressed()
+    {
+        _characterModel.SelectCard();
+    }
+    
+    /*private void Update()
     {
         if (Input.GetKeyDown(KeyCode.RightArrow))
             MasterManager.Instance.RPCMaster(nameof(MasterManager.Instance.RequestMove), PhotonNetwork.LocalPlayer, true);
@@ -23,5 +45,5 @@ public class CharacterController : MonoBehaviour
         
         if (Input.GetKeyDown(KeyCode.Return))
             MasterManager.Instance.RPCMaster(nameof(MasterManager.Instance.RequestSelect), PhotonNetwork.LocalPlayer);
-    }
+    }*/
 }

@@ -11,6 +11,7 @@ public class CharacterInstantiator : MonoBehaviourPunCallbacks
     [SerializeField] private List<SpawnPoint> _spawnPoints;
     [SerializeField] private GameManager _gameManager;
     
+    
     private void Start()
     {
         if (!PhotonNetwork.IsMasterClient)
@@ -42,6 +43,9 @@ public class CharacterInstantiator : MonoBehaviourPunCallbacks
         }
 
         _gameManager.SetCharacters(_characters);
+        _gameManager.SetNewWhiteCards();
+        
+        _characters.ForEach(c => photonView.RPC(nameof(DeleteOtherControllers), MasterManager.Instance.GetPlayerFromCharacter(c), c.photonView.ViewID));
     }
 
     [PunRPC]
@@ -50,6 +54,8 @@ public class CharacterInstantiator : MonoBehaviourPunCallbacks
         var characters = FindObjectsOfType<CharacterModel>().ToList();
         var character = characters.Find(ch => ch.photonView.ViewID == photonID);
 
+        characters.Remove(character);
+
         if (character != null)
         {
             character.SetIsMine(true);
@@ -57,6 +63,17 @@ public class CharacterInstantiator : MonoBehaviourPunCallbacks
             var handUI = FindObjectOfType<CharacterHandUI>();
             handUI.SetCharacterHand(character.Hand);
         }
+    }
+
+    [PunRPC]
+    private void DeleteOtherControllers(int photonID)
+    {
+        var characters = FindObjectsOfType<CharacterModel>().ToList();
+        var character = characters.Find(ch => ch.photonView.ViewID == photonID);
+
+        characters.Remove(character);
+        
+        characters.ForEach(c => c.GetComponent<CharacterController>().Destroy());
     }
     
 }

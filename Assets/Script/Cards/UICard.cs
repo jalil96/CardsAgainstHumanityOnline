@@ -18,4 +18,9 @@ public class UICard : MonoBehaviour
     {
         gameObject.SetActive(false);
     }
+
+    public void UpdateText(string newText)
+    {
+        text.text = newText;
+    }
 }

@@ -603,6 +603,7 @@ MonoBehaviour:
   - {fileID: 1223740561}
   - {fileID: 119422279}
   _gameManager: {fileID: 1350496045}
+  _inputManager: {fileID: 0}
 --- !u!114 &237260217
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1999,7 +2000,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 72
+  m_fontSize: 57.9
   m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -2811,6 +2812,7 @@ MonoBehaviour:
   - {fileID: 2087077779}
   - {fileID: 1453432422}
   _blackCard: {fileID: 1804619344}
+  _commandManager: {fileID: 0}
   _winCondition: 3
 --- !u!114 &1350496046
 MonoBehaviour:
@@ -4100,7 +4102,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &1977424831
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4113,6 +4115,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1dff082eea204e22b4d5c8bb70d1188a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _characterModel: {fileID: 0}
 --- !u!4 &1977424832
 Transform:
   m_ObjectHideFlags: 0

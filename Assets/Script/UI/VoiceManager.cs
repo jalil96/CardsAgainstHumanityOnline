@@ -36,7 +36,8 @@ public class VoiceManager : MonoBehaviour
     private Recorder recorder;
     private PunVoiceClient punVoiceClient;
     private bool voiceSettingsActive;
-    private List<VoiceController> voiceObjects = new List<VoiceController>();
+    //private List<VoiceController> voiceObjects = new List<VoiceController>();
+    private Dictionary<Player, VoiceController> voiceObjects = new Dictionary<Player, VoiceController>();
     private List<VoiceUI> users = new List<VoiceUI>();
 
     public VoiceController MyVoiceController => voiceController;
@@ -78,7 +79,8 @@ public class VoiceManager : MonoBehaviour
 
     public void MuteAnotherPlayer(Player player)
     {
-        voiceController.MuteAnotherPlayer(player);
+        if(voiceObjects.TryGetValue(player, out VoiceController userCV))
+            userCV.MuteAnotherPlayer(player);
     }
 
     public void ToggleVoiceSettingsMenu()
@@ -129,7 +131,7 @@ public class VoiceManager : MonoBehaviour
         voiceController = voice.GetComponent<VoiceController>();
         CreateVisualUI(voiceController, PhotonNetwork.LocalPlayer);
         voiceController.SetMic(!allPlayersStartMute);
-        AddVoiceObject(voiceController);
+        AddVoiceObject(PhotonNetwork.LocalPlayer, voiceController);
     }
 
     public void CreateVisualUI(VoiceController voiceController, Player player)
@@ -143,29 +145,31 @@ public class VoiceManager : MonoBehaviour
             users.Add(voiceUI);
     }
 
-    public void AddVoiceObject(VoiceController voice)
+    public void AddVoiceObject(Player player, VoiceController voice)
     {
-        if (voiceObjects.Contains(voice)) return;
-        voiceObjects.Add(voice);
+        if (voiceObjects.ContainsKey(player)) return;
+            voiceObjects.Add(player, voice);
     }
 
     public void SetAudioInVoiceObjects(bool canHear)
     {
-        for (int i = voiceObjects.Count - 1; i >= 0; i--)
+        foreach (var vo in voiceObjects)
         {
-            voiceObjects[i].audioSource.enabled = canHear;
+            vo.Value.audioSource.enabled = canHear;
         }
     }
 
     public void ClearData()
     {
         //we destroy all gameObjects, from players and whatnot
-        for (int i = voiceObjects.Count - 1; i >= 0; i--)
-        {
-            var voice = voiceObjects[i];
+        voiceObjects.Clear();
 
-            voiceObjects.Remove(voice);
-            Destroy(voice);
-        }
+        //for (int i = voiceObjects.Count - 1; i >= 0; i--)
+        //{
+        //    var voice = voiceObjects[i];
+
+        //    voiceObjects.Remove(voice);
+        //    Destroy(voice);
+        //}
     }
 }

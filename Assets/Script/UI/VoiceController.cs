@@ -40,7 +40,7 @@ public class VoiceController : MonoBehaviourPun
         else
         {
             CommunicationsManager.Instance.voiceManager.CreateVisualUI(this, Owner);
-            CommunicationsManager.Instance.voiceManager.AddVoiceObject(this);
+            CommunicationsManager.Instance.voiceManager.AddVoiceObject(Owner, this);
         }
 
     }
@@ -96,7 +96,8 @@ public class VoiceController : MonoBehaviourPun
     [PunRPC]
     private void MuteYourself()
     {
-        CommunicationsManager.Instance.voiceManager.MyVoiceController.SetMic(false);
+        print("I was muted " + Owner.NickName);
+        SetMic(false);
     }
 
     [PunRPC]

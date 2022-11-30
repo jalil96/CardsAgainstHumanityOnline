@@ -26,7 +26,6 @@ public class VoiceUI : MonoBehaviour
 
     private void Awake()
     {
-        SetMicStatus(false);
         SetSoundEnabled(true);
         micButton.interactable = false;
     }

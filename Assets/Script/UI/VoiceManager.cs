@@ -96,7 +96,7 @@ public class VoiceManager : MonoBehaviour
         SetAudioInVoiceObjects(value);
 
         if (!value) //if we are disabling the system, we want to mute ourselves
-            voiceController.SetMic(value);
+            voiceController.SetMic(false);
     }
 
     private void SetVoiceSettingsVisible(bool value)

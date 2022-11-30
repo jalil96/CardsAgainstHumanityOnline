@@ -343,6 +343,7 @@ public class MainMenuManager : MonoBehaviourPunCallbacks
             inRoomPanel.LeaveTheRoom();
         }
 
+        ChangePanel(loadingSymbolPanel);
         SetStatus("Disconnecting");
         PhotonNetwork.Disconnect();
         Application.Quit();

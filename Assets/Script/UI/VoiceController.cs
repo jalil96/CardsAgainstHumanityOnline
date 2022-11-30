@@ -18,7 +18,6 @@ public class VoiceController : MonoBehaviourPun
     private bool isUsingMic = false;
     private bool isSoundOpen = true;
     private bool lastMicStatusWasOpen = false;
-
     public Player Owner { get; private set; }
 
     void Awake()
@@ -66,6 +65,7 @@ public class VoiceController : MonoBehaviourPun
     public void SetMic(bool value)
     {
         isUsingMic = value;
+
         PunVoiceClient.Instance.PrimaryRecorder.TransmitEnabled = value;
         voiceUI.SetMicStatus(value);
     }
@@ -96,7 +96,7 @@ public class VoiceController : MonoBehaviourPun
     [PunRPC]
     private void MuteYourself()
     {
-        SetMic(false);
+        CommunicationsManager.Instance.voiceManager.MyVoiceController.SetMic(false);
     }
 
     [PunRPC]
@@ -128,7 +128,7 @@ public class VoiceController : MonoBehaviourPun
         if (photonView.IsMine) 
         {
             if (value)
-                voiceUI.SetMicStatus(lastMicStatusWasOpen);
+                SetMic(lastMicStatusWasOpen);
             else
                 lastMicStatusWasOpen = isUsingMic;
         }

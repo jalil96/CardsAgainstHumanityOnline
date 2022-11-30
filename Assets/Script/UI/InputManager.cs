@@ -62,26 +62,31 @@ public class InputManager : MonoBehaviour
 
         if (Input.GetKeyDown(muteKey))
         {
-            if (!chat.inputField.isFocused)
+            if (!chat.IsBeingUsed)
                 voiceManager.MyVoiceController.ToggleMic();
-        }
-
-        if (Input.GetKeyDown(KeyCode.LeftArrow))
-        {
-            if (!chat.inputField.isFocused)
-                OnLeftArrowPressed.Invoke();
-        }
-
-        if (Input.GetKeyDown(KeyCode.RightArrow))
-        {
-            if (!chat.inputField.isFocused)
-                OnRightArrowPressed.Invoke();
         }
 
         if (Input.GetKeyDown(KeyCode.Return))
         {
-            if (!chat.inputField.isFocused)
+            if (chat.IsBeingUsed)
+                chat.SendChatMessage();
+            else if (isGameplay)
                 OnReturnPressed.Invoke();
+        }
+
+        if (isGameplay)
+        {
+            if (Input.GetKeyDown(KeyCode.LeftArrow))
+            {
+                if (!chat.IsBeingUsed)
+                    OnLeftArrowPressed.Invoke();
+            }
+
+            if (Input.GetKeyDown(KeyCode.RightArrow))
+            {
+                if (!chat.IsBeingUsed)
+                    OnRightArrowPressed.Invoke();
+            }
         }
 
         if (isMainMenu)
@@ -104,7 +109,5 @@ public class InputManager : MonoBehaviour
             if (Input.GetKeyDown(KeyCode.F6))
                 InputPlayer("Nico");
         }
-
-
     }
 }

@@ -62,6 +62,7 @@ public class ChatManager : MonoBehaviour, IChatClientListener
     //PROPIEDADES
     public bool ChatEnabled { get; set; }
     public bool ChatMinimized { get; private set; }
+    public bool IsBeingUsed => !ChatMinimized && inputField.text.Length > 0;
 
     //EVENTS
     public Action OnChatConnected;
@@ -76,7 +77,7 @@ public class ChatManager : MonoBehaviour, IChatClientListener
 
         minimizedChat.onClick.AddListener(ToggleChat);
         sendButton.onClick.AddListener(SendChatMessage);
-        inputField.onEndEdit.AddListener(SendChatMessage);
+        //inputField.onEndEdit.AddListener(SendChatMessage);
 
         mainChatButton.AssingAsMain(mainChatContent);
         

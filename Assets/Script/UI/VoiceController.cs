@@ -109,13 +109,14 @@ public class VoiceController : MonoBehaviourPun
 
     public void OderToOpenPrivateChat(Player player)
     {
-        photonView.RPC(nameof(ToldToOpenAChat), player, player);
+        photonView.RPC(nameof(ToldToOpenAChat), player, PhotonNetwork.LocalPlayer);
     }
 
     [PunRPC]
-    public void ToldToOpenAChat(Player player) //this is here... because i need someone to have photon view
+    public void ToldToOpenAChat(Player sender) //this is here... because i need someone to have photon view
     {
-        CommunicationsManager.Instance.chatManager.OpenAPrivateChat(player.NickName);
+        if (sender == PhotonNetwork.LocalPlayer) return;
+        CommunicationsManager.Instance.chatManager.OpenAPrivateChat(sender.NickName);
     }
 
 

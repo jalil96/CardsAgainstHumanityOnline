@@ -47,6 +47,7 @@ public class SelectWinnerCardRoundAction : RoundAction
 
         var selectedCard = _judge.Hand.GetSelectedCard();
         CharacterModel winner;
+        string winnerNickname = "Default";
         
         foreach (var card in _gameManager.SelectedCards.Keys)
         {
@@ -54,6 +55,7 @@ public class SelectWinnerCardRoundAction : RoundAction
             {
                 winner = _gameManager.SelectedCards[card];
                 winner.Points++;
+                winnerNickname = MasterManager.Instance.GetPlayerFromCharacter(winner).NickName;
                 Debug.Log($"Giving point to player: {MasterManager.Instance.GetPlayerFromCharacter(winner).NickName}");
                 break;
             }
@@ -62,7 +64,11 @@ public class SelectWinnerCardRoundAction : RoundAction
         _judge.OnSelectedCard = delegate(CharacterModel model) {  };
         _chronometer.OnChronometerTimeElapsed = delegate {};
         _chronometer.StopChronometer();
-
+        
+        
+        
+        _gameManager.SetWinnerCard(selectedCard.Text, winnerNickname);
+        
         OnEndRoundAction.Invoke();
     }
     

@@ -17,6 +17,7 @@ public class GameManager : MonoBehaviourPun
     
     [SerializeField] private List<RoundAction> _roundActions;
     [SerializeField] private BlackCardModel _blackCard;
+    [SerializeField] private WinnerWhiteCardModel _winnerWhiteCard;
     [SerializeField] private JudgeModel _judge;
     
     [Range(1, 10)] [SerializeField] private int _winCondition = 3;
@@ -32,6 +33,9 @@ public class GameManager : MonoBehaviourPun
 
     private Stack<string> _blackCards = new Stack<string>();
     private Stack<string> _whiteCards = new Stack<string>();
+
+    private string _winnerCard;
+    private string _winnerNickname;
     
     public int CurrentJudgeIndex => _currentJudgeIndex;
     public List<CharacterModel> Characters => _characters;
@@ -72,6 +76,7 @@ public class GameManager : MonoBehaviourPun
     {
         if (_roundActionsQueue.Count == 0)
         {
+            ShowWinnerCard();
             RoundEnded();
         }
         
@@ -95,8 +100,6 @@ public class GameManager : MonoBehaviourPun
         SetNewBlackCard();
         SetNewJudgeIndex();
         EnqueueRoundActions();
-        
-        
     }
 
     private void WinConditionMet(CharacterModel winner)
@@ -217,8 +220,21 @@ public class GameManager : MonoBehaviourPun
         }
         
         _blackCard.SetText(_blackCards.Pop());
-        _blackCard.SetShowCard();
+        _blackCard.SetShowCard(3f);
     }
+
+    public void SetWinnerCard(string winnerCard, string nickname)
+    {
+        _winnerCard = winnerCard;
+        _winnerNickname = nickname;
+    }
+
+    public void ShowWinnerCard()
+    {
+        _winnerWhiteCard.SetText(_winnerCard, _winnerNickname);
+        _winnerWhiteCard.SetShowCard();
+    }
+    
 
     public CharacterModel GetCurrentJudge()
     {

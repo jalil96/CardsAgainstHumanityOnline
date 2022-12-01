@@ -3,10 +3,10 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class BlackCardModel : MonoBehaviour
+public class WinnerWhiteCardModel : MonoBehaviour
 {
     public Action<bool> OnShowCard = delegate(bool b) { };
-    public Action<string> OnSetText = delegate (string s) { };
+    public Action<string, string> OnSetText = delegate (string s, string s1) { };
     
     [SerializeField] private string _text;
     
@@ -15,28 +15,22 @@ public class BlackCardModel : MonoBehaviour
 
     public bool ShowCard => _showCard;
 
-    public void SetShowCard(float delaySeconds = 2.5f)
+    public void SetShowCard()
     {
-        Invoke(nameof(ExecuteShowCard), delaySeconds);
-    }
-
-    private void ExecuteShowCard()
-    {
-        _showCard = false;
+        _showCard = true;
         OnShowCard.Invoke(_showCard);
-        Invoke(nameof(UnsetShowCard), 1f);   
+        Invoke(nameof(UnsetShowCard), 2.5f);
     }
 
     private void UnsetShowCard()
     {
-        _showCard = true;
+        _showCard = false;
         OnShowCard.Invoke(_showCard);
     }
 
-    public void SetText(string text)
+    public void SetText(string text, string nickname)
     {
         _text = text;
-        OnSetText.Invoke(_text);
+        OnSetText.Invoke(_text, nickname);
     }
-
 }

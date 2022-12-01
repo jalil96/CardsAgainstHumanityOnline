@@ -5,7 +5,7 @@ using Photon.Pun;
 using Photon.Realtime;
 using UnityEngine;
 
-public class MasterManager : MonoBehaviourPun
+public class MasterManager : MonoBehaviourPunCallbacks
 {
     private static MasterManager _instance;
     public static MasterManager Instance => _instance;
@@ -118,5 +118,22 @@ public class MasterManager : MonoBehaviourPun
     public void RequestChangeBlackCard(Player client)
     {
         OnChangeBlackCard.Invoke();
+    }
+    
+    public override void OnMasterClientSwitched(Player newMasterClient)
+    {
+        BackToMainMenu();
+    }
+
+    public void BackToMainMenu()
+    {
+        StartCoroutine(Leave());
+    }
+
+    public IEnumerator Leave()
+    {
+        PhotonNetwork.LeaveRoom();
+        yield return new WaitForSeconds(1);
+        PhotonNetwork.LoadLevel("MainMenu");
     }
 }

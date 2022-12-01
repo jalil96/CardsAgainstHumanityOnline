@@ -3488,6 +3488,7 @@ MonoBehaviour:
   - {fileID: 2087077779}
   - {fileID: 1453432422}
   _blackCard: {fileID: 1804619344}
+  _judge: {fileID: 1738345013}
   _winCondition: 3
 --- !u!114 &1350496046
 MonoBehaviour:
@@ -4111,6 +4112,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1738345011}
+  - component: {fileID: 1738345013}
+  - component: {fileID: 1738345012}
+  - component: {fileID: 1738345014}
   m_Layer: 5
   m_Name: RoundJudge
   m_TagString: Untagged
@@ -4139,6 +4143,55 @@ RectTransform:
   m_AnchoredPosition: {x: -231.9, y: 133.0434}
   m_SizeDelta: {x: 463.79, y: 266.0874}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &1738345012
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1738345010}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 30e8e636cd9f44d8ae81953d052ca0d6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _model: {fileID: 1738345013}
+  _text: {fileID: 1115594316}
+--- !u!114 &1738345013
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1738345010}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d792d42170b84dc0bc6b1fa694f7be52, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _nickname: 
+--- !u!114 &1738345014
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1738345010}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ObservedComponentsFoldoutOpen: 1
+  Group: 0
+  prefixField: -1
+  Synchronization: 3
+  OwnershipTransfer: 0
+  observableSearch: 2
+  ObservedComponents: []
+  sceneViewId: 9
+  InstantiationId: 0
+  isRuntimeInstantiated: 0
 --- !u!1001 &1804619342
 PrefabInstance:
   m_ObjectHideFlags: 0

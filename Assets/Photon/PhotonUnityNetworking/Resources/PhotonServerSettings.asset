@@ -75,6 +75,8 @@ MonoBehaviour:
   - RequestSelectedCard
   - DeleteOtherControllers
   - RequestChangeBlackCard
+  - RequestNickname
+  - UpdateNickname
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 1

@@ -17,6 +17,7 @@ public class GameManager : MonoBehaviourPun
     
     [SerializeField] private List<RoundAction> _roundActions;
     [SerializeField] private BlackCardModel _blackCard;
+    [SerializeField] private JudgeModel _judge;
     
     [Range(1, 10)] [SerializeField] private int _winCondition = 3;
     
@@ -45,6 +46,8 @@ public class GameManager : MonoBehaviourPun
             return;
         }
         
+        Destroy(Camera.main.gameObject);
+        
         _blackCardsStrings = JsonUtility.FromJson<Cards>(_blackCardsJson.text).cards;
         _whiteCardsStrings = JsonUtility.FromJson<Cards>(_whiteCardsJson.text).cards;
         
@@ -61,6 +64,7 @@ public class GameManager : MonoBehaviourPun
         MasterManager.Instance.OnChangeAllWhiteCards += SetNewWhiteCards;
         
         EnqueueRoundActions();
+        SetNewJudgeIndex();
         RoundActionEnded();
     }
 
@@ -89,7 +93,10 @@ public class GameManager : MonoBehaviourPun
         SetNewWhiteCards();
 
         SetNewBlackCard();
+        SetNewJudgeIndex();
         EnqueueRoundActions();
+        
+        
     }
 
     private void WinConditionMet(CharacterModel winner)
@@ -161,9 +168,14 @@ public class GameManager : MonoBehaviourPun
         {
             _roundActionsQueue.Enqueue(roundAction);
         }
+    }
 
+    private void SetNewJudgeIndex()
+    {
         if (_currentJudgeIndex >= _characters.Count - 1) _currentJudgeIndex = 0;
         else _currentJudgeIndex++;
+        
+        _judge.SetNickname(MasterManager.Instance.GetPlayerFromCharacter(_characters[_currentJudgeIndex]).NickName);
     }
 
     public void SetCharacters(List<CharacterModel> characters)

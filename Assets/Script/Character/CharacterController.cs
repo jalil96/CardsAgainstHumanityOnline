@@ -1,12 +1,11 @@
 ﻿using System;
 using Photon.Pun;
+using Photon.Realtime;
 using UnityEngine;
 
-public class CharacterController : MonoBehaviour
+public class CharacterController : MonoBehaviourPun
 {
     [SerializeField] private CharacterModel _characterModel;
-    
-    // private InputManager _inputManager;
 
     public void Destroy()
     {
@@ -18,6 +17,8 @@ public class CharacterController : MonoBehaviour
         CommunicationsManager.Instance.inputManager.OnReturnPressed += ReturnPressed;
         CommunicationsManager.Instance.inputManager.OnRightArrowPressed += RightArrowPressed;
         CommunicationsManager.Instance.inputManager.OnLeftArrowPressed += LeftArrowPressed;
+        
+        if (!PhotonNetwork.IsMasterClient) photonView.RPC(nameof(IsMine), RpcTarget.MasterClient, PhotonNetwork.LocalPlayer);
     }
 
     private void LeftArrowPressed()
@@ -33,6 +34,21 @@ public class CharacterController : MonoBehaviour
     private void ReturnPressed()
     {
         _characterModel.SelectCard();
+    }
+
+    [PunRPC]
+    private void IsMine(Player player)
+    {
+        if (MasterManager.Instance.GetPlayerFromCharacter(_characterModel).NickName != player.NickName)
+        {
+            photonView.RPC(nameof(RemoteDestroy), player);
+        }
+    }
+
+    [PunRPC]
+    private void RemoteDestroy()
+    {
+        Destroy();
     }
     
     /*private void Update()

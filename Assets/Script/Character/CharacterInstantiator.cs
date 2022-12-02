@@ -68,6 +68,7 @@ public class CharacterInstantiator : MonoBehaviourPunCallbacks
     [PunRPC]
     private void DeleteOtherControllers(int photonID)
     {
+        if (PhotonNetwork.IsMasterClient) return;
         var characters = FindObjectsOfType<CharacterModel>().ToList();
         var character = characters.Find(ch => ch.photonView.ViewID == photonID);
 

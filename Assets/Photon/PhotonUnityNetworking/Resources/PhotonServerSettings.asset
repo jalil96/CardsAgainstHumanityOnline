@@ -78,6 +78,8 @@ MonoBehaviour:
   - RequestNickname
   - UpdateNickname
   - UpdateWinnerInfo
+  - IsMine
+  - RemoteDestroy
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 1

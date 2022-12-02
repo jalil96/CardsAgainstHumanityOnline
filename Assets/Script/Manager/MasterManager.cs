@@ -28,7 +28,6 @@ public class MasterManager : MonoBehaviourPunCallbacks
         else _instance = this;
         _winScreen.SetActive(false);
         _loseScreen.SetActive(false);
-
     }
 
     private void Start()
@@ -119,7 +118,7 @@ public class MasterManager : MonoBehaviourPunCallbacks
     {
         OnChangeBlackCard.Invoke();
     }
-    
+
     public override void OnMasterClientSwitched(Player newMasterClient)
     {
         BackToMainMenu();

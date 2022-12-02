@@ -92,8 +92,8 @@ public class CharacterHand : MonoBehaviourPun
         if (PhotonNetwork.IsMasterClient)
         {
             _cards.ForEach(c => c.SetHovered(false));
+            _cards[_selectorIndex].SetHovered(true);
         }
-        _cards[_selectorIndex].SetHovered(true);
     }
 
     public void SelectCard()

@@ -14,11 +14,18 @@ public class CharacterController : MonoBehaviourPun
 
     private void Start()
     {
+        if (PhotonNetwork.IsMasterClient)
+        {
+            return;
+        }
+        
+        Debug.Log("Im not the master, so i have to check if this controller is mine!!!");
+        
         CommunicationsManager.Instance.inputManager.OnReturnPressed += ReturnPressed;
         CommunicationsManager.Instance.inputManager.OnRightArrowPressed += RightArrowPressed;
         CommunicationsManager.Instance.inputManager.OnLeftArrowPressed += LeftArrowPressed;
         
-        if (!PhotonNetwork.IsMasterClient) photonView.RPC(nameof(IsMine), RpcTarget.MasterClient, PhotonNetwork.LocalPlayer);
+        photonView.RPC(nameof(IsMine), RpcTarget.MasterClient, PhotonNetwork.LocalPlayer);
     }
 
     private void LeftArrowPressed()
@@ -48,6 +55,11 @@ public class CharacterController : MonoBehaviourPun
     [PunRPC]
     private void RemoteDestroy()
     {
+        Debug.Log("Master told me to destroy this controller");
+        CommunicationsManager.Instance.inputManager.OnReturnPressed -= ReturnPressed;
+        CommunicationsManager.Instance.inputManager.OnRightArrowPressed -= RightArrowPressed;
+        CommunicationsManager.Instance.inputManager.OnLeftArrowPressed -= LeftArrowPressed;
+        
         Destroy();
     }
     

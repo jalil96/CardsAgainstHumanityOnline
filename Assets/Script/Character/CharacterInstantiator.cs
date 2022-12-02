@@ -45,7 +45,7 @@ public class CharacterInstantiator : MonoBehaviourPunCallbacks
         _gameManager.SetCharacters(_characters);
         _gameManager.SetNewWhiteCards();
         
-        _characters.ForEach(c => photonView.RPC(nameof(DeleteOtherControllers), MasterManager.Instance.GetPlayerFromCharacter(c), c.photonView.ViewID));
+        // _characters.ForEach(c => photonView.RPC(nameof(DeleteOtherControllers), MasterManager.Instance.GetPlayerFromCharacter(c), c.photonView.ViewID));
     }
 
     [PunRPC]
